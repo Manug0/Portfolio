@@ -1,0 +1,55 @@
+:root {
+	--background-color: #151525;
+	--text-color: #e0e0e0;
+	--text-input-color: #03032b;
+	--primary-color: #cd5ff8;
+	--secondary-color: #ff2478;
+	--tertiary-color: #2457ff;
+
+	/* --tertiary-color: #3324ff; */
+	/* --tertiary-color: #24deff; */
+	/* --tertiary-color: #24ffff; */
+	/* --secondary-color: #0c1821; */
+
+	--image-gradient: linear-gradient(to top left, rgba(3, 5, 31, 0.863), rgba(0, 0, 0, 0.904));
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	font-family: var(--font-body);
+	font-family: "Space Grotesk", system-ui;
+}
+
+body {
+	margin: 0;
+	display: flex;
+	place-items: center;
+	min-height: 100vh;
+	/* background-color: var(--background-color) !important; */
+	color: var(--text-color) !important;
+	background-image: var(--image-gradient) !important;
+}
+
+#tsparticles {
+	position: fixed !important;
+	background-repeat: no-repeat !important;
+	background-size: cover !important;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+}
+
+::-webkit-scrollbar {
+	width: 0.6rem;
+	border-radius: 0.5rem;
+	background-color: hsl(0, 0%, 65%);
+}
+::-webkit-scrollbar-thumb {
+	border-radius: 0.5rem;
+	background-color: hsl(0, 0%, 55%);
+}
+::-webkit-scrollbar-thumb:hover {
+	background-color: hsl(0, 0%, 45%);
+}
