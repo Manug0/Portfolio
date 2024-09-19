@@ -107,7 +107,7 @@ const Header = () => {
 	return (
 		<HeaderContainer blur={blur}>
 			<NavContent>
-				<Logo src="./assets/Manu-logo.jpeg" alt="logo" className="menu" />
+				<Logo src="/Logo.svg" alt="logo" />
 				<NavList>
 					<NavItem to="/">
 						<NavlinkContainer>

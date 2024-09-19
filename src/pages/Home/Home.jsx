@@ -36,15 +36,27 @@ const Heading = styled.h1`
 	padding-bottom: 15px;
 	font-size: 2.5rem;
 	font-weight: 700;
+
+	@media (max-width: 1300px) {
+		font-size: 2rem;
+	}
 `;
 
-const HeadingName = styled.h1`
+const HeadingName = styled.h2`
 	font-size: 2.5rem;
 	font-weight: 700;
+
+	@media (max-width: 1300px) {
+		font-size: 2rem;
+	}
 `;
 
 const MainName = styled.strong`
 	color: var(--primary-color);
+
+	@media (max-width: 1300px) {
+		font-size: 2rem;
+	}
 `;
 
 const TypeWrapper = styled.div`
@@ -52,6 +64,10 @@ const TypeWrapper = styled.div`
 	color: var(--primary-color);
 	padding: 50px 0;
 	text-align: left;
+
+	@media (max-width: 1300px) {
+		font-size: 1.5rem;
+	}
 `;
 
 const CVImage = styled.img`
@@ -59,6 +75,11 @@ const CVImage = styled.img`
 	width: 210px;
 	height: 200px;
 	border-radius: 50%;
+
+	@media (max-width: 1300px) {
+		width: 175px;
+		height: 170px;
+	}
 `;
 
 const Home = () => {

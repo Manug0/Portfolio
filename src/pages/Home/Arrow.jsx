@@ -1,8 +1,45 @@
+import styled from "styled-components";
+
+const ArrowWrapper = styled.div`
+	margin: 0 0 3rem -8rem;
+
+	@media (max-width: 1600px) {
+		margin: 0 0 0 -3rem;
+	}
+
+	@media (max-width: 1100px) {
+		margin: 0 0 0 -1rem;
+	}
+
+	@media (max-width: 1100px) {
+		display: none;
+	}
+`;
+
+const ArrowSvg = styled.svg`
+	width: 230px;
+	height: 230px;
+
+	@media (max-width: 1600px) {
+		width: 180px;
+		height: 180px;
+	}
+
+	@media (max-width: 1300px) {
+		width: 150px;
+		height: 150px;
+	}
+
+	@media (max-width: 1100px) {
+		width: 120px;
+		height: 120px;
+	}
+`;
+
 const Arrow = () => {
 	return (
-		<div style={{ margin: "0 0 3rem -8rem" }}>
-			<svg
-				style={{ width: "230", height: "230" }}
+		<ArrowWrapper>
+			<ArrowSvg
 				xmlns="http://www.w3.org/2000/svg"
 				xmlnsXlink="http://www.w3.org/1999/xlink"
 				viewBox="0 0 180 300"
@@ -32,8 +69,8 @@ const Arrow = () => {
 							transform="translate(34.8362, 85.84) rotate(-7) translate(-34.8362, -85.84)"></path>
 					</g>
 				</g>
-			</svg>
-		</div>
+			</ArrowSvg>
+		</ArrowWrapper>
 	);
 };
 

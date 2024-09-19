@@ -69,7 +69,7 @@ const About = () => {
 							están alineadas con objetivos de negocio.
 						</IntroParagraph>
 					</IntroText>
-					<CareerJourneyTimeline></CareerJourneyTimeline>
+					{/* <CareerJourneyTimeline></CareerJourneyTimeline> */}
 				</IntroSection>
 				<TechStack />
 			</AboutContainer>

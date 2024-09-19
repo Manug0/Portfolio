@@ -4,7 +4,6 @@ import PCIcon from "./PCIcon";
 
 const IntroSection = styled.section`
 	padding: 4rem 0;
-	background-color: var(--bg-color);
 `;
 
 const IntroContainer = styled.div`
@@ -25,6 +24,10 @@ const IntroTitle = styled.h2`
 	font-size: 2.5rem;
 	color: var(--primary-color);
 	margin-bottom: 2rem;
+
+	@media (max-width: 1300px) {
+		font-size: 2rem;
+	}
 `;
 
 const IntroText = styled.p`
@@ -32,6 +35,10 @@ const IntroText = styled.p`
 	line-height: 1.6;
 	color: var(--text-color);
 	margin-bottom: 1.5rem;
+
+	@media (max-width: 1300px) {
+		font-size: 1rem;
+	}
 `;
 
 const BlockchainSpan = styled.span`
@@ -46,6 +53,10 @@ const IntroSpans = styled.span`
 const IconsContainer = styled.div`
 	display: flex;
 	gap: 5rem;
+
+	@media (max-width: 1100px) {
+		gap: 2rem;
+	}
 `;
 
 const rotate = keyframes`
@@ -79,7 +90,7 @@ const Intro = () => {
 					</IntroText>
 					<IntroText>
 						A parte del desarrollo web, tengo un gran interés en la tecnología{" "}
-						<BlockchainSpan>Blockchain</BlockchainSpan> y no descarto adentrarme en ella en un
+						<BlockchainSpan>Blockchain</BlockchainSpan> y no descarto profundizar en ella en un
 						futuro.
 					</IntroText>
 				</IntroContainer>
