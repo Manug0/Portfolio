@@ -32,7 +32,7 @@ const IconLink = styled.a`
 const Contact = () => {
 	return (
 		<ContactSection>
-			<ContactTitle>Conecta conmigo:</ContactTitle>
+			<ContactTitle>Mis redes:</ContactTitle>
 			<IconsContainer>
 				<IconLink href="https://github.com/tuusuario" target="_blank" rel="noopener noreferrer">
 					<FaGithub />

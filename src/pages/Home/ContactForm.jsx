@@ -13,6 +13,7 @@ const FormSection = styled.section`
 const FormContainer = styled.form`
 	display: flex;
 	flex-direction: column;
+	gap: 1rem;
 	max-width: 500px;
 	margin: 0 auto;
 `;
@@ -48,6 +49,8 @@ const FormButton = styled.button`
 	border-radius: 4px;
 	cursor: pointer;
 	transition: background-color 0.3s ease;
+	width: 50%;
+	margin: auto;
 
 	&:hover {
 		background-color: var(--secondary-color);
@@ -107,7 +110,7 @@ const ContactForm = () => {
 	return (
 		<FormSection>
 			<FormContainer onSubmit={handleSubmit(onSubmit)}>
-				<FormTitle>Envíame un mensaje</FormTitle>
+				<FormTitle>Contacta conmigo</FormTitle>
 				<FormInput
 					{...register("name", { required: "El nombre es requerido" })}
 					placeholder="Tu nombre"

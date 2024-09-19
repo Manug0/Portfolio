@@ -3,7 +3,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import { Document, Page, pdfjs } from "react-pdf";
 import { AiOutlineDownload } from "react-icons/ai";
 import Particle from "../../components/Particles";
-import pdf from "../../assets/CV Manuel González García.pdf";
+import pdf from "../../assets/ManuelGonzalezGarciaResume (1).pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -46,13 +46,12 @@ const StyledDocumentContainer = styled.div`
 	justify-content: center;
 	width: 100%;
 	margin: 2rem 0;
-	height: 120vh;
+	height: 130vh;
 	overflow: hidden;
 `;
 
 const LoadingMessage = styled.div`
 	font-size: 1.2rem;
-	color: #666;
 	margin: 2rem 0;
 `;
 
@@ -78,7 +77,7 @@ const Cv = () => {
 			<Particle />
 			<StyledButton href={pdf} target="_blank" download>
 				<AiOutlineDownload />
-				&nbsp;Download CV
+				&nbsp;Descargar CV
 			</StyledButton>
 
 			<StyledDocumentContainer>
@@ -89,7 +88,7 @@ const Cv = () => {
 
 			<StyledButton href={pdf} target="_blank" download>
 				<AiOutlineDownload />
-				&nbsp;Download CV
+				&nbsp;Descargar CV
 			</StyledButton>
 		</StyledContainer>
 	);
