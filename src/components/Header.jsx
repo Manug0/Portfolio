@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
+import { GoHome } from "react-icons/go";
+import { FaRegUser } from "react-icons/fa";
+import { FaProjectDiagram } from "react-icons/fa";
+import { FaFileAlt } from "react-icons/fa";
+import { RxHamburgerMenu } from "react-icons/rx";
 
 const HeaderContainer = styled.nav`
 	position: fixed;
@@ -18,7 +23,7 @@ const NavContent = styled.div`
 	position: relative;
 	height: 6rem;
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-evenly;
 	align-items: center;
 `;
 
@@ -33,7 +38,7 @@ const Logo = styled.img`
 const NavList = styled.ul`
 	list-style: none;
 	display: flex;
-	gap: 20px;
+	gap: 40px;
 `;
 
 const NavItem = styled(NavLink)`
@@ -49,12 +54,28 @@ const NavItem = styled(NavLink)`
 	font-size: 1.2rem;
 	font-weight: 500;
 
-	&:hover {
-		background-size: 40% 0.1em;
-		background-position: 10% 100%, 90% 100%;
-		transform: scale(1.1);
-		color: var(--accent-color);
+	&::after {
+		content: "";
+		position: relative;
+		display: block;
+		height: 5px;
+		width: 0;
+		border-radius: 16px;
+		background: var(--primary-color);
+		bottom: 1px;
+		left: 0;
+		z-index: -1;
+		transition: all 0.3s ease-out 0s;
 	}
+
+	&:hover::after {
+		width: 100%;
+	}
+`;
+
+const NavlinkContainer = styled.div`
+	display: inline-flex;
+	align-items: center;
 `;
 
 const HeaderButtons = styled.div`
@@ -88,14 +109,35 @@ const Header = () => {
 			<NavContent>
 				<Logo src="./assets/Manu-logo.jpeg" alt="logo" className="menu" />
 				<NavList>
-					<NavItem to="/">Inicio</NavItem>
-					<NavItem to="/about">Sobre mí</NavItem>
-					<NavItem to="/projects">Proyectos</NavItem>
-					<NavItem to="/CV">Currículum</NavItem>
+					<NavItem to="/">
+						<NavlinkContainer>
+							<GoHome />
+							&nbsp; Inicio
+						</NavlinkContainer>
+					</NavItem>
+
+					<NavItem to="/about">
+						<NavlinkContainer>
+							<FaRegUser size={"0.8em"} />
+							&nbsp; Sobre mí
+						</NavlinkContainer>
+					</NavItem>
+					<NavItem to="/projects">
+						<NavlinkContainer>
+							<FaProjectDiagram size={"0.8em"} />
+							&nbsp; Proyectos
+						</NavlinkContainer>
+					</NavItem>
+					<NavItem to="/CV">
+						<NavlinkContainer>
+							<FaFileAlt size={"0.8em"} />
+							&nbsp;Currículum
+						</NavlinkContainer>
+					</NavItem>
 				</NavList>
 				<HeaderButtons>
-					<NavbarToggle htmlFor="chkToggle">
-						<i className="ri-menu-3-line"></i>
+					<NavbarToggle>
+						<RxHamburgerMenu />
 					</NavbarToggle>
 				</HeaderButtons>
 			</NavContent>

@@ -1,8 +1,6 @@
 import styled from "styled-components";
-import { motion } from "framer-motion";
 import TechStack from "./TechStack";
 import Particle from "../../components/Particles";
-import InteractiveCodeEconomyVisual from "./VisualElment";
 import CareerJourneyTimeline from "./VisualElment";
 
 const AboutSection = styled.section`
@@ -40,13 +38,6 @@ const IntroParagraph = styled.p`
 	line-height: 1.6;
 	margin-bottom: 1rem;
 	text-align: left;
-`;
-
-const VisualElement = styled(motion.div)`
-	flex: 1;
-	display: flex;
-	justify-content: center;
-	align-items: center;
 `;
 
 const IntroSpan = styled.span`
