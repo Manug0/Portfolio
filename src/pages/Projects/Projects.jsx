@@ -21,11 +21,19 @@ const IntroH2 = styled.h2`
 	font-size: 30px;
 	font-weight: 500;
 	color: var(--primary-color);
+
+	@media (max-width: 768px) {
+		font-size: 1.3rem;
+	}
 `;
 
 const IntroH3 = styled.h3`
 	font-size: 20px;
 	font-weight: 500;
+
+	@media (max-width: 768px) {
+		font-size: 1rem;
+	}
 `;
 
 const ProjectsContainer = styled.div`
@@ -37,6 +45,10 @@ const ProjectsContainer = styled.div`
 	margin: auto;
 	margin-top: 3rem;
 	width: 80%;
+
+	@media (max-width: 400px) {
+		width: 90%;
+	}
 `;
 
 const ProjectCard = styled.div`
@@ -53,22 +65,39 @@ const ProjectCard = styled.div`
 	&:hover {
 		box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
 	}
+
+	@media (max-width: 400px) {
+		padding: 1rem;
+	}
 `;
+
 const ProjectImg = styled.img`
 	width: 70%;
 	margin: auto;
 `;
 
 const ProjectTitle = styled.h4`
-	font-size: 24px;
+	font-size: 1.5rem;
 	font-weight: 500;
 	color: var(--primary-color);
 	margin-top: 2rem;
+
+	@media (max-width: 768px) {
+		font-size: 1.2rem;
+	}
 `;
 
 const Description = styled.p`
 	padding: 1rem;
 	text-align: left;
+
+	@media (max-width: 1300px) {
+		font-size: 0.8rem;
+	}
+
+	@media (max-width: 768px) {
+		font-size: 0.6rem;
+	}
 `;
 
 const ProjectButtons = styled.div`
@@ -76,10 +105,18 @@ const ProjectButtons = styled.div`
 	gap: 2rem;
 	width: 80%;
 	margin: auto;
-	padding: 0.7rem;
+	padding: 0.7rem 0;
+
+	@media (max-width: 1300px) {
+		width: 100%;
+	}
+
+	@media (max-width: 768px) {
+		gap: 1rem;
+	}
 `;
 
-const PageButton = styled.a`
+const VisitButton = styled.a`
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -90,11 +127,24 @@ const PageButton = styled.a`
 	border-radius: 4px;
 	cursor: pointer;
 	transition: background-color 0.3s ease;
-	width: 50%;
 	margin: auto;
 
 	&:hover {
 		background-color: var(--secondary-color);
+	}
+
+	@media (max-width: 768px) {
+		font-size: 0.8rem;
+		padding: 0.3rem 0.6rem;
+	}
+`;
+
+const VisitIcon = styled(AiOutlineLink)`
+	height: fit-content;
+	font-size: 20px;
+
+	@media (max-width: 768px) {
+		font-size: 12px;
 	}
 `;
 
@@ -109,11 +159,24 @@ const GithubButton = styled.a`
 	border-radius: 4px;
 	cursor: pointer;
 	transition: background-color 0.3s ease;
-	width: 50%;
 	margin: auto;
 
 	&:hover {
 		background-color: var(--secondary-color);
+	}
+
+	@media (max-width: 768px) {
+		font-size: 0.8rem;
+		padding: 0.3rem 0.6rem;
+	}
+`;
+
+const GithubIcon = styled(FaGithub)`
+	height: fit-content;
+	font-size: 20px;
+
+	@media (max-width: 768px) {
+		font-size: 12px;
 	}
 `;
 
@@ -138,18 +201,18 @@ const Projects = () => {
 						atractivas.
 					</Description>
 					<ProjectButtons>
-						<PageButton
+						<VisitButton
 							href="https://phone-fusion.vercel.app"
 							target="_blank"
 							rel="noopener noreferrer">
-							<AiOutlineLink />
+							<VisitIcon />
 							&nbsp;Visitar
-						</PageButton>
+						</VisitButton>
 						<GithubButton
 							href="https://github.com/Manug0/Phone-Fusion"
 							target="_blank"
 							rel="noopener noreferrer">
-							<FaGithub />
+							<GithubIcon />
 							&nbsp;GitHub
 						</GithubButton>
 					</ProjectButtons>
