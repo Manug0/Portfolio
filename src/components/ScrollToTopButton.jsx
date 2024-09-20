@@ -1,6 +1,25 @@
 import { useState, useEffect } from "react";
-import { Button } from "@chakra-ui/react";
 import { FaAngleUp } from "react-icons/fa";
+import styled from "styled-components";
+
+const StyledButton = styled.button`
+	background-color: var(--primary-color);
+	color: white;
+	position: fixed;
+	bottom: 80px;
+	right: 50px;
+	z-index: 1000;
+	padding: 0.8rem;
+	border-radius: 50%;
+	opacity: ${(props) => (props.isVisible ? "0.8" : "0")};
+	transition: opacity 0.3s;
+
+	@media (max-width: 768px) {
+		right: 30px;
+		bottom: 30px;
+		padding: 0.6rem;
+	}
+`;
 
 const ScrollToTopButton = () => {
 	const [isVisible, setIsVisible] = useState(false);
@@ -28,20 +47,12 @@ const ScrollToTopButton = () => {
 	}, []);
 
 	return (
-		<Button
-			style={{ backgroundColor: "var(--primary-color)", color: "white" }}
+		<StyledButton
+			isVisible={isVisible}
 			onClick={scrollToTop}
-			borderRadius="full"
-			boxShadow="lg"
-			position="fixed"
-			bottom="80px"
-			right="50px"
-			zIndex="1000"
-			opacity={isVisible ? 0.9 : 0}
-			transition="opacity 0.3s"
 			pointerEvents={isVisible ? "auto" : "none"}>
 			<FaAngleUp />
-		</Button>
+		</StyledButton>
 	);
 };
 
