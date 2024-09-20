@@ -53,7 +53,7 @@ const IconLink = styled.a`
 const Footer = () => {
 	return (
 		<FooterContainer>
-			<FooterText>Diseñado con ❤️ por Manu</FooterText>
+			<FooterText>Diseñado por Manu 🖌️</FooterText>
 			<Copy>&copy; {new Date().getFullYear()} Mg. Todos los derechos reservados.</Copy>
 			<IconsContainer>
 				<IconLink href="https://github.com/Manug0" target="_blank" rel="noopener noreferrer">
