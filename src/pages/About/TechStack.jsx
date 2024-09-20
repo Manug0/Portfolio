@@ -43,6 +43,11 @@ const TechCategory = styled.div`
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 	backdrop-filter: blur(2px);
 	background-color: #4646632f;
+
+	@media (max-width: 500px) {
+		width: 80%;
+		margin: auto;
+	}
 `;
 
 const CategoryTitle = styled.h3`

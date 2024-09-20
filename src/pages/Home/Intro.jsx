@@ -120,12 +120,11 @@ const Intro = () => {
 					</IntroText>
 					<IntroText>
 						Estoy explorando constantemente nuevos lenguajes y frameworks: actualmente estoy
-						aprendiendo <IntroSpans>TypeScript</IntroSpans> y <IntroSpans>Angular</IntroSpans> y en
-						más tarde les seguirán <IntroSpans>Python</IntroSpans> y{" "}
-						<IntroSpans>Next.js</IntroSpans>
+						aprendiendo <IntroSpans>TypeScript</IntroSpans> y <IntroSpans>Angular</IntroSpans> y más
+						tarde les seguirán <IntroSpans>Python</IntroSpans> y <IntroSpans>Next.js</IntroSpans>
 					</IntroText>
 					<IntroText>
-						A parte del desarrollo web, tengo un gran interés en la tecnología{" "}
+						Aparte del desarrollo web, tengo un gran interés en la tecnología{" "}
 						<BlockchainSpan>Blockchain</BlockchainSpan> y no descarto profundizar en ella en un
 						futuro.
 					</IntroText>

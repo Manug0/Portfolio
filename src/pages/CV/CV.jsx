@@ -19,6 +19,10 @@ const StyledContainer = styled.div`
 	padding: 2rem;
 	position: relative;
 	margin-top: 5rem;
+
+	@media (max-width: 768px) {
+		padding: 0;
+	}
 `;
 
 const StyledButton = styled.a`
@@ -92,7 +96,7 @@ const Cv = () => {
 				setScale(0.5);
 				setHeight(400);
 			} else {
-				setScale(0.4);
+				setScale(0.45);
 				setHeight(300);
 			}
 		};

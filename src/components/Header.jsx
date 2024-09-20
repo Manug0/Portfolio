@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { GoHome } from "react-icons/go";
 import { FaRegUser } from "react-icons/fa";
@@ -37,6 +37,7 @@ const Logo = styled.img`
 	left: 50px;
 	width: 70px;
 	height: 70px;
+	cursor: pointer;
 
 	@media (max-width: 1000px) {
 		left: 0px;
@@ -101,7 +102,7 @@ const NavItem = styled(NavLink)`
 	}
 
 	@media (max-width: 1000px) {
-		font-size: 1rem;
+		font-size: 1.2rem;
 	}
 
 	@media (max-width: 768px) {
@@ -150,6 +151,7 @@ const Overlay = styled.div`
 const Header = () => {
 	const [blur, setBlur] = useState(false);
 	const [navOpen, setNavOpen] = useState(false);
+	const navigate = useNavigate();
 
 	const toggleHeaderBlur = () => {
 		if (window.scrollY > 0) {
@@ -174,11 +176,13 @@ const Header = () => {
 		};
 	}, []);
 
+	const goToHome = () => navigate("/");
+
 	return (
 		<>
 			<HeaderContainer blur={blur}>
 				<NavContent>
-					<Logo src="/Logo.svg" alt="logo" />
+					<Logo src="/Logo.svg" alt="logo" onClick={goToHome} />
 					<NavList open={navOpen}>
 						<NavItem to="/" onClick={handleNavItemClick}>
 							<NavlinkContainer>

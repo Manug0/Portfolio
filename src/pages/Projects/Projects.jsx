@@ -46,7 +46,8 @@ const ProjectsContainer = styled.div`
 	margin-top: 3rem;
 	width: 80%;
 
-	@media (max-width: 400px) {
+	@media (max-width: 500px) {
+		display: flex;
 		width: 90%;
 	}
 `;
