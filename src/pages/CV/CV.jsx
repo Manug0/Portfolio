@@ -19,10 +19,6 @@ const StyledContainer = styled.div`
 	padding: 2rem;
 	position: relative;
 	margin-top: 5rem;
-
-	/* @media (max-width: 1000px) {
-		min-height: 0vh;
-	} */
 `;
 
 const StyledButton = styled.a`

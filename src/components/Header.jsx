@@ -6,7 +6,7 @@ import { FaRegUser } from "react-icons/fa";
 import { FaProjectDiagram } from "react-icons/fa";
 import { FaFileAlt } from "react-icons/fa";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { AiOutlineClose } from "react-icons/ai"; // Icono de cierre
+import { AiOutlineClose } from "react-icons/ai";
 
 const HeaderContainer = styled.nav`
 	position: fixed;
@@ -133,7 +133,6 @@ const NavbarToggle = styled.label`
 	}
 `;
 
-// Fondo oscurecido/borroso al abrir el menú
 const Overlay = styled.div`
 	position: fixed;
 	top: 0;
@@ -160,12 +159,10 @@ const Header = () => {
 		}
 	};
 
-	// Cerrar el menú si se hace clic fuera de él
 	const handleOverlayClick = () => {
 		setNavOpen(false);
 	};
 
-	// Cerrar el menú si se hace clic en un enlace
 	const handleNavItemClick = () => {
 		setNavOpen(false);
 	};
