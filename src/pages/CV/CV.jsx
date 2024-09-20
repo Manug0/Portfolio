@@ -93,10 +93,10 @@ const Cv = () => {
 				setScale(0.8);
 				setHeight(600);
 			} else if (newWidth > 400) {
-				setScale(0.5);
+				setScale(0.6);
 				setHeight(400);
 			} else {
-				setScale(0.45);
+				setScale(0.5);
 				setHeight(300);
 			}
 		};
