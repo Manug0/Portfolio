@@ -21,6 +21,14 @@ const SectionTitle = styled.h2`
 	font-size: 2.5rem;
 	margin-bottom: 2rem;
 	text-align: center;
+
+	@media (max-width: 1000px) {
+		font-size: 2rem;
+	}
+
+	@media (max-width: 768px) {
+		font-size: 1.5rem;
+	}
 `;
 
 const TechStackGrid = styled.div`
@@ -41,6 +49,14 @@ const CategoryTitle = styled.h3`
 	font-size: 1.5rem;
 	margin-bottom: 1rem;
 	color: var(--primary-color);
+
+	@media (max-width: 1000px) {
+		font-size: 1.2rem;
+	}
+
+	@media (max-width: 768px) {
+		font-size: 1rem;
+	}
 `;
 
 const TechList = styled.ul`
@@ -55,11 +71,27 @@ const TechItem = styled.li`
 	gap: 1rem;
 	margin-bottom: 0.5rem;
 	font-size: 1.1rem;
+
+	@media (max-width: 1000px) {
+		font-size: 1rem;
+	}
+
+	@media (max-width: 768px) {
+		font-size: 0.8rem;
+	}
 `;
 
 const TechIcon = styled.span`
 	margin-right: 0.5rem;
 	font-size: 1.5rem;
+
+	@media (max-width: 768px) {
+		font-size: 1.2rem;
+	}
+
+	@media (max-width: 500px) {
+		font-size: 1rem;
+	}
 `;
 
 const TechStack = () => {

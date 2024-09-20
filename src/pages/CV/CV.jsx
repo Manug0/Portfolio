@@ -3,7 +3,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import { Document, Page, pdfjs } from "react-pdf";
 import { AiOutlineDownload } from "react-icons/ai";
 import Particle from "../../components/Particles";
-import pdf from "../../assets/ManuelGonzalezGarciaResume (1).pdf";
+import pdf from "../../assets/ManuelGonzalezGarciaResume.pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(

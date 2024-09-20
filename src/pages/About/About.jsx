@@ -20,6 +20,8 @@ const IntroSection = styled.div`
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 4rem;
+	width: 80%;
+	margin: auto;
 `;
 
 const IntroText = styled.div`
@@ -31,6 +33,14 @@ const IntroTitle = styled.h2`
 	font-size: 2.5rem;
 	color: var(--primary-color);
 	margin-bottom: 1rem;
+
+	@media (max-width: 1000px) {
+		font-size: 2rem;
+	}
+
+	@media (max-width: 768px) {
+		font-size: 1.5rem;
+	}
 `;
 
 const IntroParagraph = styled.p`
@@ -38,6 +48,18 @@ const IntroParagraph = styled.p`
 	line-height: 1.6;
 	margin-bottom: 1rem;
 	text-align: left;
+
+	@media (max-width: 1000px) {
+		font-size: 1rem;
+	}
+
+	@media (max-width: 768px) {
+		font-size: 0.8rem;
+	}
+
+	@media (max-width: 500px) {
+		font-size: 0.6rem;
+	}
 `;
 
 const IntroSpan = styled.span`
