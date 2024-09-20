@@ -9,15 +9,10 @@ const Particle = () => {
 		await loadSlim(engine);
 	}, []);
 
-	// const particlesLoaded = useCallback(async (container) => {
-	// 	await console.log(container);
-	// }, []);
-
 	return (
 		<Particles
 			id="tsparticles"
 			init={particlesInit}
-			// loaded={particlesLoaded}
 			options={{
 				fpsLimit: 120,
 				particles: {
