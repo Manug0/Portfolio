@@ -19,14 +19,17 @@ const StyledContainer = styled.div`
 	padding: 2rem;
 	position: relative;
 	margin-top: 5rem;
+
+	/* @media (max-width: 1000px) {
+		min-height: 0vh;
+	} */
 `;
 
 const StyledButton = styled.a`
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	background-color: #007bff;
-	/* background-color: var(--primary-color); */
+	background-color: var(--tertiary-color);
 	color: white;
 	padding: 0.5rem 1rem;
 	border-radius: 0.25rem;
@@ -37,7 +40,10 @@ const StyledButton = styled.a`
 
 	&:hover {
 		background-color: #0056b3;
-		/* background-color: #c434fd; */
+	}
+
+	@media (max-width: 500px) {
+		font-size: 0.6rem;
 	}
 `;
 
@@ -46,13 +52,17 @@ const StyledDocumentContainer = styled.div`
 	justify-content: center;
 	width: 100%;
 	margin: 2rem 0;
-	height: 130vh;
+	height: ${({ height }) => height}px;
 	overflow: hidden;
 `;
 
 const LoadingMessage = styled.div`
 	font-size: 1.2rem;
 	margin: 2rem 0;
+
+	@media (max-width: 500px) {
+		font-size: 0.6rem;
+	}
 `;
 
 const GlobalStyle = createGlobalStyle`
@@ -62,10 +72,35 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const Cv = () => {
-	const [width, setWidth] = useState(1200);
+	const [width, setWidth] = useState(window.innerWidth);
+	const [scale, setScale] = useState(1);
+	const [height, setHeight] = useState(1300);
 
 	useEffect(() => {
-		const handleResize = () => setWidth(window.innerWidth);
+		const handleResize = () => {
+			const newWidth = window.innerWidth;
+			setWidth(newWidth);
+			if (newWidth > 1500) {
+				setScale(1.8);
+				setHeight(1300);
+			} else if (newWidth > 1000) {
+				setScale(1.3);
+				setHeight(1000);
+			} else if (newWidth > 800) {
+				setScale(1);
+				setHeight(700);
+			} else if (newWidth > 700) {
+				setScale(0.8);
+				setHeight(600);
+			} else if (newWidth > 400) {
+				setScale(0.5);
+				setHeight(400);
+			} else {
+				setScale(0.4);
+				setHeight(300);
+			}
+		};
+
 		window.addEventListener("resize", handleResize);
 		handleResize();
 		return () => window.removeEventListener("resize", handleResize);
@@ -80,9 +115,9 @@ const Cv = () => {
 				&nbsp;Descargar CV
 			</StyledButton>
 
-			<StyledDocumentContainer>
+			<StyledDocumentContainer height={height}>
 				<Document file={pdf} loading={<LoadingMessage>Cargando PDF...</LoadingMessage>}>
-					<Page pageNumber={1} scale={width > 786 ? 1.7 : 0.6} />
+					<Page pageNumber={1} scale={scale} />
 				</Document>
 			</StyledDocumentContainer>
 
