@@ -7,7 +7,10 @@ import { Flex } from "@chakra-ui/react";
 
 const FormSection = styled.section`
 	padding: 2rem 1rem;
-	background-color: var(--bg-color);
+
+	@media (max-width: 768px) {
+		padding-top: 0;
+	}
 `;
 
 const FormContainer = styled.form`
@@ -15,6 +18,7 @@ const FormContainer = styled.form`
 	flex-direction: column;
 	gap: 1rem;
 	max-width: 500px;
+	width: 70%;
 	margin: 0 auto;
 `;
 
@@ -23,6 +27,10 @@ const FormTitle = styled.h2`
 	color: var(--primary-color);
 	margin-bottom: 1rem;
 	text-align: center;
+
+	@media (max-width: 400px) {
+		font-size: 1.2rem;
+	}
 `;
 
 const FormInput = styled.input`
@@ -31,6 +39,10 @@ const FormInput = styled.input`
 	border: 1px solid var(--text-color);
 	border-radius: 4px;
 	color: var(--text-input-color);
+
+	@media (max-width: 400px) {
+		font-size: 0.7rem;
+	}
 `;
 
 const FormTextArea = styled.textarea`
@@ -39,6 +51,11 @@ const FormTextArea = styled.textarea`
 	border: 1px solid var(--text-color);
 	border-radius: 4px;
 	min-height: 100px;
+	color: var(--text-input-color);
+
+	@media (max-width: 400px) {
+		font-size: 0.7rem;
+	}
 `;
 
 const FormButton = styled.button`
@@ -55,12 +72,21 @@ const FormButton = styled.button`
 	&:hover {
 		background-color: var(--secondary-color);
 	}
+
+	@media (max-width: 400px) {
+		font-size: 12px;
+	}
 `;
 
 const ErrorMessage = styled.span`
 	color: red;
 	font-size: 1rem;
 	margin-bottom: 0.5rem;
+
+	@media (max-width: 400px) {
+		font-size: 12px;
+		margin-bottom: 0;
+	}
 `;
 
 const ConfirmationMessage = styled.p`
@@ -71,6 +97,11 @@ const ConfirmationMessage = styled.p`
 	margin-top: 1rem;
 	font-size: 1rem;
 	text-align: center;
+
+	@media (max-width: 400px) {
+		font-size: 12px;
+		margin-bottom: 0;
+	}
 `;
 
 const ContactForm = () => {

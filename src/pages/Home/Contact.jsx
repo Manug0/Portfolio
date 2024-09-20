@@ -10,6 +10,14 @@ const ContactSection = styled.section`
 const ContactTitle = styled.h4`
 	font-size: 1.5rem;
 	margin-bottom: 1rem;
+
+	@media (max-width: 768px) {
+		font-size: 1.2rem;
+	}
+
+	@media (max-width: 400px) {
+		font-size: 1rem;
+	}
 `;
 
 const IconsContainer = styled.div`
@@ -26,6 +34,10 @@ const IconLink = styled.a`
 
 	&:hover {
 		color: var(--primary-color);
+	}
+
+	@media (max-width: 400px) {
+		font-size: 1.5rem;
 	}
 `;
 

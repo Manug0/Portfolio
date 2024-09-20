@@ -20,6 +20,14 @@ const HomeContainer = styled.div`
 	width: 80%;
 	margin: auto;
 	align-items: center;
+
+	@media (max-width: 768px) {
+		flex-direction: column;
+	}
+
+	@media (max-width: 400px) {
+		width: 100%;
+	}
 `;
 
 const HomeCol = styled.div`
@@ -27,7 +35,6 @@ const HomeCol = styled.div`
 	max-width: 45%;
 
 	@media (max-width: 768px) {
-		flex: 0 0 100%;
 		max-width: 100%;
 	}
 `;
@@ -40,6 +47,10 @@ const Heading = styled.h1`
 	@media (max-width: 1300px) {
 		font-size: 2rem;
 	}
+
+	@media (max-width: 400px) {
+		font-size: 1.4rem;
+	}
 `;
 
 const HeadingName = styled.h2`
@@ -49,6 +60,10 @@ const HeadingName = styled.h2`
 	@media (max-width: 1300px) {
 		font-size: 2rem;
 	}
+
+	@media (max-width: 400px) {
+		font-size: 1.4rem;
+	}
 `;
 
 const MainName = styled.strong`
@@ -56,6 +71,10 @@ const MainName = styled.strong`
 
 	@media (max-width: 1300px) {
 		font-size: 2rem;
+	}
+
+	@media (max-width: 400px) {
+		font-size: 1.4rem;
 	}
 `;
 
@@ -68,6 +87,18 @@ const TypeWrapper = styled.div`
 	@media (max-width: 1300px) {
 		font-size: 1.5rem;
 	}
+
+	@media (max-width: 1000px) {
+		font-size: 1.2rem;
+	}
+
+	@media (max-width: 768px) {
+		text-align: center;
+	}
+
+	@media (max-width: 400px) {
+		font-size: 1.1rem;
+	}
 `;
 
 const CVImage = styled.img`
@@ -79,6 +110,11 @@ const CVImage = styled.img`
 	@media (max-width: 1300px) {
 		width: 175px;
 		height: 170px;
+	}
+
+	@media (max-width: 500px) {
+		width: 130px;
+		height: 125px;
 	}
 `;
 

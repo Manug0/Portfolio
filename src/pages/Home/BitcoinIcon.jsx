@@ -8,6 +8,14 @@ const StyledBitcoinIcon = styled(FaBitcoin)`
 	@media (max-width: 1300px) {
 		font-size: 80px;
 	}
+
+	@media (max-width: 768px) {
+		margin: auto;
+	}
+
+	@media (max-width: 400px) {
+		font-size: 50px;
+	}
 `;
 
 const BitcoinIcon = () => {

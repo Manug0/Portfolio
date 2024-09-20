@@ -11,6 +11,12 @@ const IntroContainer = styled.div`
 	flex-direction: column;
 	width: 60%;
 	text-align: left;
+
+	@media (max-width: 500px) {
+		width: 80%;
+		text-align: center;
+		margin: auto;
+	}
 `;
 
 const IntroWrapper = styled.div`
@@ -18,6 +24,10 @@ const IntroWrapper = styled.div`
 	width: 90%;
 	margin: auto;
 	justify-content: space-around;
+
+	@media (max-width: 500px) {
+		flex-direction: column;
+	}
 `;
 
 const IntroTitle = styled.h2`
@@ -27,6 +37,10 @@ const IntroTitle = styled.h2`
 
 	@media (max-width: 1300px) {
 		font-size: 2rem;
+	}
+
+	@media (max-width: 400px) {
+		font-size: 1.5rem;
 	}
 `;
 
@@ -38,6 +52,10 @@ const IntroText = styled.p`
 
 	@media (max-width: 1300px) {
 		font-size: 1rem;
+	}
+
+	@media (max-width: 500px) {
+		font-size: 0.8rem;
 	}
 `;
 
@@ -57,6 +75,15 @@ const IconsContainer = styled.div`
 	@media (max-width: 1100px) {
 		gap: 2rem;
 	}
+
+	@media (max-width: 768px) {
+		flex-direction: column;
+		justify-content: space-around;
+	}
+
+	@media (max-width: 500px) {
+		flex-direction: row;
+	}
 `;
 
 const rotate = keyframes`
@@ -68,6 +95,15 @@ const rotate = keyframes`
 const BitcoinIconWrapper = styled.div`
 	margin-top: 8rem;
 	animation: ${rotate} 5s linear infinite;
+	height: fit-content;
+
+	@media (max-width: 768px) {
+		margin-top: 0rem;
+	}
+
+	@media (max-width: 500px) {
+		padding: 10px;
+	}
 `;
 
 const Intro = () => {
