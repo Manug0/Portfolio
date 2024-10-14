@@ -1,6 +1,6 @@
-# Portafolio Web
+# Portfolio Web
 
-Este es el repositorio de mi portafolio web, donde muestro mi experiencia, proyectos y habilidades como desarrollador. El sitio está construido utilizando tecnologías modernas para ofrecer una experiencia interactiva y visualmente atractiva.
+Este es el repositorio de mi portfolio web, donde muestro mi experiencia, proyectos y habilidades como desarrollador. El sitio está construido utilizando tecnologías modernas para ofrecer una experiencia interactiva y visualmente atractiva.
 
 ## Tecnologías Utilizadas
 
