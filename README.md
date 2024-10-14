@@ -1,8 +1,11 @@
-# React + Vite
+# Portafolio Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este es el repositorio de mi portafolio web, donde muestro mi experiencia, proyectos y habilidades como desarrollador. El sitio está construido utilizando tecnologías modernas para ofrecer una experiencia interactiva y visualmente atractiva.
 
-Currently, two official plugins are available:
+## Tecnologías Utilizadas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend**: React con Vite
+- **Estilos**: Chakra UI y Styled Components para componentes y diseño
+- **Iconos**: React Icons
+- **Visualizaciones y Efectos**: CSS personalizado para efectos y animaciones
+- **Integración de PDF**: react-pdf para mostrar archivos PDF en el sitio
