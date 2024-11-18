@@ -23,35 +23,6 @@ const initialSphereData = [
 export default function TechSpheres() {
 	const [sphereData, setSphereData] = useState(initialSphereData);
 
-	const getResponsiveSphereData = () => {
-		if (window.innerWidth < 768) {
-			return [
-				{
-					...initialSphereData[0],
-					position: [-10, 0, 0],
-					scale: 5,
-				},
-				{
-					...initialSphereData[1],
-					position: [10, 0, 0],
-					scale: 5,
-				},
-			];
-		}
-		return initialSphereData;
-	};
-
-	useEffect(() => {
-		setSphereData(getResponsiveSphereData());
-
-		const handleResize = () => {
-			setSphereData(getResponsiveSphereData());
-		};
-		window.addEventListener("resize", handleResize);
-
-		return () => window.removeEventListener("resize", handleResize);
-	}, []);
-
 	return (
 		<>
 			<ambientLight intensity={0.9} />
