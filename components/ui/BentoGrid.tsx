@@ -52,7 +52,7 @@ export const BentoGridItem = ({
 	const rightLists = ["NodeJS", "Angular", "NextJS"];
 
 	const [copied, setCopied] = useState(false);
-	const lottieRef = useRef(null);
+	const lottieRef = useRef<any>(null);
 
 	const defaultOptions = {
 		loop: false,
