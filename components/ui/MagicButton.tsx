@@ -2,8 +2,8 @@ import React from "react";
 
 interface MagicButtonProps {
 	title: string;
-	icon: React.ReactNode;
-	position: "left" | "right";
+	icon?: React.ReactNode;
+	position?: "left" | "right";
 	href?: string;
 	target?: string;
 	download?: boolean | string;

@@ -1,116 +1,79 @@
-// import { Button } from "./ui/MovingBorders";
-// import React from "react";
-// import { workExperience } from "@/data";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger } from "./ui/AnimatedModal";
 
-// const Experience = () => {
-// 	return (
-// 		<div className="py-20 w-full" id="experience">
-// 			<h1 className="heading">
-// 				Mi <span className="text-purple">experiencia</span>
-// 			</h1>
-
-// 			<div className="w-9/12 mx-auto mt-12 grid grid-cols-1 gap-10 p-12">
-// 				{workExperience.map((card) => (
-// 					<Button
-// 						key={card.id}
-// 						duration={Math.floor(Math.random() * 10000) + 10000}
-// 						borderRadius="1.75rem"
-// 						style={{
-// 							background: "rgb(4,7,29)",
-// 							backgroundColor: "linear-gradient(90deg, rgba(4,7,29,1) 0%, rgba(12,14,35,1) 100%)",
-// 							borderRadius: `calc(1.75rem* 0.96)`,
-// 						}}
-// 						className="flex-1 text-black dark:text-white border-neutral-200 dark:border-slate-800">
-// 						<div className="flex lg:flex-row flex-col lg:items-center p-3 py-6 md:p-5 lg:p-10 gap-2">
-// 							<img src={card.thumbnail} alt={card.thumbnail} className="lg:w-32 md:w-20 w-16" />
-// 							<div className="lg:ms-5">
-// 								<h1 className="text-start text-xl md:text-2xl font-bold">{card.title}</h1>
-// 								<p className="text-start text-white-100 mt-3 font-semibold">{card.desc}</p>
-// 							</div>
-// 						</div>
-// 					</Button>
-// 				))}
-// 			</div>
-// 		</div>
-// 	);
-// };
-
-// export default Experience;
-
-"use client";
-
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-
-import { Document, Page, pdfjs } from "react-pdf";
-import React, { useEffect, useState } from "react";
-
-import { AiOutlineDownload } from "react-icons/ai";
+import { Button } from "./ui/MovingBorders";
 import MagicButton from "./ui/MagicButton";
+import React from "react";
+import { workExperience } from "@/data";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-	"pdfjs-dist/build/pdf.worker.min.mjs",
-	import.meta.url
-).toString();
-
-const Experience: React.FC = () => {
-	const [width, setWidth] = useState<number>(window.innerWidth);
-	const [scale, setScale] = useState<number>(1);
-	const [height, setHeight] = useState<number>(1300);
-
+const Experience = () => {
 	const pdf = "/ManuelGonzálezGarcíaCV.pdf";
 
-	useEffect(() => {
-		const handleResize = () => {
-			const newWidth = window.innerWidth;
-			setWidth(newWidth);
-
-			if (newWidth > 1500) {
-				setScale(1.8);
-				setHeight(1300);
-			} else if (newWidth > 1000) {
-				setScale(1.3);
-				setHeight(1000);
-			} else if (newWidth > 800) {
-				setScale(1);
-				setHeight(700);
-			} else if (newWidth > 700) {
-				setScale(0.8);
-				setHeight(600);
-			} else if (newWidth > 400) {
-				setScale(0.6);
-				setHeight(400);
-			} else {
-				setScale(0.5);
-				setHeight(300);
-			}
-		};
-
-		window.addEventListener("resize", handleResize);
-		handleResize();
-		return () => window.removeEventListener("resize", handleResize);
-	}, []);
-
 	return (
-		<div className="flex flex-col items-center min-h-screen relative mt-20 py-20 w-full" id="cv">
+		<div className="py-20 w-full" id="experience">
 			<h1 className="heading">
-				Mi <span className="text-purple">CV</span>
+				Mi <span className="text-purple">experiencia</span>
 			</h1>
-			<div className="flex justify-center w-full overflow-hidden my-8" style={{ height }}>
-				<Document file={pdf} loading={<div className="text-lg my-8">Cargando PDF...</div>}>
-					<Page pageNumber={1} scale={scale} />
-				</Document>
-			</div>
 
-			<MagicButton
-				href={pdf}
-				target="_blank"
-				download
-				title="Descargar CV"
-				icon={<AiOutlineDownload />}
-				position="left"
-			/>
+			<div className="w-full md:w-9/12 mx-auto mt-12 grid grid-cols-1 gap-10 p-12">
+				{workExperience.map((card) => (
+					<Button
+						key={card.id}
+						duration={Math.floor(Math.random() * 10000) + 10000}
+						borderRadius="1.75rem"
+						style={{
+							background: "rgb(4,7,29)",
+							backgroundColor: "linear-gradient(90deg, rgba(4,7,29,1) 0%, rgba(12,14,35,1) 100%)",
+							borderRadius: `calc(1.75rem* 0.96)`,
+						}}
+						className="flex-1 text-black dark:text-white border-neutral-200 dark:border-slate-800">
+						<div className="flex lg:flex-row flex-col lg:items-center p-3 py-6 md:p-5 lg:p-10 gap-2">
+							<img src={card.thumbnail} alt={card.thumbnail} className="lg:w-32 md:w-20 w-16" />
+							<div className="lg:ms-5">
+								<h1 className="text-start text-xl md:text-2xl font-bold">{card.title}</h1>
+								<p className="text-start text-white-100 mt-3 font-semibold">{card.desc}</p>
+							</div>
+						</div>
+					</Button>
+				))}
+			</div>
+			<CvModal pdfUrl={pdf} />
 		</div>
 	);
+
+	function CvModal({ pdfUrl }: { pdfUrl: string }) {
+		return (
+			<div className="pb-20 flex items-center justify-center">
+				<Modal>
+					<ModalTrigger>
+						<MagicButton otherClasses="!text-xl" title="Ver CV" />
+					</ModalTrigger>
+
+					<ModalBody className="w-1/2">
+						<ModalContent>
+							<h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-4">
+								Mi CV
+							</h4>
+							<div className="w-full h-[500px] overflow-hidden rounded-md border border-gray-300">
+								<iframe
+									src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+									className="w-full h-full"
+									title="CV"
+									frameBorder="0"></iframe>
+							</div>
+						</ModalContent>
+						<ModalFooter className="gap-4">
+							<a
+								href={pdfUrl}
+								download
+								className="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-md border border-black">
+								Descargar CV
+							</a>
+						</ModalFooter>
+					</ModalBody>
+				</Modal>
+			</div>
+		);
+	}
 };
 
 export default Experience;
