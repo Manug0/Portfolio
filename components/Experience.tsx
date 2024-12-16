@@ -42,10 +42,17 @@ const Experience = () => {
 
 	function CvModal({ pdfUrl }: { pdfUrl: string }) {
 		return (
-			<div className="pb-20 flex items-center justify-center">
+			<div id="cv" className="py-20 flex flex-col items-center justify-center">
+				<h1 className="heading">
+					Mi <span className="text-purple">CV</span>
+				</h1>
 				<Modal>
 					<ModalTrigger>
-						<MagicButton otherClasses="!text-xl" title="Ver CV" />
+						<MagicButton
+							otherClasses="!text-xl md:!text-3xl !p-2 md:!p-8 !bg-slate-950/70"
+							width="w-[200px] md:w-[400px] h-12 md:!h-20 !mt-10"
+							title="Ver CV"
+						/>
 					</ModalTrigger>
 
 					<ModalBody className="w-1/2">
