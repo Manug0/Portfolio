@@ -1,8 +1,18 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 import { FaLocationArrow } from "react-icons/fa6";
 import MagicButton from "./ui/MagicButton";
 import { socialMedia } from "@/data";
 
 const Footer = () => {
+	const [year, setYear] = useState("");
+
+	useEffect(() => {
+		setYear(String(new Date().getFullYear()));
+	}, []);
+
 	return (
 		<footer className="w-full relative pb-10 " id="contact">
 			<div className="w-full left-0 bottom-0 absolute min-h-96">
@@ -11,7 +21,7 @@ const Footer = () => {
 
 			<div className="flex mt-16 md:flex-row flex-col justify-between items-center">
 				<p className="md:text-base text-sm md:font-normal font-light">
-					Copyright © {new Date().getFullYear()} Manuel González
+					Copyright © {year} Manuel González
 				</p>
 
 				<div className="flex items-center md:gap-3 gap-6 mt-6">
