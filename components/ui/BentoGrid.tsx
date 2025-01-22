@@ -4,12 +4,18 @@ import { useRef, useState } from "react";
 
 import { BackgroundGradientAnimation } from "./GradientBg";
 import { IoCopyOutline } from "react-icons/io5";
-import Lottie from "react-lottie";
 import MagicButton from "./MagicButton";
-import TechSpheresCanvas from "../spheres/TechSpheresCanvas";
 import animationData from "@/data/confetti.json";
 import { cn } from "@/lib/utils";
-import { div } from "framer-motion/client";
+import dynamic from "next/dynamic";
+
+const Lottie = dynamic(() => import("react-lottie"), {
+	ssr: false,
+});
+
+const TechSpheresCanvas = dynamic(() => import("../spheres/TechSpheresCanvas"), {
+	ssr: false,
+});
 
 export const BentoGrid = ({
 	className,
@@ -54,7 +60,16 @@ export const BentoGridItem = ({
 	const [copied, setCopied] = useState(false);
 	const lottieRef = useRef<any>(null);
 
-	const defaultOptions = {
+	type LottieOptions = {
+		loop: boolean;
+		autoplay: boolean;
+		animationData: any;
+		rendererSettings: {
+			preserveAspectRatio: string;
+		};
+	};
+
+	const defaultOptions: LottieOptions = {
 		loop: false,
 		autoplay: false,
 		animationData: animationData,
