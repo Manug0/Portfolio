@@ -9,22 +9,23 @@ export const navItems = [
 export const gridItems = [
 	{
 		id: 1,
-		title: "Priorizo la colaboración con el cliente, promoviendo una comunicación abierta",
+		title:
+			"Obsesionado con aprender y aplicar: de economía a desarrollo web, y ahora dominando el ecosistema Salesforce.",
 		description: "",
 		className: "lg:col-span-3 md:col-span-6 md:row-span-4 lg:min-h-[60vh]",
 		imgClassName: "w-full h-full",
 		titleClassName: "justify-end",
-		img: "/b1.svg",
+		img: "/b1.png",
 		spareImg: "",
 	},
 	{
 		id: 2,
-		title: "MERN Stack Developer",
+		title: "FullStack y Salesforce Developer",
 		description: "",
 		className: "lg:col-span-2 md:col-span-3 md:row-span-2",
 		imgClassName: "absolute right-0 bottom-0 w-48 md:w-72",
 		titleClassName: "justify-start",
-		img: "/b5.svg",
+		img: "/b8.png",
 		spareImg: "",
 	},
 	{
@@ -39,7 +40,7 @@ export const gridItems = [
 	},
 	{
 		id: 4,
-		title: "Entusiasta de la tecnología con una pasión por el desarrollo",
+		title: "Entusiasta de las finanzas con una pasión por el desarrollo",
 		description: "",
 		className: "lg:col-span-2 md:col-span-3 md:row-span-1",
 		imgClassName: "",
@@ -104,6 +105,13 @@ export const workExperience = [
 		desc: "Varios proyectos para negocios de particulares",
 		className: "md:col-span-2",
 		thumbnail: "/exp4.svg",
+	},
+	{
+		id: 2,
+		title: "Salesforce developer Junior - Telefónica",
+		desc: "Desarrollo de componentes Lightning, integración con APIs y creación de flujos automatizados.",
+		className: "md:col-span-2",
+		thumbnail: "/salesforce.svg",
 	},
 ];
 

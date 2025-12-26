@@ -1,6 +1,5 @@
 import { FaLocationArrow } from "react-icons/fa6";
 import MagicButton from "./ui/MagicButton";
-import React from "react";
 import { Spotlight } from "./ui/Spotlight";
 import { TextGenerateEffect } from "./ui/TextGenerateEffect";
 
@@ -23,17 +22,18 @@ const Hero = () => {
 			</div>
 			<div className="flex justify-center relative my-20 z-10">
 				<div className="max-w-[89vw] md:max-w-2xl lg:max-w-[60vw] flex flex-col items-center justify-center">
-					<p className="uppercase tracking-widest text-xs text-center text-blue-100 max-w-80">
-						Experiencias web dinámicas
+					<p className="uppercase tracking-widest text-xs text-center text-blue-100 max-w-96">
+						Web Development • Salesforce Solutions
 					</p>
 
 					<TextGenerateEffect
-						words="Transformando ideas en experiencias digitales"
+						words="Del código al negocio: soluciones que marcan la diferencia"
 						className="text-center text-[40px] md:text-5xl lg:text-6xl"
 					/>
 
 					<p className="text-center md:tracking-wider mb-4 text-sm md:text-lg lg:text-2xl">
-						Hola! Soy Manu, un desarollador Fullstack junior.
+						Hola! Soy Manu, Fullstack y Salesforce developer con enfoque en crear tecnología que
+						resuelve problemas reales.
 					</p>
 
 					<a href="#about">

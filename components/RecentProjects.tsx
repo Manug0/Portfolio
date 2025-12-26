@@ -11,11 +11,14 @@ const RecentProjects = () => {
 				Algunos de mis <span className="text-purple">proyectos</span>
 			</h1>
 			<div className="flex flex-wrap items-center justify-center p-4 gap-x-24 gap-y-8 mt-10">
-				{projects.map((item) => (
+				{projects.map((item, index) => (
 					<div
 						className="sm:h-[41rem] h-[32rem] lg:min-h-[32.5rem] flex items-center justify-center sm:w-[570px] w-[80vw]"
 						key={item.id}>
-						<PinContainer title={item.link} href={item.link} target="_blank">
+						<PinContainer
+							title={item.link}
+							href={index === 0 ? item.link : undefined}
+							target={index === 0 ? "_blank" : undefined}>
 							<div className="relative flex items-center justify-center sm:w-[570px] w-[80vw] overflow-hidden sm:h-[40vh] lg:h-[30vh] mb-10">
 								<div
 									className="relative w-full h-full overflow-hidden lg:rounded-3xl"
@@ -52,10 +55,12 @@ const RecentProjects = () => {
 									))}
 								</div>
 
-								<div className="flex justify-center items-center">
-									<p className="flex lg:text-xl md:text-xs text-sm text-purple">Visitar página</p>
-									<FaLocationArrow className="ms-3" color="#CBACF9" />
-								</div>
+								{index === 0 && (
+									<div className="flex justify-center items-center">
+										<p className="flex lg:text-xl md:text-xs text-sm text-purple">Visitar página</p>
+										<FaLocationArrow className="ms-3" color="#CBACF9" />
+									</div>
+								)}
 							</div>
 						</PinContainer>
 					</div>

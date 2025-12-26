@@ -5,6 +5,6 @@ Este es el repositorio de mi portfolio web, donde muestro mi experiencia, proyec
 ## Tecnologías Utilizadas
 
 - **Frontend**: Next.js y TypeScript
-- **Visualizaciones y Efectos**: Aceternity UI y Three.js junto con Tailwind para componentes y diseño
+- **Visualizaciones y Efectos**: Aceternity UI junto con Tailwind para componentes y diseño
 - **Integración de PDF**: react-pdf para mostrar archivos PDF en el sitio
 - **Formulario de contacto integrado**: email.js para poder correos electrónicos desde la página

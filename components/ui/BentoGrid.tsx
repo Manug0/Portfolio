@@ -11,7 +11,7 @@ import dynamic from "next/dynamic";
 
 const Lottie = dynamic(() => import("react-lottie"), {
 	ssr: false,
-});
+}) as any;
 
 const TechSpheresCanvas = dynamic(() => import("../spheres/TechSpheresCanvas"), {
 	ssr: false,
@@ -54,7 +54,7 @@ export const BentoGridItem = ({
 	titleClassName?: string;
 	spareImg?: string;
 }) => {
-	const leftLists = ["ReactJS", "Express", "Typescript"];
+	const leftLists = ["ReactJS", "Apx", "Typescript"];
 	const rightLists = ["NodeJS", "Angular", "NextJS"];
 
 	const [copied, setCopied] = useState(false);
@@ -83,9 +83,6 @@ export const BentoGridItem = ({
 			const text = "mgongar12@gmail.com";
 			navigator.clipboard.writeText(text);
 			setCopied(true);
-			if (lottieRef.current) {
-				lottieRef.current.play();
-			}
 			setTimeout(() => setCopied(false), 3000);
 		}
 	};
@@ -163,13 +160,7 @@ export const BentoGridItem = ({
 					{id === 6 && (
 						<div className="mt-5 relative m-auto">
 							<div className={`absolute -bottom-5 -right-[100px] `}>
-								<Lottie
-									isStopped={!copied}
-									ref={lottieRef}
-									options={defaultOptions}
-									height={200}
-									width={400}
-								/>
+								<Lottie isStopped={!copied} options={defaultOptions} height={200} width={400} />
 							</div>
 
 							<MagicButton

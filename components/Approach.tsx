@@ -9,26 +9,22 @@ const Approach = () => {
 	return (
 		<section className="w-full py-20">
 			<h1 className="heading">
-				Mi <span className="text-purple">método</span>
+				Enfoque <span className="text-purple">técnico</span>
 			</h1>
 			<div className="my-20 flex flex-col lg:flex-row items-center justify-center w-full gap-4">
 				<Card
-					title="Planificación y Estrategia"
+					title="Entendimiento funcional y técnico"
 					icon={<AceternityIcon order="Fase 1" />}
-					des="Colaboraremos para trazar los objetivos de su sitio web, tu público objetivo 
-          y las funciones clave. Discutiremos aspectos como la estructura del sitio 
-          navegación y requisitos de contenido.">
+					des="Comprendo los procesos de negocio y los requisitos funcionales para transformarlos en soluciones técnicas dentro del ecosistema Salesforce.">
 					<CanvasRevealEffect
 						animationSpeed={5.1}
 						containerClassName="bg-emerald-900 rounded-3xl overflow-hidden"
 					/>
 				</Card>
 				<Card
-					title="Desarrollo y Actualización de progreso"
+					title="Desarrollo orientado a calidad"
 					icon={<AceternityIcon order="Fase 2" />}
-					des="Una vez acordado el plan, pongo en marcha mi lista de reproducción de lofi y me sumerjo en
-          el cdigo. Desde los bocetos iniciales hasta el código pulido, te mantengo informado
-          cada paso del camino.">
+					des="Desarrollo funcionalidades con Apex, Lightning Web Components y Flows, aplicando buenas prácticas, código mantenible y estándares de la plataforma.">
 					<CanvasRevealEffect
 						animationSpeed={3}
 						containerClassName="bg-pink-900 rounded-3xl overflow-hidden"
@@ -40,11 +36,9 @@ const Approach = () => {
 					/>
 				</Card>
 				<Card
-					title="Desarrollo y Lanzamiento"
+					title="Automatización y mejora continua"
 					icon={<AceternityIcon order="Fase 3" />}
-					des="Aquí es donde ocurre la magia. Basado en el diseño aprobado, 
-          traduciré todo en código funcional, construyendo tu sitio web
-          desde cero.">
+					des="Optimizo procesos mediante automatizaciones, realizo pruebas en entornos controlados y colaboro en despliegues y mejoras continuas.">
 					<CanvasRevealEffect
 						animationSpeed={3}
 						containerClassName="bg-sky-600 rounded-3xl overflow-hidden"

@@ -1,9 +1,6 @@
 "use client";
 
-import { Decal, Float } from "@react-three/drei";
-
-import { TextureLoader } from "three";
-import { useLoader } from "@react-three/fiber";
+import { useEffect, useRef } from "react";
 
 interface TechSphereProps {
 	position: [number, number, number];
@@ -12,15 +9,51 @@ interface TechSphereProps {
 }
 
 export default function TechSphere({ position, scale, textureUrl }: TechSphereProps) {
-	const decal = useLoader(TextureLoader, textureUrl);
+	const sphereRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (!sphereRef.current) return;
+
+		let animationFrameId: number;
+		let startTime = Date.now();
+
+		const animate = () => {
+			const elapsed = (Date.now() - startTime) / 1000;
+
+			// Solo flotación vertical y horizontal suave
+			const floatY = Math.sin(elapsed * 1.5) * 15;
+			const floatX = Math.cos(elapsed * 1.5 * 0.5) * 8;
+
+			if (sphereRef.current) {
+				sphereRef.current.style.transform = `
+					translate(
+						${position[0] * 50 + floatX}px,
+						${position[1] * -50 + floatY}px
+					)
+					scale(${scale})
+				`;
+			}
+
+			animationFrameId = requestAnimationFrame(animate);
+		};
+
+		animate();
+
+		return () => {
+			cancelAnimationFrame(animationFrameId);
+		};
+	}, [position, scale]);
 
 	return (
-		<Float speed={1.75} rotationIntensity={1} floatIntensity={2} position={position}>
-			<mesh castShadow receiveShadow scale={scale}>
-				<icosahedronGeometry args={[1, 1]} />
-				<meshStandardMaterial color="white" polygonOffset polygonOffsetFactor={-5} flatShading />
-				<Decal position={[0, 0, 1]} rotation={[2 * Math.PI, 0, 6.25]} scale={1} map={decal} />
-			</mesh>
-		</Float>
+		<div
+			ref={sphereRef}
+			className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+			style={{
+				width: "150px",
+				height: "150px",
+				transition: "transform 0.1s ease-out",
+			}}>
+			<img src={textureUrl} alt="" className="w-full h-full object-contain" />
+		</div>
 	);
 }
