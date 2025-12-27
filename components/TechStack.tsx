@@ -10,12 +10,11 @@ import {
 
 import { FaJsSquare } from "react-icons/fa";
 import { FaSalesforce } from "react-icons/fa6";
-import { LiaSalesforce } from "react-icons/lia";
 import React from "react";
 
 const TechnologyStack: React.FC = () => {
 	return (
-		<div className="py-20" id="tech-stack">
+		<div className="py-10 sm:py-5" id="tech-stack">
 			<h1 className="heading">
 				Mi <span className="text-purple">stack tecnológico</span>
 			</h1>

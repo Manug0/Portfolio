@@ -37,11 +37,11 @@ const Experience = () => {
 	}, []);
 
 	return (
-		<div className="py-20 w-full" id="experience">
+		<div className="lg:mt-36 lg:mb-20 w-full" id="experience">
 			<h1 className="heading">
 				Mi <span className="text-purple">experiencia</span>
 			</h1>
-			<div className="w-full md:w-9/12 mx-auto mt-12 grid grid-cols-1 gap-10 p-12">
+			<div className="w-full md:w-9/12 mx-auto mt-12 grid grid-cols-1 gap-10 p-6 lg:p-12">
 				{workExperience.map((card) => (
 					<Button
 						key={card.id}
@@ -53,10 +53,12 @@ const Experience = () => {
 							borderRadius: `calc(1.75rem* 0.96)`,
 						}}>
 						<div className="flex items-center">
-							<img src={card.thumbnail} alt={card.thumbnail} className="lg:w-32 md:w-20 w-16" />
+							<img src={card.thumbnail} alt={card.thumbnail} className="lg:w-32 md:w-20 w-10 m-4" />
 							<div className="lg:ms-5">
-								<h1 className="text-start text-xl md:text-2xl font-bold">{card.title}</h1>
-								<p className="text-start text-white-100 mt-3 font-semibold">{card.desc}</p>
+								<h1 className="text-start text-md md:text-2xl mt-3 font-bold">{card.title}</h1>
+								<p className="text-start text-white-100 text-xs md:text-sm my-3 font-semibold">
+									{card.desc}
+								</p>
 							</div>
 						</div>
 					</Button>
