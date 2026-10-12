@@ -3,29 +3,32 @@
 import { AnimatePresence, motion } from "framer-motion";
 
 import { CanvasRevealEffect } from "./ui/CanvasRevealEffect";
-import React from "react";
+import { type ProfileId, getProfile } from "@/data/profiles";
 
-const Approach = () => {
+import React from "react";
+import { SectionHeading } from "./ui/SectionHeading";
+
+const Approach = ({ profileId }: { profileId: ProfileId }) => {
+	const { approach } = getProfile(profileId);
+	const [phase1, phase2, phase3] = approach.phases;
+
 	return (
 		<section className="w-full py-20" aria-labelledby="approach-title">
-			<p className="eyebrow mb-3">Cómo trabajo</p>
-			<h2 id="approach-title" className="heading">
-				Mi <span className="text-purple">enfoque</span>
-			</h2>
+			<SectionHeading id="approach-title" {...approach} />
 			<div className="mt-14 mb-10 flex flex-col lg:flex-row items-stretch justify-center w-full gap-6 lg:gap-4">
 				<Card
-					title="Entender el negocio"
+					title={phase1.title}
 					icon={<AceternityIcon order="Fase 1" />}
-					des="Recojo requisitos funcionales y técnicos junto a los equipos de negocio y tecnología, y los traduzco en una solución clara y bien documentada.">
+					des={phase1.des}>
 					<CanvasRevealEffect
 						animationSpeed={5.1}
 						containerClassName="bg-emerald-900 rounded-3xl overflow-hidden"
 					/>
 				</Card>
 				<Card
-					title="Diseñar datos e integraciones"
+					title={phase2.title}
 					icon={<AceternityIcon order="Fase 2" />}
-					des="Defino modelos de datos, esquemas e integraciones entre sistemas (APIs REST y SOAP) pensando en la escalabilidad y en el mantenimiento a largo plazo.">
+					des={phase2.des}>
 					<CanvasRevealEffect
 						animationSpeed={3}
 						containerClassName="bg-pink-900 rounded-3xl overflow-hidden"
@@ -37,9 +40,9 @@ const Approach = () => {
 					/>
 				</Card>
 				<Card
-					title="Construir, automatizar y desplegar"
+					title={phase3.title}
 					icon={<AceternityIcon order="Fase 3" />}
-					des="Desarrollo con Apex, LWC, Flows y Agentforce, automatizo procesos y cuido la calidad con pruebas, control de cambios y CI/CD (Salesforce CLI y Jenkins).">
+					des={phase3.des}>
 					<CanvasRevealEffect
 						animationSpeed={3}
 						containerClassName="bg-sky-600 rounded-3xl overflow-hidden"
@@ -115,11 +118,11 @@ const AceternityIcon = ({ order }: { order: string }) => {
 			<span className="relative inline-flex overflow-hidden rounded-full p-[1px]">
 				<span
 					className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite]
-         bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]"
+         bg-[conic-gradient(from_90deg_at_50%_50%,rgb(var(--brand-soft-rgb))_0%,rgb(var(--brand-deep-rgb))_50%,rgb(var(--brand-soft-rgb))_100%)]"
 				/>
 				<span
 					className="inline-flex h-full w-full items-center 
-        justify-center rounded-full bg-slate-950 px-5 py-2 text-purple backdrop-blur-3xl font-bold text-xl lg:text-2xl">
+        justify-center rounded-full bg-slate-950 px-5 py-2 text-brand backdrop-blur-3xl font-bold text-xl lg:text-2xl">
 					{order}
 				</span>
 			</span>

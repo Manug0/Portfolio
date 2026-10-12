@@ -1,18 +1,23 @@
+import { type ProfileId, getProfile } from "@/data/profiles";
+
 import { FaLocationArrow } from "react-icons/fa6";
 import { HiOutlineDocumentArrowDown } from "react-icons/hi2";
 import Image from "next/image";
 import MagicButton from "./ui/MagicButton";
+import { ProfileToggle } from "./ui/ProfileToggle";
 import { Spotlight } from "./ui/Spotlight";
 import { TextGenerateEffect } from "./ui/TextGenerateEffect";
-import { heroStats, siteConfig } from "@/data";
+import { siteConfig } from "@/data";
 
-const Hero = () => {
+const Hero = ({ profileId }: { profileId: ProfileId }) => {
+	const profile = getProfile(profileId);
+
 	return (
 		<section className="pb-16 pt-32 sm:pt-36" aria-labelledby="hero-title">
 			<div aria-hidden>
 				<Spotlight className="-top-40 -left-10 md:-left-32 md:-top-20 h-screen" fill="white" />
-				<Spotlight className="h-[80vh] w-[50vw] top-10 left-full" fill="purple" />
-				<Spotlight className="left-80 top-28 h-[80vh] w-[50vw]" fill="blue" />
+				<Spotlight className="h-[80vh] w-[50vw] top-10 left-full" fill="rgb(var(--brand-rgb))" />
+				<Spotlight className="left-80 top-28 h-[80vh] w-[50vw]" fill="rgb(var(--brand-deep-rgb))" />
 			</div>
 
 			<div
@@ -26,7 +31,7 @@ const Hero = () => {
 					<div className="relative mb-6">
 						<div
 							aria-hidden
-							className="absolute -inset-1 rounded-full bg-[conic-gradient(from_90deg,#E2CBFF,#393BB2,#CBACF9,#E2CBFF)] animate-[spin_6s_linear_infinite] blur-[2px]"
+							className="absolute -inset-1 rounded-full bg-[conic-gradient(from_90deg,rgb(var(--brand-soft-rgb)),rgb(var(--brand-deep-rgb)),rgb(var(--brand-rgb)),rgb(var(--brand-soft-rgb)))] animate-[spin_6s_linear_infinite] blur-[2px]"
 						/>
 						<Image
 							src="/profile.png"
@@ -42,47 +47,50 @@ const Hero = () => {
 						</span>
 					</div>
 
-					<p className="eyebrow max-w-xl">
-						{siteConfig.role} • {siteConfig.tagline}
+					<ProfileToggle current={profileId} className="mb-6" />
+
+					<p className="eyebrow max-w-2xl">
+						{profile.role} • {profile.tagline}
 					</p>
 
 					<h1 id="hero-title" className="sr-only">
-						{siteConfig.name}, {siteConfig.role}
+						{siteConfig.name}, {profile.role}
 					</h1>
 					<TextGenerateEffect
-						words="Del negocio al código: soluciones Salesforce que escalan"
+						key={profileId}
+						words={profile.headline}
+						highlightFrom={profile.highlightFrom}
 						className="text-center text-[38px] md:text-5xl lg:text-6xl"
 					/>
 
 					<p className="text-center text-white-100 md:tracking-wide mb-8 text-sm md:text-lg lg:text-xl max-w-2xl text-balance">
-						¡Hola! Soy <span className="text-white font-semibold">Manu</span>, desarrollador Salesforce
-						con experiencia en Apex, LWC, Flows e integraciones, y en proyectos de datos para banca. Mi
-						base en economía me ayuda a convertir necesidades de negocio en soluciones técnicas claras.
+						¡Hola! Soy <span className="text-white font-semibold">{siteConfig.shortName}</span>,{" "}
+						{profile.intro}
 					</p>
 
 					<div className="flex flex-col sm:flex-row items-center gap-4">
 						<MagicButton
-							title="Ver mi experiencia"
+							title={profile.primaryCta.title}
 							icon={<FaLocationArrow />}
 							position="right"
-							href="#experience"
+							href={profile.primaryCta.href}
 						/>
 						<a
-							href={siteConfig.cv}
+							href={profile.cv.file}
 							download
-							className="inline-flex h-12 items-center gap-2 rounded-lg border border-white/[0.15] bg-white/[0.03] px-7 text-sm font-medium text-white transition hover:border-purple/60 hover:bg-purple/10">
+							className="inline-flex h-12 items-center gap-2 rounded-lg border border-white/[0.15] bg-white/[0.03] px-7 text-sm font-medium text-white transition hover:border-brand/60 hover:bg-brand/10">
 							<HiOutlineDocumentArrowDown className="size-5" />
-							Descargar CV
+							Descargar {profile.cv.label}
 						</a>
 					</div>
 
 					<dl className="mt-12 grid w-full grid-cols-3 gap-2 sm:gap-6 max-w-2xl">
-						{heroStats.map((stat) => (
+						{profile.stats.map((stat) => (
 							<div
 								key={stat.label}
 								className="flex flex-col-reverse rounded-2xl border border-white/[0.08] bg-white/[0.02] px-2 py-4 text-center backdrop-blur-sm">
 								<dt className="mt-1 text-[11px] sm:text-xs text-white-200 leading-tight">{stat.label}</dt>
-								<dd className="text-base sm:text-2xl font-bold text-purple">{stat.value}</dd>
+								<dd className="text-base sm:text-2xl font-bold text-brand">{stat.value}</dd>
 							</div>
 						))}
 					</dl>

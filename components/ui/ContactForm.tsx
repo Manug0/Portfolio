@@ -23,7 +23,7 @@ type FormData = {
 
 type Status = "idle" | "sending" | "success" | "error";
 
-export function ContactForm() {
+export function ContactForm({ placeholder }: { placeholder: string }) {
 	const [status, setStatus] = useState<Status>("idle");
 
 	const {
@@ -103,7 +103,7 @@ export function ContactForm() {
 					<Textarea
 						id="message"
 						rows={5}
-						placeholder="Cuéntame sobre el puesto o el proyecto…"
+						placeholder={placeholder}
 						aria-invalid={errors.message ? "true" : "false"}
 						aria-describedby={errors.message ? "message-error" : undefined}
 						{...register("message", {
@@ -120,7 +120,7 @@ export function ContactForm() {
 				</div>
 
 				<button
-					className="relative group/btn w-full h-11 rounded-md font-medium text-white border border-purple/30 bg-gradient-to-br from-[#161A31] to-[#10132E] transition hover:border-purple/70 disabled:opacity-60 disabled:cursor-wait"
+					className="relative group/btn w-full h-11 rounded-md font-medium text-white border border-brand/30 bg-gradient-to-br from-[#161A31] to-[#10132E] transition hover:border-brand/70 disabled:opacity-60 disabled:cursor-wait"
 					type="submit"
 					disabled={status === "sending"}>
 					{status === "sending" ? "Enviando…" : "Enviar mensaje →"}
@@ -146,7 +146,7 @@ export function ContactForm() {
 
 const BottomGradient = () => (
 	<>
-		<span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-purple to-transparent" />
+		<span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-brand to-transparent" />
 		<span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
 	</>
 );

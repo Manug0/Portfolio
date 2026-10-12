@@ -31,7 +31,7 @@ export const FloatingTokens = () => {
 					key={token.key}
 					src={token.src}
 					alt=""
-					className={`absolute drop-shadow-[0_10px_30px_rgba(203,172,249,0.25)] ${token.className}`}
+					className={`absolute drop-shadow-[0_10px_30px_rgb(var(--brand-rgb)/0.25)] ${token.className}`}
 					{...float(token.delay)}
 				/>
 			))}

@@ -1,15 +1,24 @@
 "use client";
 
 import { IoCheckmarkDone, IoCopyOutline } from "react-icons/io5";
-import { bentoStack, siteConfig } from "@/data";
+import { type ProfileId, getProfile } from "@/data/profiles";
 
 import { BackgroundGradientAnimation } from "./GradientBg";
 import { FloatingTokens } from "./FloatingTokens";
 import MagicButton from "./MagicButton";
+import { MarketChart } from "./MarketChart";
 import { cn } from "@/lib/utils";
 import confetti from "canvas-confetti";
 import { motion } from "framer-motion";
+import { siteConfig } from "@/data";
 import { useState } from "react";
+
+// canvas-confetti necesita hex: leemos el color de marca del perfil activo desde las variables CSS
+const brandHex = (element: HTMLElement, variable: string) => {
+	const rgb = getComputedStyle(element).getPropertyValue(variable).trim().split(/\s+/).map(Number);
+	if (rgb.length !== 3 || rgb.some(Number.isNaN)) return "#ffffff";
+	return "#" + rgb.map((c) => c.toString(16).padStart(2, "0")).join("");
+};
 
 export const BentoGrid = ({
 	className,
@@ -39,6 +48,7 @@ export const BentoGridItem = ({
 	titleClassName,
 	spareImg,
 	index = 0,
+	profileId,
 }: {
 	className?: string;
 	id: number;
@@ -49,11 +59,15 @@ export const BentoGridItem = ({
 	titleClassName?: string;
 	spareImg?: string;
 	index?: number;
+	profileId: ProfileId;
 }) => {
+	const { bentoStack, gradient } = getProfile(profileId);
 	const [copied, setCopied] = useState(false);
 
 	const handleCopy = async (event: React.MouseEvent<HTMLButtonElement>) => {
 		if (copied) return;
+		// Guardamos el botón antes del await: React anula currentTarget al terminar el evento
+		const button = event.currentTarget;
 		try {
 			await navigator.clipboard.writeText(siteConfig.email);
 		} catch {
@@ -62,7 +76,7 @@ export const BentoGridItem = ({
 			return;
 		}
 		setCopied(true);
-		const { left, top, width, height } = event.currentTarget.getBoundingClientRect();
+		const { left, top, width, height } = button.getBoundingClientRect();
 		confetti({
 			particleCount: 120,
 			spread: 80,
@@ -71,7 +85,9 @@ export const BentoGridItem = ({
 				x: (left + width / 2) / window.innerWidth,
 				y: (top + height / 2) / window.innerHeight,
 			},
-			colors: ["#CBACF9", "#E2CBFF", "#393BB2", "#ffffff"],
+			colors: ["--brand-rgb", "--brand-soft-rgb", "--brand-deep-rgb"]
+				.map((variable) => brandHex(button, variable))
+				.concat("#ffffff"),
 			disableForReducedMotion: true,
 		});
 		setTimeout(() => setCopied(false), 3000);
@@ -84,7 +100,7 @@ export const BentoGridItem = ({
 			viewport={{ once: true, amount: 0.2 }}
 			transition={{ duration: 0.5, delay: index * 0.06 }}
 			className={cn(
-				"glass-card relative overflow-hidden group/bento hover:border-white/[0.2] hover:shadow-[0_0_40px_-10px_rgba(203,172,249,0.35)] transition-[border-color,box-shadow] duration-300 flex flex-col",
+				"glass-card relative overflow-hidden group/bento hover:border-white/[0.2] hover:shadow-[0_0_40px_-10px_rgb(var(--brand-rgb)/0.35)] transition-[border-color,box-shadow] duration-300 flex flex-col",
 				id === 5 && "min-h-[22rem] md:min-h-0",
 				id === 1 && "min-h-[22rem]",
 				className
@@ -97,7 +113,7 @@ export const BentoGridItem = ({
 							src={img}
 							alt=""
 							aria-hidden
-							className={cn(imgClassName, "object-cover object-center")}
+							className={cn(imgClassName, "object-cover object-center", id === 1 && "brand-tint")}
 						/>
 					)}
 				</div>
@@ -119,7 +135,19 @@ export const BentoGridItem = ({
 					</div>
 				)}
 				{id === 5 && <FloatingTokens />}
-				{id === 6 && <BackgroundGradientAnimation />}
+				{id === 2 && !img && <MarketChart />}
+				{id === 6 && (
+					<BackgroundGradientAnimation
+						gradientBackgroundStart={gradient.start}
+						gradientBackgroundEnd={gradient.end}
+						firstColor={gradient.first}
+						secondColor={gradient.second}
+						thirdColor={gradient.third}
+						fourthColor={gradient.fourth}
+						fifthColor={gradient.fifth}
+						pointerColor={gradient.pointer}
+					/>
+				)}
 
 				<div
 					className={cn(
