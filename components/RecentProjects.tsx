@@ -33,6 +33,20 @@ const SolanaCover = () => (
 	</div>
 );
 
+const BrowserFrame = ({ url, children }: { url: string; children: React.ReactNode }) => (
+	<div className="absolute inset-x-[5%] top-[8%] bottom-0 z-10 flex flex-col overflow-hidden rounded-t-xl border border-b-0 border-white/[0.12] bg-[#0B0D24] shadow-[0_-10px_40px_rgba(57,59,178,0.35)]">
+		<div aria-hidden className="flex items-center gap-1.5 border-b border-white/[0.08] px-3 py-2">
+			<span className="size-2 rounded-full bg-red-400/80" />
+			<span className="size-2 rounded-full bg-yellow-400/80" />
+			<span className="size-2 rounded-full bg-emerald-400/80" />
+			<span className="ml-2 flex-1 truncate rounded-md bg-white/[0.06] px-2 py-0.5 text-center text-[10px] text-white-200">
+				{url}
+			</span>
+		</div>
+		<div className="relative flex-1">{children}</div>
+	</div>
+);
+
 const ProjectCard = ({ item }: { item: Project }) => {
 	const host = item.link ? new URL(item.link).host : item.badge;
 
@@ -46,13 +60,15 @@ const ProjectCard = ({ item }: { item: Project }) => {
 				{/* eslint-disable-next-line @next/next/no-img-element */}
 				<img src="/bg.png" alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
 				{item.img ? (
-					<Image
-						src={item.img}
-						alt={`Captura de ${item.title}`}
-						fill
-						sizes="(min-width: 640px) 480px, 78vw"
-						className="z-10 object-cover object-top"
-					/>
+					<BrowserFrame url={host ?? ""}>
+						<Image
+							src={item.img}
+							alt={`Captura de ${item.title}`}
+							fill
+							sizes="(min-width: 640px) 440px, 72vw"
+							className="object-cover object-top transition-transform duration-700 group-hover/pin:scale-[1.03]"
+						/>
+					</BrowserFrame>
 				) : (
 					<SolanaCover />
 				)}
