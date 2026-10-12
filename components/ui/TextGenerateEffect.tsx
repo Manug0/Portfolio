@@ -5,45 +5,36 @@ import { motion, stagger, useAnimate } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 
-export const TextGenerateEffect = ({ words, className }: { words: string; className?: string }) => {
+export const TextGenerateEffect = ({
+	words,
+	className,
+	highlightFrom = 4,
+}: {
+	words: string;
+	className?: string;
+	/** Índice de la palabra a partir de la cual se resalta en morado */
+	highlightFrom?: number;
+}) => {
 	const [scope, animate] = useAnimate();
-	let wordsArray = words.split(" ");
-	useEffect(() => {
-		console.log(wordsArray);
-		animate(
-			"span",
-			{
-				opacity: 1,
-			},
-			{
-				duration: 2,
-				delay: stagger(0.2),
-			}
-		);
-	}, [scope.current]);
+	const wordsArray = words.split(" ");
 
-	const renderWords = () => {
-		return (
-			<motion.div ref={scope}>
-				{wordsArray.map((word, idx) => {
-					return (
-						<motion.span
-							key={word + idx}
-							className={` ${idx > 3 ? "text-purple" : "dark:text-white text-black"} opacity-0`}>
-							{word}{" "}
-						</motion.span>
-					);
-				})}
-			</motion.div>
-		);
-	};
+	useEffect(() => {
+		animate("span", { opacity: 1, filter: "blur(0px)" }, { duration: 1.2, delay: stagger(0.12) });
+	}, [animate]);
 
 	return (
 		<div className={cn("font-bold", className)}>
-			<div className="my-4">
-				<div className=" dark:text-white text-black leading-snug tracking-wide">
-					{renderWords()}
-				</div>
+			<div className="my-4 text-white leading-snug tracking-wide">
+				<motion.div ref={scope}>
+					{wordsArray.map((word, idx) => (
+						<motion.span
+							key={word + idx}
+							style={{ filter: "blur(8px)" }}
+							className={cn("opacity-0", idx >= highlightFrom ? "text-purple" : "text-white")}>
+							{word}{" "}
+						</motion.span>
+					))}
+				</motion.div>
 			</div>
 		</div>
 	);

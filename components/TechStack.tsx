@@ -1,83 +1,73 @@
-import {
-	SiAngular,
-	SiGo,
-	SiNextdotjs,
-	SiReact,
-	SiRust,
-	SiSalesforce,
-	SiSolidity,
-} from "react-icons/si";
+"use client";
 
-import { FaJsSquare } from "react-icons/fa";
-import { FaSalesforce } from "react-icons/fa6";
-import React from "react";
+import { marqueeTech, techStack } from "@/data";
 
-const TechnologyStack: React.FC = () => {
+import { InfiniteMarquee } from "./ui/InfiniteMarquee";
+import { motion } from "framer-motion";
+
+const SpotlightCard = ({ children, index }: { children: React.ReactNode; index: number }) => {
+	// Foco de luz que sigue al cursor dentro de la tarjeta (vía variables CSS, sin re-renders)
+	const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+		const rect = event.currentTarget.getBoundingClientRect();
+		event.currentTarget.style.setProperty("--x", `${event.clientX - rect.left}px`);
+		event.currentTarget.style.setProperty("--y", `${event.clientY - rect.top}px`);
+	};
+
 	return (
-		<div className="py-10 sm:py-5" id="tech-stack">
-			<h1 className="heading">
+		<motion.div
+			initial={{ opacity: 0, y: 30 }}
+			whileInView={{ opacity: 1, y: 0 }}
+			viewport={{ once: true, amount: 0.3 }}
+			transition={{ duration: 0.5, delay: index * 0.1 }}
+			onMouseMove={handleMouseMove}
+			className="glass-card group/spot relative overflow-hidden p-6 md:p-8 transition-colors duration-300 hover:border-purple/40">
+			<div
+				aria-hidden
+				className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover/spot:opacity-100"
+				style={{
+					background:
+						"radial-gradient(350px circle at var(--x, 50%) var(--y, 50%), rgba(203,172,249,0.12), transparent 70%)",
+				}}
+			/>
+			<div className="relative">{children}</div>
+		</motion.div>
+	);
+};
+
+const TechnologyStack = () => {
+	return (
+		<section className="py-20" id="tech-stack" aria-labelledby="stack-title">
+			<p className="eyebrow mb-3">Herramientas</p>
+			<h2 id="stack-title" className="heading">
 				Mi <span className="text-purple">stack tecnológico</span>
-			</h1>
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-20">
-				<div className="flex flex-col items-center p-6 rounded-md shadow-lg bg-purple/10 hover:-translate-y-2 transition-transform duration-300">
-					<h3 className="text-xl md:text-2xl font-semibold mb-4 text-purple-600">Lenguajes</h3>
-					<div className="flex flex-col space-y-3 items-start mt-2">
-						<div className="flex items-center space-x-3">
-							<SiSalesforce size={24} color="#00a1e0" />
-							<span className="text-md font-medium">Apex</span>
-						</div>
-						<div className="flex items-center space-x-3">
-							<FaJsSquare size={24} color="#F7DF1E" />
-							<span className="text-md font-medium">JavaScript</span>
-						</div>
-					</div>
-				</div>
+			</h2>
 
-				<div className="flex flex-col items-center p-6 rounded-md shadow-lg bg-purple/10 hover:-translate-y-2 hover:scale-105 transition-transform duration-300">
-					<h3 className="text-xl md:text-2xl font-semibold mb-4 text-purple-600">
-						Herramientas y Frameworks
-					</h3>
-					<div className="flex items-center space-x-3">
-						<FaSalesforce size={24} color="#00a1e0" />
-						<span className="text-md font-medium">Salesforce</span>
-					</div>
-					<div className="flex flex-col space-y-3 items-start mt-2">
-						<div className="flex items-center space-x-3">
-							<SiReact size={24} color="#61DAFB" />
-							<span className="text-md font-medium">React</span>
-						</div>
-						<div className="flex items-center space-x-3">
-							<SiAngular size={24} color="#DD0031" />
-							<span className="text-md font-medium">Angular</span>
-						</div>
-						<div className="flex items-center space-x-3">
-							<SiNextdotjs size={24} color="#000000" />
-							<span className="text-md font-medium">Next.js</span>
-						</div>
-					</div>
-				</div>
+			<InfiniteMarquee items={marqueeTech} className="mt-12" />
 
-				<div className="flex flex-col items-center p-6 rounded-md shadow-lg bg-purple/10 hover:rotate-3 hover:scale-105 transition-transform duration-300">
-					<h3 className="text-xl md:text-2xl font-semibold mb-4 text-purple-600">
-						Tecnologías a explorar
-					</h3>
-					<div className="flex flex-col space-y-3 items-start mt-2">
-						<div className="flex items-center space-x-3">
-							<SiSolidity size={24} color="#363636" />
-							<span className="text-md font-medium">Solidity</span>
-						</div>
-						<div className="flex items-center space-x-3">
-							<SiGo size={24} color="#00ADD8" />
-							<span className="text-md font-medium">Go</span>
-						</div>
-						<div className="flex items-center space-x-3">
-							<SiRust size={24} color="#000000" />
-							<span className="text-md font-medium">Rust</span>
-						</div>
-					</div>
-				</div>
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-10">
+				{techStack.map((group, index) => (
+					<SpotlightCard key={group.title} index={index}>
+						<h3 className="text-2xl font-bold text-white">
+							<span className="text-purple">{String(index + 1).padStart(2, "0")}.</span> {group.title}
+						</h3>
+						<p className="mt-2 text-sm text-white-200">{group.description}</p>
+						<ul className="mt-6 flex flex-wrap gap-2">
+							{group.items.map((item) => {
+								const Icon = item.icon;
+								return (
+									<li
+										key={item.name}
+										className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-[#10132E] px-3 py-1.5 text-sm text-white-100 transition-colors hover:border-purple/50 hover:text-white">
+										{Icon && <Icon aria-hidden className="size-4" style={{ color: item.color }} />}
+										{item.name}
+									</li>
+								);
+							})}
+						</ul>
+					</SpotlightCard>
+				))}
 			</div>
-		</div>
+		</section>
 	);
 };
 

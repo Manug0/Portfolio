@@ -1,21 +1,30 @@
 "use client";
 
+import { Input, Textarea } from "./Input";
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import { Input } from "./Input";
 import { Label } from "./Label";
 import { cn } from "@/lib/utils";
-import emailjs from "emailjs-com";
+import emailjs from "@emailjs/browser";
+import { siteConfig } from "@/data";
+
+// Credenciales públicas de EmailJS (la public key está pensada para usarse en el cliente)
+const EMAILJS_SERVICE_ID = "service_190801";
+const EMAILJS_TEMPLATE_ID = "template_b8i6517";
+const EMAILJS_PUBLIC_KEY = "rMN3ao-jFpJxWP7ij";
 
 type FormData = {
 	name: string;
 	email: string;
 	message: string;
+	company: string; // honeypot anti-spam: los humanos no lo ven
 };
 
-export function ContactFormDemo() {
-	const [showConfirmation, setShowConfirmation] = useState(false);
+type Status = "idle" | "sending" | "success" | "error";
+
+export function ContactForm() {
+	const [status, setStatus] = useState<Status>("idle");
 
 	const {
 		register,
@@ -25,102 +34,129 @@ export function ContactFormDemo() {
 	} = useForm<FormData>();
 
 	const onSubmit: SubmitHandler<FormData> = async (data) => {
+		if (data.company) return;
+		setStatus("sending");
 		try {
 			await emailjs.send(
-				"service_190801",
-				"template_b8i6517",
+				EMAILJS_SERVICE_ID,
+				EMAILJS_TEMPLATE_ID,
 				{
 					from_name: data.name,
 					from_email: data.email,
 					message: data.message,
 				},
-				"rMN3ao-jFpJxWP7ij"
+				{ publicKey: EMAILJS_PUBLIC_KEY }
 			);
-			setShowConfirmation(true);
+			setStatus("success");
 			reset();
-			setTimeout(() => setShowConfirmation(false), 5000);
+			setTimeout(() => setStatus("idle"), 6000);
 		} catch (error) {
-			console.error("Failed to send message:", error);
+			console.error("Error al enviar el mensaje:", error);
+			setStatus("error");
 		}
 	};
 
 	return (
-		<div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input z-10 relative bg-white dark:bg-black">
-			<h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">Contacta conmigo</h2>
-			<p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-				Por favor, completa los campos para enviarme un mensaje.
-			</p>
+		<div className="glass-card w-full p-6 md:p-8 shadow-input relative z-10">
+			<h3 className="font-bold text-xl text-white">Escríbeme</h3>
+			<p className="text-white-200 text-sm mt-2">Te responderé lo antes posible.</p>
 
-			<form className="my-8" onSubmit={handleSubmit(onSubmit)}>
-				<LabelInputContainer className="mb-4">
-					<Label htmlFor="name">Tu nombre</Label>
-					<Input
-						id="name"
-						{...register("name", { required: "El nombre es requerido" })}
-						placeholder="Juan Pérez"
-						type="text"
-					/>
-					{errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
-				</LabelInputContainer>
+			<form className="mt-8" onSubmit={handleSubmit(onSubmit)} noValidate>
+				<div className="flex flex-col md:flex-row gap-4 mb-4">
+					<Field className="flex-1">
+						<Label htmlFor="name">Nombre</Label>
+						<Input
+							id="name"
+							autoComplete="name"
+							placeholder="Tu nombre"
+							type="text"
+							aria-invalid={errors.name ? "true" : "false"}
+							aria-describedby={errors.name ? "name-error" : undefined}
+							{...register("name", { required: "El nombre es obligatorio" })}
+						/>
+						{errors.name && <ErrorMessage id="name-error">{errors.name.message}</ErrorMessage>}
+					</Field>
 
-				<LabelInputContainer className="mb-4">
-					<Label htmlFor="email">Tu email</Label>
-					<Input
-						id="email"
-						{...register("email", {
-							required: "El email es requerido",
-							pattern: {
-								value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-								message: "El email no es válido",
-							},
-						})}
-						placeholder="correo@ejemplo.com"
-						type="email"
-					/>
-					{errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
-				</LabelInputContainer>
+					<Field className="flex-1">
+						<Label htmlFor="email">Email</Label>
+						<Input
+							id="email"
+							autoComplete="email"
+							placeholder="correo@ejemplo.com"
+							type="email"
+							aria-invalid={errors.email ? "true" : "false"}
+							aria-describedby={errors.email ? "email-error" : undefined}
+							{...register("email", {
+								required: "El email es obligatorio",
+								pattern: {
+									value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+									message: "El email no es válido",
+								},
+							})}
+						/>
+						{errors.email && <ErrorMessage id="email-error">{errors.email.message}</ErrorMessage>}
+					</Field>
+				</div>
 
-				<LabelInputContainer className="mb-4">
+				<Field className="mb-6">
 					<Label htmlFor="message">Mensaje</Label>
-					<Input
+					<Textarea
 						id="message"
-						{...register("message", { required: "El mensaje es requerido" })}
-						placeholder="Escribe tu mensaje aquí..."
-						className="resize-none h-32"
+						rows={5}
+						placeholder="Cuéntame sobre el puesto o el proyecto…"
+						aria-invalid={errors.message ? "true" : "false"}
+						aria-describedby={errors.message ? "message-error" : undefined}
+						{...register("message", {
+							required: "El mensaje es obligatorio",
+							minLength: { value: 10, message: "Cuéntame un poco más (mínimo 10 caracteres)" },
+						})}
 					/>
-					{errors.message && <ErrorMessage>{errors.message.message}</ErrorMessage>}
-				</LabelInputContainer>
+					{errors.message && <ErrorMessage id="message-error">{errors.message.message}</ErrorMessage>}
+				</Field>
+
+				<div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+					<label htmlFor="company">Empresa</label>
+					<input id="company" tabIndex={-1} autoComplete="off" {...register("company")} />
+				</div>
 
 				<button
-					className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-					type="submit">
-					Enviar mensaje &rarr;
+					className="relative group/btn w-full h-11 rounded-md font-medium text-white border border-purple/30 bg-gradient-to-br from-[#161A31] to-[#10132E] transition hover:border-purple/70 disabled:opacity-60 disabled:cursor-wait"
+					type="submit"
+					disabled={status === "sending"}>
+					{status === "sending" ? "Enviando…" : "Enviar mensaje →"}
 					<BottomGradient />
 				</button>
 			</form>
 
-			{showConfirmation && (
-				<div className="text-green-600 text-center mt-4">¡Mensaje enviado con éxito!</div>
-			)}
+			<div aria-live="polite" className="min-h-6 mt-4 text-center text-sm">
+				{status === "success" && <p className="text-emerald-400">¡Mensaje enviado! Gracias por escribirme.</p>}
+				{status === "error" && (
+					<p className="text-red-400">
+						No se pudo enviar el mensaje. Escríbeme directamente a{" "}
+						<a className="underline hover:text-red-300" href={`mailto:${siteConfig.email}`}>
+							{siteConfig.email}
+						</a>
+						.
+					</p>
+				)}
+			</div>
 		</div>
 	);
 }
 
 const BottomGradient = () => (
 	<>
-		<span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
+		<span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-purple to-transparent" />
 		<span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
 	</>
 );
 
-const LabelInputContainer = ({
-	children,
-	className,
-}: {
-	children: React.ReactNode;
-	className?: string;
-}) => <div className={cn("flex flex-col space-y-2 w-full", className)}>{children}</div>;
+const Field = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+	<div className={cn("flex flex-col space-y-2 w-full", className)}>{children}</div>
+);
 
-const ErrorMessage = ({ children }: { children: React.ReactNode }) => (
-	<p className="text-red-500 text-sm mt-1">{children}</p>
+const ErrorMessage = ({ children, id }: { children: React.ReactNode; id: string }) => (
+	<p id={id} role="alert" className="text-red-400 text-sm">
+		{children}
+	</p>
 );
