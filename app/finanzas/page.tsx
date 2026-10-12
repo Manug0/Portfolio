@@ -1,0 +1,9 @@
+import Portfolio from "@/components/Portfolio";
+import { buildMetadata } from "@/lib/metadata";
+import { finanzas } from "@/data/profiles";
+
+export const metadata = buildMetadata(finanzas);
+
+export default function Finanzas() {
+	return <Portfolio profileId="finanzas" />;
+}

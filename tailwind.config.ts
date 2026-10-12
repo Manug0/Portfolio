@@ -43,7 +43,12 @@ const config = {
 				blue: {
 					"100": "#E4ECFF",
 				},
-				purple: "#CBACF9",
+				// Color de marca: cambia según el perfil (tech / finanzas) vía variables CSS
+				brand: {
+					DEFAULT: "rgb(var(--brand-rgb) / <alpha-value>)",
+					soft: "rgb(var(--brand-soft-rgb) / <alpha-value>)",
+					deep: "rgb(var(--brand-deep-rgb) / <alpha-value>)",
+				},
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",
 				ring: "hsl(var(--ring))",

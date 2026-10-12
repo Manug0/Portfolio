@@ -35,6 +35,20 @@
 		--radius: 0.5rem;
 	}
 
+	/* Paleta de marca por perfil (ver data/profiles.ts) */
+	:root,
+	[data-profile="tech"] {
+		--brand-rgb: 203 172 249;
+		--brand-soft-rgb: 226 203 255;
+		--brand-deep-rgb: 57 59 178;
+	}
+	:root:has([data-profile="finanzas"]),
+	[data-profile="finanzas"] {
+		--brand-rgb: 233 196 106;
+		--brand-soft-rgb: 248 231 190;
+		--brand-deep-rgb: 150 105 25;
+	}
+
 	.dark {
 		--background: 240 10% 3.9%;
 		--foreground: 0 0% 98%;
@@ -77,10 +91,10 @@
 		@apply bg-black-100 text-white;
 	}
 	::selection {
-		@apply bg-purple/40 text-white;
+		@apply bg-brand/40 text-white;
 	}
 	:focus-visible {
-		@apply outline-none ring-2 ring-purple/70 ring-offset-2 ring-offset-black-100;
+		@apply outline-none ring-2 ring-brand/70 ring-offset-2 ring-offset-black-100;
 	}
 }
 
@@ -90,6 +104,10 @@
 	}
 	.eyebrow {
 		@apply uppercase tracking-[0.25em] text-xs text-center text-blue-100/70 text-balance;
+	}
+	/* Las ilustraciones son moradas: en el perfil de finanzas se viran hacia el dorado de marca */
+	[data-profile="finanzas"] .brand-tint {
+		filter: hue-rotate(150deg) saturate(0.8);
 	}
 	.glass-card {
 		@apply rounded-3xl border border-white/[0.1] bg-[linear-gradient(90deg,rgba(4,7,29,1)_0%,rgba(12,14,35,1)_100%)];
@@ -105,13 +123,13 @@
 }
 
 ::-webkit-scrollbar-thumb {
-	background: #393bb2;
+	background: rgb(var(--brand-deep-rgb));
 	border-radius: 5px;
 	border: 2px solid #000319;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: #cbacf9;
+	background: rgb(var(--brand-rgb));
 }
 
 @media (prefers-reduced-motion: reduce) {

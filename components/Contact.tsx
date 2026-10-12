@@ -1,7 +1,10 @@
 import { HiOutlineEnvelope, HiOutlineMapPin } from "react-icons/hi2";
 import { SiGithub, SiLinkedin } from "react-icons/si";
 
+import { type ProfileId, getProfile } from "@/data/profiles";
+
 import { ContactForm } from "./ui/ContactForm";
+import { SectionHeading } from "./ui/SectionHeading";
 import { siteConfig } from "@/data";
 
 const contactLinks = [
@@ -32,18 +35,14 @@ const contactLinks = [
 	},
 ];
 
-const Contact = () => {
+const Contact = ({ profileId }: { profileId: ProfileId }) => {
+	const { contact } = getProfile(profileId);
+
 	return (
 		<section id="contact" className="relative py-20" aria-labelledby="contact-title">
 			<div className="flex flex-col items-center">
-				<p className="eyebrow mb-3">Contacto</p>
-				<h2 id="contact-title" className="heading lg:max-w-[45vw]">
-					¿Construimos algo <span className="text-purple">juntos?</span>
-				</h2>
-				<p className="text-white-200 mt-6 mb-12 text-center max-w-xl text-balance">
-					Estoy abierto a nuevas oportunidades en el ecosistema Salesforce, especialmente en
-					integraciones y agentes de IA con Agentforce. Escríbeme y hablamos.
-				</p>
+				<SectionHeading id="contact-title" {...contact} />
+				<p className="text-white-200 mt-6 mb-12 text-center max-w-xl text-balance">{contact.text}</p>
 			</div>
 
 			<div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
@@ -52,7 +51,7 @@ const Contact = () => {
 						const Icon = item.icon;
 						const inner = (
 							<>
-								<span className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-purple/30 bg-purple/10 text-purple transition group-hover/link:bg-purple group-hover/link:text-black-100">
+								<span className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-brand/30 bg-brand/10 text-brand transition group-hover/link:bg-brand group-hover/link:text-black-100">
 									<Icon aria-hidden className="size-5" />
 								</span>
 								<span className="min-w-0">
@@ -70,7 +69,7 @@ const Contact = () => {
 										href={item.href}
 										target={item.external ? "_blank" : undefined}
 										rel={item.external ? "noopener noreferrer" : undefined}
-										className="glass-card group/link flex items-center gap-4 p-4 transition-colors hover:border-purple/40">
+										className="glass-card group/link flex items-center gap-4 p-4 transition-colors hover:border-brand/40">
 										{inner}
 									</a>
 								) : (
@@ -82,7 +81,7 @@ const Contact = () => {
 				</ul>
 
 				<div className="lg:col-span-3">
-					<ContactForm />
+					<ContactForm placeholder={contact.cta} />
 				</div>
 			</div>
 		</section>

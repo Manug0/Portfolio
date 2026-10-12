@@ -1,6 +1,8 @@
-import { navItems, siteConfig, socialMedia } from "@/data";
+import { type ProfileId, getProfile } from "@/data/profiles";
+import { siteConfig, socialMedia } from "@/data";
 
-const Footer = () => {
+const Footer = ({ profileId }: { profileId: ProfileId }) => {
+	const { nav } = getProfile(profileId);
 	const year = new Date().getFullYear();
 
 	return (
@@ -16,7 +18,7 @@ const Footer = () => {
 				</p>
 
 				<nav aria-label="Pie de página" className="hidden lg:flex gap-6 text-sm text-white-200">
-					{navItems.map((item) => (
+					{nav.map((item) => (
 						<a key={item.link} href={item.link} className="hover:text-white transition-colors">
 							{item.name}
 						</a>
@@ -31,7 +33,7 @@ const Footer = () => {
 							rel="noopener noreferrer"
 							key={info.id}
 							aria-label={info.name}
-							className="w-10 h-10 flex justify-center items-center backdrop-blur-lg saturate-150 bg-black-200 rounded-lg border border-black-300 transition hover:border-purple/60 hover:-translate-y-0.5">
+							className="w-10 h-10 flex justify-center items-center backdrop-blur-lg saturate-150 bg-black-200 rounded-lg border border-black-300 transition hover:border-brand/60 hover:-translate-y-0.5">
 							{/* eslint-disable-next-line @next/next/no-img-element */}
 							<img src={info.img} alt="" width={20} height={20} />
 						</a>

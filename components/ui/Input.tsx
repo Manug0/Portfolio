@@ -11,7 +11,7 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 const fieldClasses = `flex w-full border-none bg-[#10132E] text-white shadow-input rounded-md px-3 py-2 text-sm
-	placeholder:text-neutral-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple/60
+	placeholder:text-neutral-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60
 	disabled:cursor-not-allowed disabled:opacity-50 shadow-[0px_0px_1px_1px_var(--neutral-700)]
 	group-hover/input:shadow-none transition duration-300 aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-red-500/60`;
 
@@ -34,7 +34,7 @@ const GlowWrapper = ({ children }: { children: React.ReactNode }) => {
 				background: useMotionTemplate`
 					radial-gradient(
 						${visible ? radius + "px" : "0px"} circle at ${mouseX}px ${mouseY}px,
-						var(--purple),
+						rgb(var(--brand-rgb)),
 						transparent 80%
 					)
 				`,
