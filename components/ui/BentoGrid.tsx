@@ -1,21 +1,15 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { IoCheckmarkDone, IoCopyOutline } from "react-icons/io5";
+import { bentoStack, siteConfig } from "@/data";
 
 import { BackgroundGradientAnimation } from "./GradientBg";
-import { IoCopyOutline } from "react-icons/io5";
+import { FloatingTokens } from "./FloatingTokens";
 import MagicButton from "./MagicButton";
-import animationData from "@/data/confetti.json";
 import { cn } from "@/lib/utils";
-import dynamic from "next/dynamic";
-
-const Lottie = dynamic(() => import("react-lottie"), {
-	ssr: false,
-}) as any;
-
-const TechSpheresCanvas = dynamic(() => import("../spheres/TechSpheresCanvas"), {
-	ssr: false,
-});
+import confetti from "canvas-confetti";
+import { motion } from "framer-motion";
+import { useState } from "react";
 
 export const BentoGrid = ({
 	className,
@@ -27,7 +21,7 @@ export const BentoGrid = ({
 	return (
 		<div
 			className={cn(
-				"grid grid-cols-1 md:grid-cols-6 lg:grid-cols-5 md:grid-row-7 gap-4 lg:gap-8 mx-auto",
+				"grid grid-cols-1 md:grid-cols-6 lg:grid-cols-5 gap-4 lg:gap-8 mx-auto",
 				className
 			)}>
 			{children}
@@ -44,6 +38,7 @@ export const BentoGridItem = ({
 	imgClassName,
 	titleClassName,
 	spareImg,
+	index = 0,
 }: {
 	className?: string;
 	id: number;
@@ -53,102 +48,119 @@ export const BentoGridItem = ({
 	imgClassName?: string;
 	titleClassName?: string;
 	spareImg?: string;
+	index?: number;
 }) => {
-	const leftLists = ["ReactJS", "Apx", "Typescript"];
-	const rightLists = ["NodeJS", "Angular", "NextJS"];
-
 	const [copied, setCopied] = useState(false);
-	const lottieRef = useRef<any>(null);
 
-	type LottieOptions = {
-		loop: boolean;
-		autoplay: boolean;
-		animationData: any;
-		rendererSettings: {
-			preserveAspectRatio: string;
-		};
-	};
-
-	const defaultOptions: LottieOptions = {
-		loop: false,
-		autoplay: false,
-		animationData: animationData,
-		rendererSettings: {
-			preserveAspectRatio: "xMidYMid slice",
-		},
-	};
-
-	const handleCopy = () => {
-		if (!copied) {
-			const text = "mgongar12@gmail.com";
-			navigator.clipboard.writeText(text);
-			setCopied(true);
-			setTimeout(() => setCopied(false), 3000);
+	const handleCopy = async (event: React.MouseEvent<HTMLButtonElement>) => {
+		if (copied) return;
+		try {
+			await navigator.clipboard.writeText(siteConfig.email);
+		} catch {
+			// Sin acceso al portapapeles (p. ej. HTTP o permisos): abrimos el cliente de correo
+			window.location.href = `mailto:${siteConfig.email}`;
+			return;
 		}
+		setCopied(true);
+		const { left, top, width, height } = event.currentTarget.getBoundingClientRect();
+		confetti({
+			particleCount: 120,
+			spread: 80,
+			startVelocity: 35,
+			origin: {
+				x: (left + width / 2) / window.innerWidth,
+				y: (top + height / 2) / window.innerHeight,
+			},
+			colors: ["#CBACF9", "#E2CBFF", "#393BB2", "#ffffff"],
+			disableForReducedMotion: true,
+		});
+		setTimeout(() => setCopied(false), 3000);
 	};
 
 	return (
-		<div
+		<motion.div
+			initial={{ opacity: 0, y: 30 }}
+			whileInView={{ opacity: 1, y: 0 }}
+			viewport={{ once: true, amount: 0.2 }}
+			transition={{ duration: 0.5, delay: index * 0.06 }}
 			className={cn(
-				"row-span-1 relative overflow-hidden rounded-3xl border border-white/[0.1] group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-none justify-between flex flex-col space-y-4",
+				"glass-card relative overflow-hidden group/bento hover:border-white/[0.2] hover:shadow-[0_0_40px_-10px_rgba(203,172,249,0.35)] transition-[border-color,box-shadow] duration-300 flex flex-col",
+				id === 5 && "min-h-[22rem] md:min-h-0",
+				id === 1 && "min-h-[22rem]",
 				className
-			)}
-			style={{
-				background: "rgb(4,7,29)",
-				backgroundColor: "linear-gradient(90deg, rgba(4,7,29,1) 0%, rgba(12,14,35,1) 100%)",
-			}}>
-			<div className={`${id === 6 && "flex justify-center"} h-full`}>
+			)}>
+			<div className={cn("h-full", id === 6 && "flex justify-center")}>
 				<div className="w-full h-full absolute">
 					{img && (
-						<img src={img} alt={img} className={cn(imgClassName, "object-cover object-center ")} />
-					)}
-				</div>
-				<div className={`absolute right-0 -bottom-5 ${id === 5 && "w-full opacity-80"} `}>
-					{spareImg && (
+						// eslint-disable-next-line @next/next/no-img-element
 						<img
-							src={spareImg}
-							alt={spareImg}
-							className="object-cover object-center w-full h-full"
+							src={img}
+							alt=""
+							aria-hidden
+							className={cn(imgClassName, "object-cover object-center")}
 						/>
 					)}
 				</div>
+				{id === 1 && (
+					<div
+						aria-hidden
+						className="absolute inset-0 bg-gradient-to-t from-black-100 via-black-100/60 to-transparent"
+					/>
+				)}
+				{spareImg && (
+					<div className={cn("absolute right-0 -bottom-5", id === 5 && "w-full opacity-80")}>
+						{/* eslint-disable-next-line @next/next/no-img-element */}
+						<img
+							src={spareImg}
+							alt=""
+							aria-hidden
+							className="object-cover object-center w-full h-full"
+						/>
+					</div>
+				)}
+				{id === 5 && <FloatingTokens />}
 				{id === 6 && <BackgroundGradientAnimation />}
 
 				<div
 					className={cn(
 						titleClassName,
-						"group-hover/bento:translate-x-2 transition duration-200 relative md:h-full min-h-40 flex flex-col px-5 p-5 lg:p-10"
+						"group-hover/bento:translate-x-2 transition duration-200 relative md:h-full min-h-40 flex flex-col p-5 lg:p-10",
+						id === 1 && "h-full"
 					)}>
-					<div className="font-sans font-extralight md:max-w-32 md:text-xs lg:text-base text-sm text-[#C1C2D3] z-10">
-						{description}
-					</div>
-					<div
-						className={`font-sans text-lg lg:text-3xl font-bold z-10 ${
-							id === 3 || id === 2 ? "max-w-64" : "max-w-96"
-						} ${id === 6 ? "w-60" : ""}`}>
+					{description && (
+						<p className="font-sans font-light md:max-w-40 lg:max-w-60 text-xs lg:text-sm text-[#C1C2D3] z-10 mb-1">
+							{description}
+						</p>
+					)}
+					<h3
+						className={cn(
+							"font-sans text-lg lg:text-3xl font-bold z-10 text-balance",
+							id === 3 || id === 2 ? "max-w-48 lg:max-w-64" : "max-w-96",
+							id === 6 && "w-60"
+						)}>
 						{title}
-					</div>
+					</h3>
 
 					{id === 3 && (
-						<div className="flex gap-1 lg:gap-5 w-fit absolute -right-3 lg:-right-2">
-							<div className="flex flex-col gap-3 md:gap-3 lg:gap-8">
-								{leftLists.map((item, i) => (
+						<div
+							aria-label="Tecnologías principales"
+							className="flex gap-1 lg:gap-5 w-fit absolute -right-3 lg:-right-2">
+							<div className="flex flex-col gap-3 lg:gap-8">
+								{bentoStack.left.map((item) => (
 									<span
-										key={i}
-										className="lg:py-4 lg:px-3 py-2 px-3 text-xs lg:text-base opacity-50 
-                    lg:opacity-100 rounded-lg text-center bg-[#10132E]">
+										key={item}
+										className="lg:py-4 lg:px-3 py-2 px-3 text-xs lg:text-base opacity-60 lg:opacity-100 rounded-lg text-center bg-[#10132E]">
 										{item}
 									</span>
 								))}
-								<span className="lg:py-4 lg:px-3 py-4 px-3  rounded-lg text-center bg-[#10132E]"></span>
+								<span aria-hidden className="lg:py-4 lg:px-3 py-4 px-3 rounded-lg text-center bg-[#10132E]" />
 							</div>
-							<div className="flex flex-col gap-3 md:gap-3 lg:gap-8">
-								<span className="lg:py-4 lg:px-3 py-4 px-3  rounded-lg text-center bg-[#10132E]"></span>
-								{rightLists.map((item, i) => (
+							<div className="flex flex-col gap-3 lg:gap-8">
+								<span aria-hidden className="lg:py-4 lg:px-3 py-4 px-3 rounded-lg text-center bg-[#10132E]" />
+								{bentoStack.right.map((item) => (
 									<span
-										key={i}
-										className="lg:py-4 lg:px-3 py-2 px-3 text-xs lg:text-base opacity-50 
-                    lg:opacity-100 rounded-lg text-center bg-[#10132E]">
+										key={item}
+										className="lg:py-4 lg:px-3 py-2 px-3 text-xs lg:text-base opacity-60 lg:opacity-100 rounded-lg text-center bg-[#10132E]">
 										{item}
 									</span>
 								))}
@@ -156,25 +168,22 @@ export const BentoGridItem = ({
 						</div>
 					)}
 
-					{id === 5 && <TechSpheresCanvas />}
 					{id === 6 && (
 						<div className="mt-5 relative m-auto">
-							<div className={`absolute -bottom-5 -right-[100px] `}>
-								<Lottie isStopped={!copied} options={defaultOptions} height={200} width={400} />
-							</div>
-
 							<MagicButton
-								title={copied ? "Email copiado!" : "Copia mi dirección de correo"}
-								icon={<IoCopyOutline />}
+								title={copied ? "¡Email copiado!" : "Copia mi email"}
+								icon={copied ? <IoCheckmarkDone /> : <IoCopyOutline />}
 								position="left"
 								handleClick={handleCopy}
-								width="w-68"
 								otherClasses="!bg-[#161A31] text-xs md:text-sm whitespace-nowrap"
 							/>
+							<span className="sr-only" aria-live="polite">
+								{copied ? "Email copiado al portapapeles" : ""}
+							</span>
 						</div>
 					)}
 				</div>
 			</div>
-		</div>
+		</motion.div>
 	);
 };

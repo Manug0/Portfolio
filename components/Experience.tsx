@@ -1,94 +1,60 @@
-"use client";
+import { Timeline, type TimelineEntry } from "./ui/Timeline";
 
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import "react-pdf/dist/esm/Page/TextLayer.css";
-
-import { Document, Page, pdfjs } from "react-pdf";
-import { useEffect, useState } from "react";
-
-import { Button } from "./ui/MovingBorders";
 import { workExperience } from "@/data";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-	"pdfjs-dist/build/pdf.worker.min.mjs",
-	import.meta.url
-).toString();
-
-const LoadingMessage = "Cargando CV...";
-
 const Experience = () => {
-	const [pdfWidth, setPdfWidth] = useState(770);
-	const pdf = "/Manuel_Gonzalez_Garcia_CV.pdf";
-	const pageNumber = 1;
-
-	useEffect(() => {
-		const updatePdfWidth = () => {
-			const containerWidth = Math.min(window.innerWidth - 64, 770);
-			setPdfWidth(containerWidth);
-		};
-
-		updatePdfWidth();
-
-		window.addEventListener("resize", updatePdfWidth);
-
-		return () => {
-			window.removeEventListener("resize", updatePdfWidth);
-		};
-	}, []);
+	const entries: TimelineEntry[] = workExperience.map((job) => ({
+		key: job.id,
+		marker: (
+			<div>
+				<p className="text-xl md:text-3xl font-bold text-white">{job.company}</p>
+				<p className="mt-1 text-sm md:text-base text-white-200 tabular-nums">{job.period}</p>
+			</div>
+		),
+		content: (
+			<article className="glass-card p-6 md:p-8 transition-colors duration-300 hover:border-purple/40">
+				<header className="flex flex-wrap items-center gap-3">
+					<h3 className="text-lg md:text-2xl font-bold text-white">{job.role}</h3>
+					{job.current && (
+						<span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-0.5 text-xs text-emerald-300">
+							<span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+							Actualidad
+						</span>
+					)}
+				</header>
+				<p className="mt-2 text-sm md:text-base text-white-100">{job.summary}</p>
+				<ul className="mt-5 space-y-2.5">
+					{job.bullets.map((bullet) => (
+						<li key={bullet} className="flex gap-3 text-sm md:text-[15px] text-white-200 leading-relaxed">
+							<span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-purple" />
+							{bullet}
+						</li>
+					))}
+				</ul>
+				<ul className="mt-6 flex flex-wrap gap-2" aria-label="Tecnologías y áreas">
+					{job.tags.map((tag) => (
+						<li
+							key={tag}
+							className="rounded-full border border-white/[0.1] bg-[#10132E] px-3 py-1 text-xs text-white-100">
+							{tag}
+						</li>
+					))}
+				</ul>
+			</article>
+		),
+	}));
 
 	return (
-		<div className="lg:mt-36 lg:mb-20 w-full" id="experience">
-			<h1 className="heading">
+		<section className="pt-20 lg:pt-32 w-full" id="experience" aria-labelledby="experience-title">
+			<p className="eyebrow mb-3">Trayectoria</p>
+			<h2 id="experience-title" className="heading">
 				Mi <span className="text-purple">experiencia</span>
-			</h1>
-			<div className="w-full md:w-9/12 mx-auto mt-12 grid grid-cols-1 gap-10 p-6 lg:p-12">
-				{workExperience.map((card) => (
-					<Button
-						key={card.id}
-						duration={Math.floor(Math.random() * 10000) + 10000}
-						borderRadius="1.75rem"
-						style={{
-							background: "rgb(4,7,29)",
-							backgroundColor: "linear-gradient(90deg, rgba(4,7,29,1) 0%, rgba(12,14,35,1) 100%)",
-							borderRadius: `calc(1.75rem* 0.96)`,
-						}}>
-						<div className="flex items-center">
-							<img src={card.thumbnail} alt={card.thumbnail} className="lg:w-32 md:w-20 w-10 m-4" />
-							<div className="lg:ms-5">
-								<h1 className="text-start text-md md:text-2xl mt-3 font-bold">{card.title}</h1>
-								<p className="text-start text-white-100 text-xs md:text-sm my-3 font-semibold">
-									{card.desc}
-								</p>
-							</div>
-						</div>
-					</Button>
-				))}
-			</div>
-
-			<div id="cv" className="py-20 flex flex-col items-center justify-center px-4">
-				<h1 className="heading">
-					Mi <span className="text-purple">CV</span>
-				</h1>
-				<div className="w-full mt-12 max-w-3xl mx-auto">
-					<div className="w-full min-h-[500px] overflow-hidden rounded-md border border-gray-300 bg-white">
-						<Document file={pdf} loading={LoadingMessage}>
-							<Page
-								pageNumber={pageNumber}
-								width={pdfWidth}
-								renderTextLayer={false}
-								renderAnnotationLayer={false}
-							/>
-						</Document>
-					</div>
-					<a
-						href={pdf}
-						download
-						className="block w-fit mx-auto px-6 py-2 bg-black text-white dark:bg-white dark:text-black rounded-md border border-black mt-4 hover:bg-opacity-80 transition-all">
-						Descargar CV
-					</a>
-				</div>
-			</div>
-		</div>
+			</h2>
+			<p className="mx-auto mt-4 max-w-xl text-center text-white-200 text-sm md:text-base">
+				De la economía y los mercados al desarrollo en Salesforce y la arquitectura de datos.
+			</p>
+			<Timeline data={entries} />
+		</section>
 	);
 };
 

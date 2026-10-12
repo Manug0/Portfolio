@@ -4,12 +4,13 @@ import { gridItems } from "@/data";
 
 const Grid = () => {
 	return (
-		<section id="about">
+		<section id="about" aria-label="Sobre mí">
 			<BentoGrid className="w-full py-20">
 				{gridItems.map((item, i) => (
 					<BentoGridItem
 						id={item.id}
-						key={i}
+						key={item.id}
+						index={i}
 						title={item.title}
 						description={item.description}
 						className={item.className}

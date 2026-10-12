@@ -1,37 +1,39 @@
-"use client";
-
-import { useEffect, useState } from "react";
-
-import { FaLocationArrow } from "react-icons/fa6";
-import MagicButton from "./ui/MagicButton";
-import { socialMedia } from "@/data";
+import { navItems, siteConfig, socialMedia } from "@/data";
 
 const Footer = () => {
-	const [year, setYear] = useState("");
-
-	useEffect(() => {
-		setYear(String(new Date().getFullYear()));
-	}, []);
+	const year = new Date().getFullYear();
 
 	return (
-		<footer className="w-full relative pb-10 " id="contact">
-			<div className="w-full left-0 bottom-0 absolute min-h-96">
-				<img src="/footer-grid.svg" alt="grid" className="w-full h-[800px]  opacity-80 " />
+		<footer className="w-full relative pt-10 pb-10 overflow-hidden">
+			<div aria-hidden className="w-full left-0 -bottom-72 absolute min-h-96 pointer-events-none">
+				{/* eslint-disable-next-line @next/next/no-img-element */}
+				<img src="/footer-grid.svg" alt="" className="w-full h-[800px] opacity-50" />
 			</div>
 
-			<div className="flex mt-16 md:flex-row flex-col justify-between items-center">
-				<p className="md:text-base text-sm md:font-normal font-light">
-					Copyright © {year} Manuel González
+			<div className="relative border-t border-white/[0.08] pt-10 flex md:flex-row flex-col justify-between items-center gap-6">
+				<p className="md:text-base text-sm text-white-200">
+					© {year} {siteConfig.name} · Hecho con Next.js, Tailwind y Framer Motion
 				</p>
 
-				<div className="flex items-center md:gap-3 gap-6 mt-6">
+				<nav aria-label="Pie de página" className="hidden lg:flex gap-6 text-sm text-white-200">
+					{navItems.map((item) => (
+						<a key={item.link} href={item.link} className="hover:text-white transition-colors">
+							{item.name}
+						</a>
+					))}
+				</nav>
+
+				<div className="flex items-center gap-3">
 					{socialMedia.map((info) => (
 						<a
 							href={info.link}
 							target="_blank"
+							rel="noopener noreferrer"
 							key={info.id}
-							className="w-10 h-10 cursor-pointer flex justify-center items-center backdrop-filter backdrop-blur-lg saturate-180 bg-opacity-75 bg-black-200 rounded-lg border border-black-300">
-							<img src={info.img} alt="icons" width={20} height={20} />
+							aria-label={info.name}
+							className="w-10 h-10 flex justify-center items-center backdrop-blur-lg saturate-150 bg-black-200 rounded-lg border border-black-300 transition hover:border-purple/60 hover:-translate-y-0.5">
+							{/* eslint-disable-next-line @next/next/no-img-element */}
+							<img src={info.img} alt="" width={20} height={20} />
 						</a>
 					))}
 				</div>

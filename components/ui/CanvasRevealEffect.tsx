@@ -40,7 +40,7 @@ export const CanvasRevealEffect = ({
 		const cols = Math.ceil(canvas.offsetWidth / totalSize);
 		const rows = Math.ceil(canvas.offsetHeight / totalSize);
 
-		let startTime = Date.now();
+		const startTime = Date.now();
 		let animationFrameId: number;
 
 		const getColor = (index: number) => {

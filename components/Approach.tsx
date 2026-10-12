@@ -7,24 +7,25 @@ import React from "react";
 
 const Approach = () => {
 	return (
-		<section className="w-full py-20">
-			<h1 className="heading">
-				Enfoque <span className="text-purple">técnico</span>
-			</h1>
-			<div className="my-20 flex flex-col lg:flex-row items-center justify-center w-full gap-4">
+		<section className="w-full py-20" aria-labelledby="approach-title">
+			<p className="eyebrow mb-3">Cómo trabajo</p>
+			<h2 id="approach-title" className="heading">
+				Mi <span className="text-purple">enfoque</span>
+			</h2>
+			<div className="mt-14 mb-10 flex flex-col lg:flex-row items-stretch justify-center w-full gap-6 lg:gap-4">
 				<Card
-					title="Entendimiento funcional y técnico"
+					title="Entender el negocio"
 					icon={<AceternityIcon order="Fase 1" />}
-					des="Comprendo los procesos de negocio y los requisitos funcionales para transformarlos en soluciones técnicas dentro del ecosistema Salesforce.">
+					des="Recojo requisitos funcionales y técnicos junto a los equipos de negocio y tecnología, y los traduzco en una solución clara y bien documentada.">
 					<CanvasRevealEffect
 						animationSpeed={5.1}
 						containerClassName="bg-emerald-900 rounded-3xl overflow-hidden"
 					/>
 				</Card>
 				<Card
-					title="Desarrollo orientado a calidad"
+					title="Diseñar datos e integraciones"
 					icon={<AceternityIcon order="Fase 2" />}
-					des="Desarrollo funcionalidades con Apex, Lightning Web Components y Flows, aplicando buenas prácticas, código mantenible y estándares de la plataforma.">
+					des="Defino modelos de datos, esquemas e integraciones entre sistemas (APIs REST y SOAP) pensando en la escalabilidad y en el mantenimiento a largo plazo.">
 					<CanvasRevealEffect
 						animationSpeed={3}
 						containerClassName="bg-pink-900 rounded-3xl overflow-hidden"
@@ -36,9 +37,9 @@ const Approach = () => {
 					/>
 				</Card>
 				<Card
-					title="Automatización y mejora continua"
+					title="Construir, automatizar y desplegar"
 					icon={<AceternityIcon order="Fase 3" />}
-					des="Optimizo procesos mediante automatizaciones, realizo pruebas en entornos controlados y colaboro en despliegues y mejoras continuas.">
+					des="Desarrollo con Apex, LWC, Flows y Agentforce, automatizo procesos y cuido la calidad con pruebas, control de cambios y CI/CD (Salesforce CLI y Jenkins).">
 					<CanvasRevealEffect
 						animationSpeed={3}
 						containerClassName="bg-sky-600 rounded-3xl overflow-hidden"
@@ -65,78 +66,74 @@ const Card = ({
 }) => {
 	const [hovered, setHovered] = React.useState(false);
 	return (
-		<div
+		<article
 			onMouseEnter={() => setHovered(true)}
 			onMouseLeave={() => setHovered(false)}
-			className="border border-black/[0.2] group/canvas-card flex items-center justify-center
-       dark:border-white/[0.2]  max-w-sm w-full mx-auto p-4 relative lg:h-[35rem] rounded-3xl "
-			style={{
-				background: "rgb(4,7,29)",
-				backgroundColor: "linear-gradient(90deg, rgba(4,7,29,1) 0%, rgba(12,14,35,1) 100%)",
-			}}>
-			<Icon className="absolute h-10 w-10 -top-3 -left-3 dark:text-white text-black opacity-30" />
-			<Icon className="absolute h-10 w-10 -bottom-3 -left-3 dark:text-white text-black opacity-30" />
-			<Icon className="absolute h-10 w-10 -top-3 -right-3 dark:text-white text-black opacity-30" />
-			<Icon className="absolute h-10 w-10 -bottom-3 -right-3 dark:text-white text-black opacity-30" />
+			className="glass-card group/canvas-card relative flex items-center justify-center max-w-sm w-full mx-auto p-6 lg:p-4 lg:h-[32rem] !rounded-3xl border-white/[0.2]">
+			<Icon className="absolute h-10 w-10 -top-3 -left-3 text-white opacity-30" />
+			<Icon className="absolute h-10 w-10 -bottom-3 -left-3 text-white opacity-30" />
+			<Icon className="absolute h-10 w-10 -top-3 -right-3 text-white opacity-30" />
+			<Icon className="absolute h-10 w-10 -bottom-3 -right-3 text-white opacity-30" />
 
 			<AnimatePresence>
 				{hovered && (
 					<motion.div
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
-						className="h-full w-full absolute inset-0">
+						exit={{ opacity: 0 }}
+						className="h-full w-full absolute inset-0 hidden lg:block">
 						{children}
 					</motion.div>
 				)}
 			</AnimatePresence>
 
-			<div className="relative z-20 px-10">
+			{/* En móvil/tablet el contenido se muestra siempre; en escritorio se revela al pasar el ratón */}
+			<div className="relative z-20 lg:px-6 flex flex-col items-center">
 				<div
-					className="text-center group-hover/canvas-card:-translate-y-4 absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] 
-        group-hover/canvas-card:opacity-0 transition duration-200 min-w-40 mx-auto flex items-center justify-center">
+					className="mb-4 lg:mb-0 lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2
+					lg:group-hover/canvas-card:-translate-y-4 lg:group-hover/canvas-card:opacity-0 transition duration-200 min-w-40 flex items-center justify-center">
 					{icon}
 				</div>
-				<h2
-					className="dark:text-white text-center text-3xl opacity-0 group-hover/canvas-card:opacity-100
-         relative z-10 text-black mt-4  font-bold group-hover/canvas-card:text-white 
-         group-hover/canvas-card:-translate-y-2 transition duration-200">
+				<h3
+					className="text-center text-2xl lg:text-3xl font-bold text-white lg:opacity-0 lg:group-hover/canvas-card:opacity-100
+					relative z-10 lg:group-hover/canvas-card:-translate-y-2 transition duration-200">
 					{title}
-				</h2>
+				</h3>
 				<p
-					className="text-sm opacity-0 group-hover/canvas-card:opacity-100
-         relative z-10 mt-4 group-hover/canvas-card:text-white text-center
-         group-hover/canvas-card:-translate-y-2 transition duration-200"
-					style={{ color: "#E4ECFF" }}>
+					className="text-sm lg:text-base text-center text-blue-100 mt-4 lg:opacity-0 lg:group-hover/canvas-card:opacity-100
+					relative z-10 lg:group-hover/canvas-card:-translate-y-2 transition duration-200">
 					{des}
 				</p>
 			</div>
-		</div>
+		</article>
 	);
 };
+
 const AceternityIcon = ({ order }: { order: string }) => {
 	return (
 		<div>
-			<button className="relative inline-flex overflow-hidden rounded-full p-[1px] ">
+			<span className="relative inline-flex overflow-hidden rounded-full p-[1px]">
 				<span
 					className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite]
          bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]"
 				/>
 				<span
-					className="inline-flex h-full w-full cursor-pointer items-center 
-        justify-center rounded-full bg-slate-950 px-5 py-2 text-purple backdrop-blur-3xl font-bold text-2xl">
+					className="inline-flex h-full w-full items-center 
+        justify-center rounded-full bg-slate-950 px-5 py-2 text-purple backdrop-blur-3xl font-bold text-xl lg:text-2xl">
 					{order}
 				</span>
-			</button>
+			</span>
 		</div>
 	);
 };
 
-export const Icon = ({ className, ...rest }: any) => {
+export const Icon = ({ className, ...rest }: React.SVGProps<SVGSVGElement>) => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"
 			viewBox="0 0 24 24"
+			aria-hidden
 			strokeWidth="1.5"
 			stroke="currentColor"
 			className={className}

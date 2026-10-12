@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
 import { cn } from "@/lib/utils";
+
+const noopSubscribe = () => () => {};
 
 export const BackgroundGradientAnimation = ({
 	gradientBackgroundStart = "rgb(108, 0, 162)",
@@ -36,59 +38,70 @@ export const BackgroundGradientAnimation = ({
 	containerClassName?: string;
 }) => {
 	const interactiveRef = useRef<HTMLDivElement>(null);
+	const containerRef = useRef<HTMLDivElement>(null);
+	const isSafari = useSyncExternalStore(
+		noopSubscribe,
+		() => /^((?!chrome|android).)*safari/i.test(navigator.userAgent),
+		() => false
+	);
 
-	const [curX, setCurX] = useState(0);
-	const [curY, setCurY] = useState(0);
-	const [tgX, setTgX] = useState(0);
-	const [tgY, setTgY] = useState(0);
+	// Variables CSS en el propio contenedor (no en <body>) para no contaminar el resto de la página
+	const cssVars = {
+		"--gradient-background-start": gradientBackgroundStart,
+		"--gradient-background-end": gradientBackgroundEnd,
+		"--first-color": firstColor,
+		"--second-color": secondColor,
+		"--third-color": thirdColor,
+		"--fourth-color": fourthColor,
+		"--fifth-color": fifthColor,
+		"--pointer-color": pointerColor,
+		"--size": size,
+		"--blending-value": blendingValue,
+	} as React.CSSProperties;
+
+	// El puntero interactivo sigue al ratón con interpolación suave en un único bucle rAF
 	useEffect(() => {
-		document.body.style.setProperty("--gradient-background-start", gradientBackgroundStart);
-		document.body.style.setProperty("--gradient-background-end", gradientBackgroundEnd);
-		document.body.style.setProperty("--first-color", firstColor);
-		document.body.style.setProperty("--second-color", secondColor);
-		document.body.style.setProperty("--third-color", thirdColor);
-		document.body.style.setProperty("--fourth-color", fourthColor);
-		document.body.style.setProperty("--fifth-color", fifthColor);
-		document.body.style.setProperty("--pointer-color", pointerColor);
-		document.body.style.setProperty("--size", size);
-		document.body.style.setProperty("--blending-value", blendingValue);
-	}, []);
+		if (!interactive) return;
+		const container = containerRef.current;
+		const pointer = interactiveRef.current;
+		if (!container || !pointer) return;
 
-	useEffect(() => {
-		function move() {
-			if (!interactiveRef.current) {
-				return;
-			}
-			setCurX(curX + (tgX - curX) / 20);
-			setCurY(curY + (tgY - curY) / 20);
-			interactiveRef.current.style.transform = `translate(${Math.round(curX)}px, ${Math.round(
-				curY
-			)}px)`;
-		}
+		let frame = 0;
+		let curX = 0;
+		let curY = 0;
+		let tgX = 0;
+		let tgY = 0;
 
-		move();
-	}, [tgX, tgY]);
+		const onMove = (event: MouseEvent) => {
+			const rect = container.getBoundingClientRect();
+			tgX = event.clientX - rect.left - rect.width / 2;
+			tgY = event.clientY - rect.top - rect.height / 2;
+		};
 
-	const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-		if (interactiveRef.current) {
-			const rect = interactiveRef.current.getBoundingClientRect();
-			setTgX(event.clientX - rect.left);
-			setTgY(event.clientY - rect.top);
-		}
-	};
+		const tick = () => {
+			curX += (tgX - curX) / 20;
+			curY += (tgY - curY) / 20;
+			pointer.style.transform = `translate(${Math.round(curX)}px, ${Math.round(curY)}px)`;
+			frame = requestAnimationFrame(tick);
+		};
 
-	const [isSafari, setIsSafari] = useState(false);
-	useEffect(() => {
-		setIsSafari(/^((?!chrome|android).)*safari/i.test(navigator.userAgent));
-	}, []);
+		window.addEventListener("mousemove", onMove, { passive: true });
+		frame = requestAnimationFrame(tick);
+		return () => {
+			window.removeEventListener("mousemove", onMove);
+			cancelAnimationFrame(frame);
+		};
+	}, [interactive]);
 
 	return (
 		<div
+			ref={containerRef}
+			style={cssVars}
 			className={cn(
 				"h-full w-full absolute overflow-hidden top-0 left-0 bg-[linear-gradient(40deg,var(--gradient-background-start),var(--gradient-background-end))]",
 				containerClassName
 			)}>
-			<svg className="hidden">
+			<svg className="hidden" aria-hidden>
 				<defs>
 					<filter id="blurMe">
 						<feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
@@ -152,10 +165,9 @@ export const BackgroundGradientAnimation = ({
 				{interactive && (
 					<div
 						ref={interactiveRef}
-						onMouseMove={handleMouseMove}
 						className={cn(
 							`absolute [background:radial-gradient(circle_at_center,_rgba(var(--pointer-color),_0.8)_0,_rgba(var(--pointer-color),_0)_50%)_no-repeat]`,
-							`[mix-blend-mode:var(--blending-value)] w-full h-full -top-1/2 -left-1/2`,
+							`[mix-blend-mode:var(--blending-value)] w-full h-full top-0 left-0`,
 							`opacity-70`
 						)}></div>
 				)}

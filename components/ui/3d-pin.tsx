@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -13,6 +12,7 @@ export const PinContainer = ({
 	className,
 	containerClassName,
 	target,
+	ariaLabel,
 }: {
 	children: React.ReactNode;
 	title?: string;
@@ -20,6 +20,7 @@ export const PinContainer = ({
 	className?: string;
 	containerClassName?: string;
 	target?: string;
+	ariaLabel?: string;
 }) => {
 	const [transform, setTransform] = useState("translate(-50%,-50%) rotateX(0deg)");
 
@@ -30,13 +31,23 @@ export const PinContainer = ({
 		setTransform("translate(-50%,-50%) rotateX(0deg) scale(1)");
 	};
 
+	// Sin enlace se renderiza como contenedor normal (antes apuntaba a "/" y recargaba la página)
+	const Wrapper = href ? "a" : "div";
+	const linkProps = href
+		? {
+				href,
+				target,
+				rel: target === "_blank" ? "noopener noreferrer" : undefined,
+				"aria-label": ariaLabel,
+		  }
+		: {};
+
 	return (
-		<a
-			className={cn("relative group/pin z-50  cursor-pointer", containerClassName)}
+		<Wrapper
+			className={cn("relative group/pin z-50", href && "cursor-pointer", containerClassName)}
 			onMouseEnter={onMouseEnter}
 			onMouseLeave={onMouseLeave}
-			href={href || "/"}
-			target={target}>
+			{...linkProps}>
 			<div
 				style={{
 					perspective: "1000px",
@@ -51,12 +62,12 @@ export const PinContainer = ({
 					<div className={cn(" relative z-50 ", className)}>{children}</div>
 				</div>
 			</div>
-			<PinPerspective title={title} href={href} />
-		</a>
+			<PinPerspective title={title} />
+		</Wrapper>
 	);
 };
 
-export const PinPerspective = ({ title, href }: { title?: string; href?: string }) => {
+export const PinPerspective = ({ title }: { title?: string }) => {
 	return (
 		<motion.div className="pointer-events-none  w-96 h-80 flex items-center justify-center opacity-0 group-hover/pin:opacity-100 z-[60] transition duration-500">
 			<div className=" w-full h-full -mt-7 flex-none  inset-0">

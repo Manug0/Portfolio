@@ -1,9 +1,8 @@
 "use client";
 
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
-import React, { useState } from "react";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { useEffect, useState } from "react";
 
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export const FloatingNav = ({
@@ -13,60 +12,78 @@ export const FloatingNav = ({
 	navItems: {
 		name: string;
 		link: string;
-		icon?: JSX.Element;
 	}[];
 	className?: string;
 }) => {
-	const { scrollYProgress } = useScroll();
+	const { scrollY } = useScroll();
+	const [visible, setVisible] = useState(true);
+	const [active, setActive] = useState<string>("");
 
-	const [visible, setVisible] = useState(false);
-
-	useMotionValueEvent(scrollYProgress, "change", (current) => {
-		if (typeof current === "number") {
-			let direction = current! - scrollYProgress.getPrevious()!;
-
-			if (scrollYProgress.get() < 0.05) {
-				setVisible(false);
-			} else {
-				if (direction < 0) {
-					setVisible(true);
-				} else {
-					setVisible(false);
-				}
-			}
+	// Visible arriba del todo y al hacer scroll hacia arriba; se oculta al bajar
+	useMotionValueEvent(scrollY, "change", (current) => {
+		const previous = scrollY.getPrevious() ?? 0;
+		if (current < 120) {
+			setVisible(true);
+			setActive("");
+		} else {
+			setVisible(current < previous);
 		}
 	});
 
+	// Resalta la sección que está en pantalla
+	useEffect(() => {
+		const ids = navItems.map((item) => item.link.replace("#", ""));
+		const sections = ids
+			.map((id) => document.getElementById(id))
+			.filter((el): el is HTMLElement => el !== null);
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) setActive(entry.target.id);
+				});
+			},
+			{ rootMargin: "-45% 0px -50% 0px" }
+		);
+
+		sections.forEach((section) => observer.observe(section));
+		return () => observer.disconnect();
+	}, [navItems]);
+
 	return (
-		<AnimatePresence mode="wait">
-			<motion.div
-				initial={{
-					opacity: 1,
-					y: -100,
-				}}
-				animate={{
-					y: visible ? 0 : -100,
-					opacity: visible ? 1 : 0,
-				}}
-				transition={{
-					duration: 0.2,
-				}}
-				className={cn(
-					"flex lg:max-w-fit max-w-sm fixed top-10 inset-x-0 mx-auto border rounded-full shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] z-[5000] px-10 py-5 items-center justify-center space-x-4 border-white/[0.2] bg-black-100",
-					className
-				)}>
-				{navItems.map((navItem: any, idx: number) => (
-					<Link
-						key={`link=${idx}`}
+		<motion.nav
+			aria-label="Navegación principal"
+			initial={{ opacity: 0, y: -100 }}
+			animate={{ y: visible ? 0 : -100, opacity: visible ? 1 : 0 }}
+			transition={{ duration: 0.25 }}
+			className={cn(
+				"fixed top-4 sm:top-8 inset-x-0 mx-auto z-[5000] w-fit max-w-[calc(100vw-1rem)]",
+				"flex items-center sm:gap-2 rounded-full border border-white/[0.15] bg-black-100/80 backdrop-blur-md",
+				"px-1.5 py-1.5 sm:px-3 sm:py-2 shadow-[0_8px_32px_rgba(0,0,0,0.45)] overflow-x-auto",
+				className
+			)}>
+			{navItems.map((navItem) => {
+				const isActive = active === navItem.link.replace("#", "");
+				return (
+					<a
+						key={navItem.link}
 						href={navItem.link}
+						aria-current={isActive ? "true" : undefined}
 						className={cn(
-							"relative dark:text-neutral-50 whitespace-nowrap items-center flex space-x-1 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500"
+							"relative whitespace-nowrap rounded-full px-2 sm:px-4 py-1.5 text-xs sm:text-sm transition-colors",
+							isActive ? "text-white" : "text-white-200 hover:text-white"
 						)}>
-						<span className="block sm:hidden">{navItem.icon}</span>
-						<span className="text-sm !cursor-pointer">{navItem.name}</span>
-					</Link>
-				))}
-			</motion.div>
-		</AnimatePresence>
+						{isActive && (
+							<motion.span
+								layoutId="nav-active"
+								className="absolute inset-0 -z-10 rounded-full bg-purple/20 ring-1 ring-purple/40"
+								transition={{ type: "spring", stiffness: 380, damping: 30 }}
+							/>
+						)}
+						{navItem.name}
+					</a>
+				);
+			})}
+		</motion.nav>
 	);
 };
