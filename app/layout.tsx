@@ -8,7 +8,7 @@ import { siteConfig } from "@/data";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
-// Valores por defecto; cada perfil (app/page.tsx y app/finanzas/page.tsx) define su título y descripción
+// Valores por defecto; cada perfil (app/page.tsx y app/tech/page.tsx) define su título y descripción
 export const metadata: Metadata = {
 	metadataBase: new URL(siteConfig.url),
 	title: siteConfig.name,
