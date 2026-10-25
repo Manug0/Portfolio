@@ -1,9 +1,9 @@
 import Portfolio from "@/components/Portfolio";
 import { buildMetadata } from "@/lib/metadata";
-import { tech } from "@/data/profiles";
+import { finanzas } from "@/data/profiles";
 
-export const metadata = buildMetadata(tech);
+export const metadata = buildMetadata(finanzas);
 
 export default function Home() {
-	return <Portfolio profileId="tech" />;
+	return <Portfolio profileId="finanzas" />;
 }

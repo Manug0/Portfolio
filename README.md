@@ -5,8 +5,8 @@ Recoge experiencia, proyectos, stack, formación y CV descargable, con un formul
 
 La web tiene dos perfiles, cada uno con su contenido, su CV y su color de marca:
 
-- **Tech** (morado): https://manu-gonzalez.vercel.app
-- **Finanzas** (dorado): https://manu-gonzalez.vercel.app/finanzas
+- **Finanzas** (dorado, por defecto): https://manu-gonzalez.vercel.app
+- **Tech** (morado): https://manu-gonzalez.vercel.app/tech
 
 Se cambia de uno a otro con el selector de la portada y del menú.
 
@@ -30,7 +30,7 @@ npm run build
 
 - `data/profiles.ts`: el contenido de cada perfil (titular, experiencia, competencias, enfoque, contacto, CV y metadatos).
 - `data/index.ts`: el contenido común (datos de contacto, proyectos web, formación, certificaciones, idiomas).
-- `app/page.tsx` y `app/finanzas/page.tsx`: las dos rutas; ambas renderizan `components/Portfolio.tsx` con su perfil.
+- `app/page.tsx` (finanzas) y `app/tech/page.tsx` (tech): las dos rutas; ambas renderizan `components/Portfolio.tsx` con su perfil.
 - `components/`: secciones de la página (`Hero`, `Grid`, `Experience`, `RecentProjects`, `Markets`, `TechStack`, `Approach`, `Education`, `Contact`, `Footer`).
 - `components/ui/`: componentes visuales reutilizables.
 - `public/Manuel_Gonzalez_Garcia_CV.pdf` y `public/Manuel_Gonzalez_Garcia_CV_Finanzas.pdf`: los CVs descargables (con sus miniaturas `cv-preview*.jpg`).

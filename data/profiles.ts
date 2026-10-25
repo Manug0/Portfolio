@@ -1,4 +1,4 @@
-// Contenido de cada perfil. La web se sirve en dos rutas: "/" (tech) y "/finanzas".
+// Contenido de cada perfil. La web se sirve en dos rutas: "/" (finanzas, por defecto) y "/tech".
 // Todos los textos salen de los dos CVs; para cambiar algo de un perfil basta con editar este archivo.
 import type { Experience, GridItem, Project, TechItem } from ".";
 import type { IconType } from "react-icons";
@@ -176,7 +176,7 @@ const salesforceItem: TechItem = { name: "Salesforce", icon: SiSalesforce, color
 
 export const tech: Profile = {
 	id: "tech",
-	path: "/",
+	path: "/tech",
 	label: "Tech",
 	sublabel: "Salesforce · Datos",
 	role: "Desarrollador Salesforce",
@@ -358,7 +358,7 @@ export const tech: Profile = {
 
 export const finanzas: Profile = {
 	id: "finanzas",
-	path: "/finanzas",
+	path: "/",
 	label: "Finanzas",
 	sublabel: "Inversión · Riesgo",
 	role: "Economista",
@@ -555,12 +555,12 @@ export const finanzas: Profile = {
 	meta: {
 		title: "Manuel González · Economista · Inversión y Mercados",
 		description:
-			"Portfolio de Manuel González, economista con siete años invirtiendo y gestionando carteras. Análisis de inversiones, riesgo y mercados financieros, con perfil técnico en Python, SQL y datos.",
+			"Portfolio de Manuel González, economista orientado a finanzas: análisis de inversiones, riesgo y mercados financieros. Siete años invirtiendo y gestionando carteras, con perfil técnico en Python, SQL y datos para banca.",
 		keywords: ["Economista", "Inversión", "Riesgos", "Mercados financieros", "Análisis de inversiones", "Python", "SQL"],
 	},
 };
 
-export const profiles: Record<ProfileId, Profile> = { tech, finanzas };
+export const profiles: Record<ProfileId, Profile> = { finanzas, tech };
 
 export const getProfile = (id: ProfileId) => profiles[id];
 
