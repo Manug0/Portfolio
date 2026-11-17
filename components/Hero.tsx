@@ -1,101 +1,94 @@
+import { HiArrowDownRight, HiOutlineDocumentArrowDown } from "react-icons/hi2";
 import { type ProfileId, getProfile } from "@/data/profiles";
 
-import { FaLocationArrow } from "react-icons/fa6";
-import { HiOutlineDocumentArrowDown } from "react-icons/hi2";
+import { Fragment } from "react";
+import { HeroArt } from "./ui/HeroArt";
 import Image from "next/image";
-import MagicButton from "./ui/MagicButton";
-import { ProfileToggle } from "./ui/ProfileToggle";
-import { Spotlight } from "./ui/Spotlight";
-import { TextGenerateEffect } from "./ui/TextGenerateEffect";
+import { ProfileSwitch } from "./ui/ProfileSwitch";
 import { siteConfig } from "@/data";
+
+const delay = (ms: number) => ({ "--d": ms }) as React.CSSProperties;
 
 const Hero = ({ profileId }: { profileId: ProfileId }) => {
 	const profile = getProfile(profileId);
+	const words = profile.headline.split(" ");
 
 	return (
-		<section className="pb-16 pt-32 sm:pt-36" aria-labelledby="hero-title">
-			<div aria-hidden>
-				<Spotlight className="-top-40 -left-10 md:-left-32 md:-top-20 h-screen" fill="white" />
-				<Spotlight className="h-[80vh] w-[50vw] top-10 left-full" fill="rgb(var(--brand-rgb))" />
-				<Spotlight className="left-80 top-28 h-[80vh] w-[50vw]" fill="rgb(var(--brand-deep-rgb))" />
-			</div>
+		<section id="top" className="hero" aria-labelledby="hero-title">
+			<div aria-hidden className="hero-bg" />
+			<div aria-hidden className="hero-grid" />
 
-			<div
-				aria-hidden
-				className="h-screen w-full bg-black-100 bg-grid-white/[0.03] absolute top-0 left-0 flex items-center justify-center">
-				<div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black-100 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
-			</div>
-
-			<div className="flex justify-center relative my-10 sm:my-16 z-10">
-				<div className="max-w-[89vw] md:max-w-2xl lg:max-w-[60vw] flex flex-col items-center justify-center">
-					<div className="relative mb-6">
-						<div
-							aria-hidden
-							className="absolute -inset-1 rounded-full bg-[conic-gradient(from_90deg,rgb(var(--brand-soft-rgb)),rgb(var(--brand-deep-rgb)),rgb(var(--brand-rgb)),rgb(var(--brand-soft-rgb)))] animate-[spin_6s_linear_infinite] blur-[2px]"
-						/>
-						<Image
-							src="/profile.png"
-							alt="Foto de Manuel González"
-							width={112}
-							height={112}
-							priority
-							className="relative size-24 sm:size-28 rounded-full border-4 border-black-100 object-cover"
-						/>
-						<span className="absolute -bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-emerald-400/30 bg-black-100 px-3 py-0.5 text-[11px] text-emerald-300">
-							<span className="mr-1.5 inline-block size-1.5 rounded-full bg-emerald-400 align-middle animate-pulse" />
-							{siteConfig.location}
+			<div className="wrap hero-inner">
+				{/* Quién soy y, al lado, las dos vistas: lo primero que se entiende es que hay dos perfiles */}
+				<div className="hero-head">
+					<div className="hero-id enter" style={delay(60)}>
+						<span className="avatar">
+							<Image src="/profile.png" alt="Foto de Manuel González" width={112} height={112} priority />
 						</span>
+						<div>
+							<h1 id="hero-title" className="text-lg font-semibold leading-tight tracking-tight sm:text-xl">
+								{siteConfig.name}
+								<span className="sr-only">, {profile.role}</span>
+							</h1>
+							<p className="mt-1 flex items-center gap-2 font-mono text-xs text-muted">
+								<span aria-hidden className="live-dot" />
+								{siteConfig.location}
+							</p>
+						</div>
 					</div>
-
-					<ProfileToggle current={profileId} className="mb-6" />
-
-					<p className="eyebrow max-w-2xl">
-						{profile.role} • {profile.tagline}
-					</p>
-
-					<h1 id="hero-title" className="sr-only">
-						{siteConfig.name}, {profile.role}
-					</h1>
-					<TextGenerateEffect
-						key={profileId}
-						words={profile.headline}
-						highlightFrom={profile.highlightFrom}
-						className="text-center text-[38px] md:text-5xl lg:text-6xl"
-					/>
-
-					<p className="text-center text-white-100 md:tracking-wide mb-8 text-sm md:text-lg lg:text-xl max-w-2xl text-balance">
-						¡Hola! Soy <span className="text-white font-semibold">{siteConfig.shortName}</span>,{" "}
-						{profile.intro}
-					</p>
-
-					<div className="flex flex-col sm:flex-row items-center gap-4">
-						<MagicButton
-							title={profile.primaryCta.title}
-							icon={<FaLocationArrow />}
-							position="right"
-							href={profile.primaryCta.href}
-						/>
-						<a
-							href={profile.cv.file}
-							download
-							className="inline-flex h-12 items-center gap-2 rounded-lg border border-white/[0.15] bg-white/[0.03] px-7 text-sm font-medium text-white transition hover:border-brand/60 hover:bg-brand/10">
-							<HiOutlineDocumentArrowDown className="size-5" />
-							Descargar {profile.cv.label}
-						</a>
+					<span aria-hidden className="hero-head-rule enter" style={delay(100)} />
+					<div className="enter flex w-full justify-center lg:w-auto" style={delay(140)}>
+						<ProfileSwitch current={profileId} variant="hero" />
 					</div>
+				</div>
 
-					<dl className="mt-12 grid w-full grid-cols-3 gap-2 sm:gap-6 max-w-2xl">
-						{profile.stats.map((stat) => (
-							<div
-								key={stat.label}
-								className="flex flex-col-reverse rounded-2xl border border-white/[0.08] bg-white/[0.02] px-2 py-4 text-center backdrop-blur-sm">
-								<dt className="mt-1 text-[11px] sm:text-xs text-white-200 leading-tight">{stat.label}</dt>
-								<dd className="text-base sm:text-2xl font-bold text-brand">{stat.value}</dd>
-							</div>
-						))}
-					</dl>
+				<p className="eyebrow enter mt-9 max-w-xl text-balance leading-relaxed lg:mt-10" style={delay(220)}>
+					{profile.role} • {profile.tagline}
+				</p>
+
+				<p className="display mt-4 max-w-[15em]">
+					{words.map((word, index) => (
+						<Fragment key={word + index}>
+							<span className="w">
+								<span
+									className={index >= profile.highlightFrom ? "hl" : undefined}
+									style={{ "--i": index } as React.CSSProperties}>
+									{word}
+								</span>
+							</span>{" "}
+						</Fragment>
+					))}
+				</p>
+
+				<p className="enter mt-6 max-w-[46rem] text-base leading-relaxed text-muted sm:text-lg" style={delay(720)}>
+					¡Hola! Soy <strong className="font-semibold text-fg">{siteConfig.shortName}</strong>, {profile.intro}
+				</p>
+
+				<div className="enter mt-8 flex w-full flex-col items-center justify-center gap-3 sm:flex-row" style={delay(840)}>
+					<a href={profile.primaryCta.href} className="btn btn-primary w-full sm:w-auto">
+						{profile.primaryCta.title}
+						<HiArrowDownRight aria-hidden className="btn-icon size-4" />
+					</a>
+					<a href={profile.cv.file} download className="btn btn-ghost w-full sm:w-auto">
+						<HiOutlineDocumentArrowDown aria-hidden className="size-5" />
+						Descargar {profile.cv.label}
+					</a>
 				</div>
 			</div>
+
+			<HeroArt profileId={profileId} />
+
+			<div className="wrap pb-14">
+				<dl className="stats enter" style={delay(980)}>
+					{profile.stats.map((stat) => (
+						<div key={stat.label} className="stat">
+							<dt>{stat.label}</dt>
+							<dd>{stat.value}</dd>
+						</div>
+					))}
+				</dl>
+			</div>
+			<div aria-hidden className="hero-fade" />
 		</section>
 	);
 };

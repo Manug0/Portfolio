@@ -1,60 +1,69 @@
-import { Timeline, type TimelineEntry } from "./ui/Timeline";
-
 import { type ProfileId, getProfile } from "@/data/profiles";
 
-const Experience = ({ profileId }: { profileId: ProfileId }) => {
+import { SectionHeading } from "./ui/SectionHeading";
+
+// Línea de tiempo: la barra se rellena con el scroll (ver components/ui/Effects.tsx)
+const Experience = ({ profileId, index }: { profileId: ProfileId; index: number }) => {
 	const profile = getProfile(profileId);
-	const entries: TimelineEntry[] = profile.experience.map((job) => ({
-		key: job.id,
-		marker: (
-			<div>
-				<p className="text-xl md:text-3xl font-bold text-white">{job.company}</p>
-				<p className="mt-1 text-sm md:text-base text-white-200 tabular-nums">{job.period}</p>
-			</div>
-		),
-		content: (
-			<article className="glass-card p-6 md:p-8 transition-colors duration-300 hover:border-brand/40">
-				<header className="flex flex-wrap items-center gap-3">
-					<h3 className="text-lg md:text-2xl font-bold text-white">{job.role}</h3>
-					{job.current && (
-						<span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-0.5 text-xs text-emerald-300">
-							<span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-							Actualidad
-						</span>
-					)}
-				</header>
-				<p className="mt-2 text-sm md:text-base text-white-100">{job.summary}</p>
-				<ul className="mt-5 space-y-2.5">
-					{job.bullets.map((bullet) => (
-						<li key={bullet} className="flex gap-3 text-sm md:text-[15px] text-white-200 leading-relaxed">
-							<span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
-							{bullet}
-						</li>
-					))}
-				</ul>
-				<ul className="mt-6 flex flex-wrap gap-2" aria-label="Tecnologías y áreas">
-					{job.tags.map((tag) => (
-						<li
-							key={tag}
-							className="rounded-full border border-white/[0.1] bg-[#10132E] px-3 py-1 text-xs text-white-100">
-							{tag}
-						</li>
-					))}
-				</ul>
-			</article>
-		),
-	}));
 
 	return (
-		<section className="pt-20 lg:pt-32 w-full" id="experience" aria-labelledby="experience-title">
-			<p className="eyebrow mb-3">Trayectoria</p>
-			<h2 id="experience-title" className="heading">
-				Mi <span className="text-brand">experiencia</span>
-			</h2>
-			<p className="mx-auto mt-4 max-w-xl text-center text-white-200 text-sm md:text-base">
-				{profile.experienceIntro}
-			</p>
-			<Timeline data={entries} />
+		<section id="experience" className="section" aria-labelledby="experience-title">
+			<div className="wrap">
+				<SectionHeading
+					id="experience-title"
+					index={index}
+					eyebrow="Trayectoria"
+					title="Mi"
+					highlight="experiencia"
+					intro={profile.experienceIntro}
+				/>
+
+				<div className="tl" data-timeline>
+					<div aria-hidden className="tl-rail">
+						<div className="tl-fill" />
+						<div className="tl-head" />
+					</div>
+					<ol>
+						{profile.experience.map((job) => (
+							<li key={job.id} className="tl-item">
+								<span aria-hidden className="tl-dot" />
+								<div className="tl-marker">
+									<p className="tl-company">{job.company}</p>
+									<p className="mt-1.5 font-mono text-xs tabular-nums text-muted">{job.period}</p>
+								</div>
+
+								<article className="card p-6 md:p-8" data-spot data-reveal>
+									<header className="flex flex-wrap items-center gap-3">
+										<h3 className="text-xl font-semibold tracking-tight md:text-2xl">{job.role}</h3>
+										{job.current && (
+											<span className="badge badge-live">
+												<span aria-hidden className="live-dot" />
+												Actualidad
+											</span>
+										)}
+									</header>
+									<p className="mt-2 text-muted">{job.summary}</p>
+									<ul className="mt-5 space-y-2.5">
+										{job.bullets.map((bullet) => (
+											<li key={bullet} className="flex gap-3 text-[15px] leading-relaxed text-fg/80">
+												<span aria-hidden className="mt-[0.72em] h-px w-3 shrink-0 bg-brand" />
+												{bullet}
+											</li>
+										))}
+									</ul>
+									<ul className="mt-6 flex flex-wrap gap-2" aria-label="Tecnologías y áreas">
+										{job.tags.map((tag) => (
+											<li key={tag} className="chip">
+												{tag}
+											</li>
+										))}
+									</ul>
+								</article>
+							</li>
+						))}
+					</ol>
+				</div>
+			</div>
 		</section>
 	);
 };

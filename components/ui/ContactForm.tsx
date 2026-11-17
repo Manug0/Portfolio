@@ -1,12 +1,10 @@
 "use client";
 
-import { Input, Textarea } from "./Input";
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import { Label } from "./Label";
+import { HiArrowRight } from "react-icons/hi2";
 import { cn } from "@/lib/utils";
-import emailjs from "@emailjs/browser";
 import { siteConfig } from "@/data";
 
 // Credenciales públicas de EmailJS (la public key está pensada para usarse en el cliente)
@@ -37,6 +35,8 @@ export function ContactForm({ placeholder }: { placeholder: string }) {
 		if (data.company) return;
 		setStatus("sending");
 		try {
+			// EmailJS solo se descarga al enviar: no pesa en la carga de la página
+			const { default: emailjs } = await import("@emailjs/browser");
 			await emailjs.send(
 				EMAILJS_SERVICE_ID,
 				EMAILJS_TEMPLATE_ID,
@@ -57,19 +57,22 @@ export function ContactForm({ placeholder }: { placeholder: string }) {
 	};
 
 	return (
-		<div className="glass-card w-full p-6 md:p-8 shadow-input relative z-10">
-			<h3 className="font-bold text-xl text-white">Escríbeme</h3>
-			<p className="text-white-200 text-sm mt-2">Te responderé lo antes posible.</p>
+		<div className="card w-full p-6 md:p-8">
+			<h3 className="text-xl font-semibold tracking-tight">Escríbeme</h3>
+			<p className="mt-2 text-sm text-muted">Te responderé lo antes posible.</p>
 
 			<form className="mt-8" onSubmit={handleSubmit(onSubmit)} noValidate>
-				<div className="flex flex-col md:flex-row gap-4 mb-4">
+				<div className="mb-4 flex flex-col gap-4 md:flex-row">
 					<Field className="flex-1">
-						<Label htmlFor="name">Nombre</Label>
-						<Input
+						<label htmlFor="name" className="text-sm font-medium">
+							Nombre
+						</label>
+						<input
 							id="name"
 							autoComplete="name"
 							placeholder="Tu nombre"
 							type="text"
+							className="field"
 							aria-invalid={errors.name ? "true" : "false"}
 							aria-describedby={errors.name ? "name-error" : undefined}
 							{...register("name", { required: "El nombre es obligatorio" })}
@@ -78,12 +81,15 @@ export function ContactForm({ placeholder }: { placeholder: string }) {
 					</Field>
 
 					<Field className="flex-1">
-						<Label htmlFor="email">Email</Label>
-						<Input
+						<label htmlFor="email" className="text-sm font-medium">
+							Email
+						</label>
+						<input
 							id="email"
 							autoComplete="email"
 							placeholder="correo@ejemplo.com"
 							type="email"
+							className="field"
 							aria-invalid={errors.email ? "true" : "false"}
 							aria-describedby={errors.email ? "email-error" : undefined}
 							{...register("email", {
@@ -99,11 +105,14 @@ export function ContactForm({ placeholder }: { placeholder: string }) {
 				</div>
 
 				<Field className="mb-6">
-					<Label htmlFor="message">Mensaje</Label>
-					<Textarea
+					<label htmlFor="message" className="text-sm font-medium">
+						Mensaje
+					</label>
+					<textarea
 						id="message"
 						rows={5}
 						placeholder={placeholder}
+						className="field min-h-32 resize-y"
 						aria-invalid={errors.message ? "true" : "false"}
 						aria-describedby={errors.message ? "message-error" : undefined}
 						{...register("message", {
@@ -120,16 +129,16 @@ export function ContactForm({ placeholder }: { placeholder: string }) {
 				</div>
 
 				<button
-					className="relative group/btn w-full h-11 rounded-md font-medium text-white border border-brand/30 bg-gradient-to-br from-[#161A31] to-[#10132E] transition hover:border-brand/70 disabled:opacity-60 disabled:cursor-wait"
 					type="submit"
-					disabled={status === "sending"}>
-					{status === "sending" ? "Enviando…" : "Enviar mensaje →"}
-					<BottomGradient />
+					disabled={status === "sending"}
+					className="btn btn-primary w-full disabled:cursor-wait disabled:opacity-60">
+					{status === "sending" ? "Enviando…" : "Enviar mensaje"}
+					{status !== "sending" && <HiArrowRight aria-hidden className="size-4" />}
 				</button>
 			</form>
 
-			<div aria-live="polite" className="min-h-6 mt-4 text-center text-sm">
-				{status === "success" && <p className="text-emerald-400">¡Mensaje enviado! Gracias por escribirme.</p>}
+			<div aria-live="polite" className="mt-4 min-h-6 text-center text-sm">
+				{status === "success" && <p className="text-up">¡Mensaje enviado! Gracias por escribirme.</p>}
 				{status === "error" && (
 					<p className="text-red-400">
 						No se pudo enviar el mensaje. Escríbeme directamente a{" "}
@@ -144,19 +153,12 @@ export function ContactForm({ placeholder }: { placeholder: string }) {
 	);
 }
 
-const BottomGradient = () => (
-	<>
-		<span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-brand to-transparent" />
-		<span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
-	</>
-);
-
 const Field = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-	<div className={cn("flex flex-col space-y-2 w-full", className)}>{children}</div>
+	<div className={cn("flex w-full flex-col gap-2", className)}>{children}</div>
 );
 
 const ErrorMessage = ({ children, id }: { children: React.ReactNode; id: string }) => (
-	<p id={id} role="alert" className="text-red-400 text-sm">
+	<p id={id} role="alert" className="text-sm text-red-400">
 		{children}
 	</p>
 );

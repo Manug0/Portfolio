@@ -57,11 +57,6 @@ export type Profile = {
 	nav: { name: string; link: string; hideOnMobile?: boolean }[];
 	grid: GridItem[];
 	bentoStack: { left: string[]; right: string[] };
-	/** Colores del gradiente animado de la tarjeta de contacto del bento */
-	gradient: Record<
-		"start" | "end" | "first" | "second" | "third" | "fourth" | "fifth" | "pointer",
-		string
-	>;
 	experienceIntro: string;
 	experience: Experience[];
 	projects: SectionCopy & { items: Project[] };
@@ -78,66 +73,9 @@ export type Profile = {
 
 const brand = "rgb(var(--brand-rgb))";
 
-// Disposición del bento grid (común); cada perfil aporta los textos
-const gridLayout = [
-	{
-		id: 1,
-		className: "lg:col-span-3 md:col-span-6 md:row-span-4 lg:min-h-[60vh]",
-		imgClassName: "w-full h-full",
-		titleClassName: "justify-end",
-		img: "/b1.png",
-		spareImg: "",
-	},
-	{
-		id: 2,
-		className: "lg:col-span-2 md:col-span-3 md:row-span-2",
-		imgClassName: "absolute right-0 bottom-0 w-40 md:w-44 lg:w-72 opacity-90",
-		titleClassName: "justify-start",
-		img: "",
-		spareImg: "",
-	},
-	{
-		id: 3,
-		className: "lg:col-span-2 md:col-span-3 md:row-span-2",
-		imgClassName: "",
-		titleClassName: "justify-center",
-		img: "",
-		spareImg: "",
-	},
-	{
-		id: 4,
-		className: "lg:col-span-2 md:col-span-3 md:row-span-1",
-		imgClassName: "",
-		titleClassName: "justify-start",
-		img: "/grid.svg",
-		spareImg: "/b4.svg",
-	},
-	{
-		id: 5,
-		className: "md:col-span-3 md:row-span-2",
-		imgClassName: "",
-		titleClassName: "justify-start lg:justify-center",
-		img: "",
-		spareImg: "/grid.svg",
-	},
-	{
-		id: 6,
-		className: "lg:col-span-2 md:col-span-3 md:row-span-1",
-		imgClassName: "",
-		titleClassName: "justify-center md:max-w-full max-w-full text-center",
-		img: "",
-		spareImg: "",
-	},
-];
-
-const buildGrid = (
-	content: Record<number, { title: string; description: string; img?: string }>
-): GridItem[] =>
-	gridLayout.map((layout) => ({
-		...layout,
-		...content[layout.id],
-		img: content[layout.id].img ?? layout.img,
-	}));
+// Textos de las seis tarjetas de "Sobre mí"; la disposición y los gráficos viven en components/Grid.tsx
+const buildGrid = (content: Record<number, { title: string; description: string }>): GridItem[] =>
+	Object.entries(content).map(([id, item]) => ({ id: Number(id), ...item }));
 
 const experienceBase = {
 	accenture: {
@@ -203,7 +141,7 @@ export const tech: Profile = {
 			title: "Traduzco necesidades de negocio en soluciones técnicas claras.",
 			description: "De la economía al código",
 		},
-		2: { title: "Salesforce Developer", description: "Apex · LWC · Flows · Agentforce", img: "/b8.png" },
+		2: { title: "Salesforce Developer", description: "Apex · LWC · Flows · Agentforce" },
 		3: { title: "Mi stack tecnológico", description: "Siempre ampliando" },
 		4: {
 			title: "Economista de formación: datos, estadística y visión de negocio",
@@ -218,16 +156,6 @@ export const tech: Profile = {
 	bentoStack: {
 		left: ["Apex", "LWC", "Flows"],
 		right: ["TypeScript", "Python", "Next.js"],
-	},
-	gradient: {
-		start: "rgb(108, 0, 162)",
-		end: "rgb(0, 17, 82)",
-		first: "18, 113, 255",
-		second: "221, 74, 255",
-		third: "100, 220, 255",
-		fourth: "200, 50, 50",
-		fifth: "180, 180, 50",
-		pointer: "140, 100, 255",
 	},
 	experienceIntro: "De la economía y los mercados al desarrollo en Salesforce y la arquitectura de datos.",
 	experience: [
@@ -400,16 +328,6 @@ export const finanzas: Profile = {
 	bentoStack: {
 		left: ["Python", "SQL", "Excel"],
 		right: ["Valoración", "Macro", "Riesgo"],
-	},
-	gradient: {
-		start: "rgb(105, 70, 8)",
-		end: "rgb(3, 22, 36)",
-		first: "233, 196, 106",
-		second: "20, 184, 166",
-		third: "250, 230, 180",
-		fourth: "180, 120, 40",
-		fifth: "60, 140, 120",
-		pointer: "233, 196, 106",
 	},
 	experienceIntro: "Datos, negocio y mercados: de gestionar una cartera pública a proyectos de datos para banca.",
 	experience: [

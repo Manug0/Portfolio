@@ -4,7 +4,9 @@ import {
 	SiAngular,
 	SiFigma,
 	SiFramer,
+	SiGithub,
 	SiJavascript,
+	SiLinkedin,
 	SiPython,
 	SiReact,
 	SiSolana,
@@ -50,11 +52,6 @@ export type GridItem = {
 	id: number;
 	title: string;
 	description: string;
-	className: string;
-	imgClassName: string;
-	titleClassName: string;
-	img: string;
-	spareImg: string;
 };
 
 const tech = {
@@ -147,6 +144,6 @@ export const languages = [
 ];
 
 export const socialMedia = [
-	{ id: 1, name: "GitHub", img: "/git.svg", link: siteConfig.github },
-	{ id: 2, name: "LinkedIn", img: "/link.svg", link: siteConfig.linkedin },
+	{ id: 1, name: "GitHub", icon: SiGithub, link: siteConfig.github },
+	{ id: 2, name: "LinkedIn", icon: SiLinkedin, link: siteConfig.linkedin },
 ];

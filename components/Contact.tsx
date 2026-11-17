@@ -35,53 +35,58 @@ const contactLinks = [
 	},
 ];
 
-const Contact = ({ profileId }: { profileId: ProfileId }) => {
+const Contact = ({ profileId, index }: { profileId: ProfileId; index: number }) => {
 	const { contact } = getProfile(profileId);
 
 	return (
-		<section id="contact" className="relative py-20" aria-labelledby="contact-title">
-			<div className="flex flex-col items-center">
-				<SectionHeading id="contact-title" {...contact} />
-				<p className="text-white-200 mt-6 mb-12 text-center max-w-xl text-balance">{contact.text}</p>
-			</div>
+		<section id="contact" className="section" aria-labelledby="contact-title">
+			<div className="wrap">
+				<SectionHeading
+					id="contact-title"
+					index={index}
+					eyebrow={contact.eyebrow}
+					title={contact.title}
+					highlight={contact.highlight}
+					intro={contact.text}
+				/>
 
-			<div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
-				<ul className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-					{contactLinks.map((item) => {
-						const Icon = item.icon;
-						const inner = (
-							<>
-								<span className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-brand/30 bg-brand/10 text-brand transition group-hover/link:bg-brand group-hover/link:text-black-100">
-									<Icon aria-hidden className="size-5" />
-								</span>
-								<span className="min-w-0">
-									<span className="block text-xs uppercase tracking-widest text-white-200">
-										{item.label}
+				<div className="mt-12 grid grid-cols-1 items-start gap-5 lg:grid-cols-5">
+					<ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-1">
+						{contactLinks.map((item, itemIndex) => {
+							const Icon = item.icon;
+							const inner = (
+								<>
+									<span className="icon-tile transition-colors duration-300 group-hover:bg-brand group-hover:text-ink">
+										<Icon aria-hidden className="size-5" />
 									</span>
-									<span className="block truncate text-white">{item.value}</span>
-								</span>
-							</>
-						);
-						return (
-							<li key={item.label}>
-								{item.href ? (
-									<a
-										href={item.href}
-										target={item.external ? "_blank" : undefined}
-										rel={item.external ? "noopener noreferrer" : undefined}
-										className="glass-card group/link flex items-center gap-4 p-4 transition-colors hover:border-brand/40">
-										{inner}
-									</a>
-								) : (
-									<div className="glass-card flex items-center gap-4 p-4">{inner}</div>
-								)}
-							</li>
-						);
-					})}
-				</ul>
+									<span className="min-w-0">
+										<span className="eyebrow block !text-[0.66rem]">{item.label}</span>
+										<span className="mt-0.5 block truncate">{item.value}</span>
+									</span>
+								</>
+							);
+							return (
+								<li key={item.label} data-reveal style={{ "--d": itemIndex * 70 } as React.CSSProperties}>
+									{item.href ? (
+										<a
+											href={item.href}
+											target={item.external ? "_blank" : undefined}
+											rel={item.external ? "noopener noreferrer" : undefined}
+											className="card group flex items-center gap-4 p-4"
+											data-spot>
+											{inner}
+										</a>
+									) : (
+										<div className="card flex items-center gap-4 p-4">{inner}</div>
+									)}
+								</li>
+							);
+						})}
+					</ul>
 
-				<div className="lg:col-span-3">
-					<ContactForm placeholder={contact.cta} />
+					<div className="lg:col-span-3" data-reveal style={{ "--d": 120 } as React.CSSProperties}>
+						<ContactForm placeholder={contact.cta} />
+					</div>
 				</div>
 			</div>
 		</section>
