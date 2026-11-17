@@ -75,8 +75,8 @@ const tech_: Profile = {
 	id: "tech",
 	label: "Tech",
 	sublabel: "Data · Development",
-	role: "Developer",
-	tagline: "Backend, Integrations and Data",
+	role: "Salesforce Developer",
+	tagline: "Fullstack, Integrations and Data | Finance",
 	headline: "From business to code: technical solutions that scale",
 	highlightFrom: 4,
 	intro:
@@ -118,7 +118,7 @@ const tech_: Profile = {
 			description: "Always expanding",
 			rows: [
 				["Apex", "LWC", "Flows"],
-				["React", "TypeScript", "Angular"],
+				["React", "TypeScript", "Node.js"],
 				["SQL", "Python", "MongoDB"],
 			],
 		},
@@ -178,6 +178,7 @@ const tech_: Profile = {
 					tech.react,
 					tech.next,
 					tech.angular,
+					tech.node,
 					tech.html,
 					tech.css,
 					named("REST / SOAP APIs", icons.api),
@@ -215,6 +216,7 @@ const tech_: Profile = {
 			tech.salesforce,
 			tech.next,
 			tech.angular,
+			tech.node,
 			tech.mongodb,
 			tech.js,
 			tech.jenkins,
@@ -249,7 +251,7 @@ const tech_: Profile = {
 	},
 	cv: { file: "/Manuel_Gonzalez_Garcia_CV_EN.pdf", preview: "/cv-preview-en.jpg", label: "Tech CV" },
 	meta: {
-		title: "Manuel González · Developer · Backend, Integrations and Data",
+		title: "Manuel González · Salesforce Developer · Fullstack, Integrations and Data",
 		description:
 			"Portfolio of Manuel González, a developer specialised in backend, integrations and data: data projects for banking, Salesforce (Apex, LWC, Flows, Agentforce) and web development with React, TypeScript and Angular.",
 		keywords: ["Developer", "Data", "Integrations", "Backend", "Salesforce", "Apex", "React", "TypeScript", "SQL"],
@@ -260,12 +262,12 @@ const finanzas: Profile = {
 	id: "finanzas",
 	label: "Finance",
 	sublabel: "Investment · Risk",
-	role: "Economist",
-	tagline: "Investment, Risk and Financial Markets",
+	role: "Economist with a Technical Profile",
+	tagline: "Corporate Banking & Financial Markets",
 	headline: "From data to decision: analysis with quantitative rigour",
 	highlightFrom: 3,
 	intro:
-		"an economist with seven years of personal investing, including managing family portfolios. I combine economics, statistics and econometrics with a technical profile (Python, SQL, data) to analyse rigorously and build my own tools.",
+		"an economist with seven years of personal investing, including managing family portfolios, currently preparing for the CFA Level I exam. I combine economics, statistics and econometrics with a technical profile (Python, SQL, data) to analyse rigorously and build my own tools.",
 	primaryCta: { title: "See investing and markets", href: "#markets" },
 	stats: [
 		{ value: "7 years", label: "of personal investing" },
@@ -441,7 +443,7 @@ const finanzas: Profile = {
 		label: "Finance CV",
 	},
 	meta: {
-		title: "Manuel González · Economist · Investment and Markets",
+		title: "Manuel González · Economist with a Technical Profile · Corporate Banking & Financial Markets",
 		description:
 			"Portfolio of Manuel González, an economist focused on finance: investment analysis, risk and financial markets. Seven years investing and managing portfolios, with a technical profile in Python, SQL and data for banking.",
 		keywords: ["Economist", "Investment", "Risk", "Financial markets", "Investment analysis", "Python", "SQL"],
@@ -457,7 +459,7 @@ export const en: Content = {
 			id: 1,
 			title: "Technology Applied to Business Development",
 			school: "Universidad Internacional de La Rioja",
-			period: "03/2025 – 03/2026",
+			period: "2025 – 2026",
 			des: "Backend development oriented to business solutions.",
 		},
 		{
@@ -488,6 +490,7 @@ export const en: Content = {
 		viewProfile: (label) => `View ${label.toLowerCase()} profile`,
 		viewProfileAria: (label) => `View the ${label} profile`,
 		language: { code: "ES", label: "Ver esta página en español" },
+		theme: "Switch between light and dark theme",
 		hero: {
 			photoAlt: "Photo of Manuel González",
 			greeting: "Hi! I'm",

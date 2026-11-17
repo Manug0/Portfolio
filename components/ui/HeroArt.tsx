@@ -57,13 +57,24 @@ export const HeroArt = ({
 		const ctx = canvas?.getContext("2d");
 		if (!band || !canvas || !handle || !ctx) return;
 
-		const styles = getComputedStyle(document.documentElement);
-		const token = (name: string, fallback: string) => styles.getPropertyValue(name).trim() || fallback;
-		const FIN = token("--fin-rgb", "233 196 106");
-		const FIN_SOFT = token("--fin-soft-rgb", "248 231 190");
-		const TECH = token("--tech-rgb", "190 166 255");
-		const TECH_SOFT = token("--tech-soft-rgb", "228 216 255");
-		const INK = token("--ink-rgb", "5 6 13");
+		// Colores del tema activo (se releen al cambiar entre claro y oscuro)
+		let FIN = "233 196 106";
+		let FIN_SOFT = "248 231 190";
+		let TECH = "190 166 255";
+		let TECH_SOFT = "228 216 255";
+		let INK = "5 6 13";
+		let LINE = "255 255 255";
+		const readTokens = () => {
+			const styles = getComputedStyle(document.documentElement);
+			const token = (name: string, fallback: string) => styles.getPropertyValue(name).trim() || fallback;
+			FIN = token("--fin-rgb", FIN);
+			FIN_SOFT = token("--fin-soft-rgb", FIN_SOFT);
+			TECH = token("--tech-rgb", TECH);
+			TECH_SOFT = token("--tech-soft-rgb", TECH_SOFT);
+			INK = token("--ink-rgb", INK);
+			LINE = token("--line-rgb", LINE);
+		};
+		readTokens();
 		const color = (rgb: string, alpha: number) => `rgb(${rgb} / ${alpha})`;
 
 		const isFin = profileId === "finanzas";
@@ -167,14 +178,17 @@ export const HeroArt = ({
 			cell = clamp(Math.round(W / 118), 8, 13);
 			gap = cell > 10 ? 3 : 2;
 
+			buildGradients();
+		};
+		const buildGradients = () => {
 			areaGradient = ctx.createLinearGradient(0, top, 0, bottom);
 			areaGradient.addColorStop(0, color(FIN, 0.3));
 			areaGradient.addColorStop(1, color(FIN, 0));
 			seamGradient = ctx.createLinearGradient(0, 0, 0, H);
-			seamGradient.addColorStop(0, "rgb(255 255 255 / 0)");
-			seamGradient.addColorStop(0.3, "rgb(255 255 255 / 0.4)");
-			seamGradient.addColorStop(0.8, "rgb(255 255 255 / 0.5)");
-			seamGradient.addColorStop(1, "rgb(255 255 255 / 0)");
+			seamGradient.addColorStop(0, color(LINE, 0));
+			seamGradient.addColorStop(0.3, color(LINE, 0.4));
+			seamGradient.addColorStop(0.8, color(LINE, 0.5));
+			seamGradient.addColorStop(1, color(LINE, 0));
 		};
 
 		const update = (dt: number) => {
@@ -267,7 +281,7 @@ export const HeroArt = ({
 					ctx.moveTo(x, chartTop - 8);
 					ctx.lineTo(x, end);
 				}
-				ctx.strokeStyle = "rgb(255 255 255 / 0.05)";
+				ctx.strokeStyle = color(LINE, 0.06);
 				ctx.lineWidth = 1;
 				ctx.stroke();
 
@@ -581,6 +595,11 @@ export const HeroArt = ({
 		});
 		intersectionObserver.observe(canvas);
 
+		const onTheme = () => {
+			readTokens();
+			buildGradients();
+			if (!running) draw(performance.now() / 1000);
+		};
 		const onPeek = (event: Event) => {
 			peeking = Boolean((event as CustomEvent<boolean>).detail);
 			drawStill();
@@ -639,6 +658,7 @@ export const HeroArt = ({
 		};
 
 		window.addEventListener("profile:peek", onPeek);
+		window.addEventListener("theme:change", onTheme);
 		window.addEventListener("scroll", onScroll, { passive: true });
 		document.addEventListener("visibilitychange", sync);
 		if (finePointer) {
@@ -661,6 +681,7 @@ export const HeroArt = ({
 			resizeObserver.disconnect();
 			intersectionObserver.disconnect();
 			window.removeEventListener("profile:peek", onPeek);
+			window.removeEventListener("theme:change", onTheme);
 			window.removeEventListener("scroll", onScroll);
 			document.removeEventListener("visibilitychange", sync);
 			window.removeEventListener("pointermove", onPointerMove);

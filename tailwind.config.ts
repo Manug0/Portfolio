@@ -13,6 +13,8 @@ const config = {
 					2: rgb("--ink-2-rgb"),
 					3: rgb("--ink-3-rgb"),
 				},
+				// Líneas y velos: blanco en el tema oscuro, azul noche en el claro
+				line: rgb("--line-rgb"),
 				fg: rgb("--fg-rgb"),
 				muted: rgb("--muted-rgb"),
 				faint: rgb("--faint-rgb"),

@@ -65,10 +65,10 @@ const Portfolio = ({ locale, profileId }: { locale: Locale; profileId: ProfileId
 				items={profile.nav}
 				options={options}
 				language={language}
-				labels={{ nav: ui.navLabel, chooseProfile: ui.chooseProfile }}
+				labels={{ nav: ui.navLabel, chooseProfile: ui.chooseProfile, theme: ui.theme }}
 			/>
 			<main>
-				<Hero content={content} profileId={profileId} options={options} />
+				<Hero content={content} profileId={profileId} options={options} language={language} />
 				{sections[profileId].map((Section, position) => (
 					<Section key={position} content={content} profileId={profileId} index={position + 1} />
 				))}

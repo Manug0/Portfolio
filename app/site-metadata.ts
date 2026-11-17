@@ -15,5 +15,7 @@ export const baseViewport: Viewport = {
 	colorScheme: "dark",
 };
 
-// Marca que hay JS antes de pintar: sin él, las animaciones de entrada no ocultan el contenido
-export const jsFlagScript = "document.documentElement.classList.add('js')";
+// Se ejecuta antes de pintar: marca que hay JS (sin él, las animaciones de entrada no ocultan el contenido)
+// y aplica el tema claro si el visitante lo eligió. El oscuro es el tema por defecto.
+export const jsFlagScript =
+	"document.documentElement.classList.add('js');try{if(localStorage.getItem('theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}";

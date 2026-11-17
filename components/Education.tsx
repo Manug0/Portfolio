@@ -69,7 +69,7 @@ const Education = ({ content, profileId, index }: SectionProps) => {
 								{languages.map((language) => (
 									<li
 										key={language.name}
-										className="min-w-32 flex-1 rounded-2xl border border-white/[0.08] bg-ink/60 px-4 py-3">
+										className="min-w-32 flex-1 rounded-2xl border border-line/[0.08] bg-ink/60 px-4 py-3">
 										<p className="font-semibold">{language.name}</p>
 										<p className="text-sm text-muted">{language.level}</p>
 									</li>
@@ -89,7 +89,7 @@ const Education = ({ content, profileId, index }: SectionProps) => {
 									alt=""
 									width={224}
 									height={317}
-									className="rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.5)] ring-1 ring-white/10"
+									className="cv-thumb"
 								/>
 							</a>
 							<div>

@@ -2,7 +2,7 @@ import { SiSolana } from "react-icons/si";
 
 // Portada del bot de liquidez: una terminal que se "escribe" al entrar en pantalla
 export const BotCover = ({ lines }: { lines: [string, string, string] }) => (
-	<div aria-hidden className="bot-cover">
+	<div aria-hidden className="bot-cover dark-scope">
 		<div className="term w-[86%] p-4">
 			<div className="mb-2 flex items-center gap-1.5">
 				<span className="size-2.5 rounded-full bg-red-400/80" />

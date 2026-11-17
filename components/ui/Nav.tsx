@@ -2,6 +2,7 @@
 
 import { type LanguageTarget, LanguageLink } from "./LanguageLink";
 import { ProfileSwitch, type SwitchOption } from "./ProfileSwitch";
+import { ThemeToggle } from "./ThemeToggle";
 import { useEffect, useRef, useState } from "react";
 
 import type { ProfileId } from "@/data/site";
@@ -21,7 +22,7 @@ export const Nav = ({
 	items: NavItem[];
 	options: SwitchOption[];
 	language: LanguageTarget;
-	labels: { nav: string; chooseProfile: string };
+	labels: { nav: string; chooseProfile: string; theme: string };
 }) => {
 	const navRef = useRef<HTMLElement>(null);
 	const dockRef = useRef<HTMLDivElement>(null);
@@ -134,18 +135,29 @@ export const Nav = ({
 					})}
 					{/* Arriba ya está el interruptor grande de la portada: el del menú aparece al dejarlo atrás */}
 					<div ref={navSwitchRef} className="nav-switch hidden md:flex" data-show={dock}>
-						<span aria-hidden className="mx-1.5 h-5 w-px shrink-0 bg-white/15" />
+						<span aria-hidden className="mx-1.5 h-5 w-px shrink-0 bg-line/15" />
 						<ProfileSwitch current={current} options={options} label={labels.chooseProfile} variant="compact" className="shrink-0" />
 					</div>
-					<span aria-hidden className="mx-1 h-5 w-px shrink-0 bg-white/15 sm:mx-1.5" />
-					<LanguageLink target={language} className="nav-lang">
-						{language.code}
-					</LanguageLink>
+					{/* Idioma y tema: en el menú a partir de tableta; en móvil van en la barra flotante de abajo */}
+					<div className="utils hidden sm:flex">
+						<span aria-hidden className="mx-1.5 h-5 w-px shrink-0 bg-line/15" />
+						<LanguageLink target={language} className="nav-lang">
+							{language.code}
+						</LanguageLink>
+						<ThemeToggle label={labels.theme} />
+					</div>
 				</nav>
 			</div>
 
+			{/* Móvil: al dejar atrás la portada aparece abajo una barra con el perfil, el idioma y el tema */}
 			<div ref={dockRef} className="dock md:hidden" data-show={dock}>
 				<ProfileSwitch current={current} options={options} label={labels.chooseProfile} variant="dock" />
+				<div className="utils sm:hidden">
+					<LanguageLink target={language} className="nav-lang">
+						{language.code}
+					</LanguageLink>
+					<ThemeToggle label={labels.theme} />
+				</div>
 			</div>
 		</>
 	);

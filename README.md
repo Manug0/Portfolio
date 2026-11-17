@@ -13,6 +13,7 @@ La web tiene dos perfiles, cada uno con su contenido, su CV y su color de marca,
 - **Perfil**: se cambia con el interruptor de la portada (y el del menú, que aparece al bajar), arrastrando la
   "costura" de la ilustración de la portada o desde la tarjeta del otro perfil en "Sobre mí". El cambio se hace
   con un barrido en diagonal (View Transitions API) y aterriza en la sección equivalente del otro perfil.
+- **Tema**: botón de sol / luna (en el menú; en móvil, junto al nombre y en la barra flotante). El oscuro es el tema por defecto; la elección se guarda en `localStorage` y el cambio se revela en círculo desde el botón. Los colores de cada tema son variables CSS en `app/globals.css` (`:root` y `:root[data-theme="light"]`).
 - **Idioma**: enlace `EN` / `ES` del menú (y del pie). Lleva a la misma página y sección en el otro idioma,
   y cada idioma ofrece sus propios CVs.
 
@@ -46,6 +47,7 @@ npm run build
   - `HeroArt.tsx`: el lienzo de la portada y su costura arrastrable. Dibuja una sola serie con dos lecturas: gráfico de línea (finanzas) y bloques de datos (tech).
   - `ProfileSwitch.tsx`, `ProfileLink.tsx` y `lib/profile-switch.ts`: el interruptor de perfil y el barrido entre perfiles.
   - `LanguageLink.tsx`: el enlace de cambio de idioma.
+  - `ThemeToggle.tsx`: el botón de tema claro / oscuro.
   - `Effects.tsx`: comportamientos globales con un solo observador por tipo (apariciones al hacer scroll, foco de luz e inclinación de las tarjetas, progreso de lectura y de la línea de tiempo).
   - `Nav.tsx`: menú flotante con la sección activa.
 - `public/`:

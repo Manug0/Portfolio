@@ -19,11 +19,11 @@ const ProjectCard = ({ item, delay, ui }: { item: Project; delay: number; ui: Ui
 					<div aria-hidden className="shot-glow" />
 					{item.img ? (
 						<div className="browser">
-							<div aria-hidden className="flex items-center gap-1.5 border-b border-white/[0.08] px-3 py-2">
+							<div aria-hidden className="flex items-center gap-1.5 border-b border-line/[0.08] px-3 py-2">
 								<span className="size-2 rounded-full bg-red-400/80" />
 								<span className="size-2 rounded-full bg-yellow-400/80" />
 								<span className="size-2 rounded-full bg-emerald-400/80" />
-								<span className="ml-2 flex-1 truncate rounded-md bg-white/[0.06] px-2 py-0.5 text-center font-mono text-[10px] text-muted">
+								<span className="ml-2 flex-1 truncate rounded-md bg-line/[0.06] px-2 py-0.5 text-center font-mono text-[10px] text-muted">
 									{host}
 								</span>
 							</div>
@@ -61,7 +61,7 @@ const ProjectCard = ({ item, delay, ui }: { item: Project; delay: number; ui: Ui
 								<li
 									key={tech.name}
 									title={tech.name}
-									className="flex size-9 items-center justify-center rounded-full border border-white/15 bg-ink">
+									className="flex size-9 items-center justify-center rounded-full border border-line/15 bg-ink">
 									{Icon && <Icon aria-hidden className="size-4" style={{ color: tech.color }} />}
 									<span className="sr-only">{tech.name}</span>
 								</li>

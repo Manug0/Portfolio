@@ -26,7 +26,7 @@ export const MarketChart = () => (
 		</defs>
 
 		{[40, 80, 120].map((y) => (
-			<line key={y} x1="0" x2="300" y1={y} y2={y} stroke="white" strokeOpacity="0.06" />
+			<line key={y} x1="0" x2="300" y1={y} y2={y} stroke="rgb(var(--line-rgb))" strokeOpacity="0.08" />
 		))}
 
 		{candles.map((candle, index) => (

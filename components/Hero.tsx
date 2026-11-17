@@ -3,6 +3,8 @@ import { HiArrowDownRight, HiOutlineDocumentArrowDown } from "react-icons/hi2";
 import { ProfileSwitch, type SwitchOption } from "./ui/ProfileSwitch";
 
 import { Fragment } from "react";
+import { type LanguageTarget, LanguageLink } from "./ui/LanguageLink";
+import { ThemeToggle } from "./ui/ThemeToggle";
 import { HeroArt } from "./ui/HeroArt";
 import Image from "next/image";
 
@@ -12,10 +14,12 @@ const Hero = ({
 	content,
 	profileId,
 	options,
+	language,
 }: {
 	content: Content;
 	profileId: ProfileId;
 	options: SwitchOption[];
+	language: LanguageTarget;
 }) => {
 	const { ui } = content;
 	const profile = content.profiles[profileId];
@@ -43,6 +47,13 @@ const Hero = ({
 								<span aria-hidden className="live-dot" />
 								{content.location}
 							</p>
+						</div>
+						{/* En móvil, idioma y tema van aquí arriba; al bajar pasan a la barra flotante */}
+						<div className="utils hero-utils sm:hidden">
+							<LanguageLink target={language} className="nav-lang">
+								{language.code}
+							</LanguageLink>
+							<ThemeToggle label={ui.theme} />
 						</div>
 					</div>
 					<span aria-hidden className="hero-head-rule enter" style={delay(100)} />

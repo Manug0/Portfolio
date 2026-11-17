@@ -81,6 +81,8 @@ export type Ui = {
 	viewProfileAria: (label: string) => string;
 	/** Enlace a la misma página en el otro idioma */
 	language: { code: string; label: string };
+	/** Nombre accesible del botón de tema claro / oscuro */
+	theme: string;
 	hero: { photoAlt: string; greeting: string; download: (cv: string) => string };
 	about: { eyebrow: string; mainTech: string };
 	copyEmail: { idle: string; done: string; announce: string };

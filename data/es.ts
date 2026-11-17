@@ -75,8 +75,8 @@ const tech_: Profile = {
 	id: "tech",
 	label: "Tech",
 	sublabel: "Datos · Desarrollo",
-	role: "Desarrollador",
-	tagline: "Backend, Integraciones y Datos",
+	role: "Desarrollador Salesforce",
+	tagline: "Fullstack, Integraciones y Datos | Finanzas",
 	headline: "Del negocio al código: soluciones técnicas que escalan",
 	highlightFrom: 4,
 	intro:
@@ -118,7 +118,7 @@ const tech_: Profile = {
 			description: "Siempre ampliando",
 			rows: [
 				["Apex", "LWC", "Flows"],
-				["React", "TypeScript", "Angular"],
+				["React", "TypeScript", "Node.js"],
 				["SQL", "Python", "MongoDB"],
 			],
 		},
@@ -178,6 +178,7 @@ const tech_: Profile = {
 					tech.react,
 					tech.next,
 					tech.angular,
+					tech.node,
 					tech.html,
 					tech.css,
 					named("APIs REST / SOAP", icons.api),
@@ -215,6 +216,7 @@ const tech_: Profile = {
 			tech.salesforce,
 			tech.next,
 			tech.angular,
+			tech.node,
 			tech.mongodb,
 			tech.js,
 			tech.jenkins,
@@ -249,7 +251,7 @@ const tech_: Profile = {
 	},
 	cv: { file: "/Manuel_Gonzalez_Garcia_CV.pdf", preview: "/cv-preview.jpg", label: "CV Tech" },
 	meta: {
-		title: "Manuel González · Desarrollador · Backend, Integraciones y Datos",
+		title: "Manuel González · Desarrollador Salesforce · Fullstack, Integraciones y Datos",
 		description:
 			"Portfolio de Manuel González, desarrollador especializado en backend, integraciones y datos: proyectos de datos para banca, Salesforce (Apex, LWC, Flows, Agentforce) y desarrollo web con React, TypeScript y Angular.",
 		keywords: ["Desarrollador", "Datos", "Integraciones", "Backend", "Salesforce", "Apex", "React", "TypeScript", "SQL"],
@@ -260,12 +262,12 @@ const finanzas: Profile = {
 	id: "finanzas",
 	label: "Finanzas",
 	sublabel: "Inversión · Riesgo",
-	role: "Economista",
-	tagline: "Inversión, Riesgo y Mercados Financieros",
+	role: "Economista con perfil técnico",
+	tagline: "Banca corporativa y mercados financieros",
 	headline: "Del dato a la decisión: análisis con rigor cuantitativo",
 	highlightFrom: 4,
 	intro:
-		"economista con siete años invirtiendo por cuenta propia, incluida la gestión de carteras familiares. Combino economía, estadística y econometría con un perfil técnico (Python, SQL, datos) para analizar con rigor y construir mis propias herramientas.",
+		"economista con siete años invirtiendo por cuenta propia, incluida la gestión de carteras familiares, y actualmente preparando el Nivel I del CFA. Combino economía, estadística y econometría con un perfil técnico (Python, SQL, datos) para analizar con rigor y construir mis propias herramientas.",
 	primaryCta: { title: "Ver inversiones y mercados", href: "#markets" },
 	stats: [
 		{ value: "7 años", label: "invirtiendo por cuenta propia" },
@@ -441,7 +443,7 @@ const finanzas: Profile = {
 		label: "CV Finanzas",
 	},
 	meta: {
-		title: "Manuel González · Economista · Inversión y Mercados",
+		title: "Manuel González · Economista con perfil técnico · Banca corporativa y mercados financieros",
 		description:
 			"Portfolio de Manuel González, economista orientado a finanzas: análisis de inversiones, riesgo y mercados financieros. Siete años invirtiendo y gestionando carteras, con perfil técnico en Python, SQL y datos para banca.",
 		keywords: ["Economista", "Inversión", "Riesgos", "Mercados financieros", "Análisis de inversiones", "Python", "SQL"],
@@ -457,7 +459,7 @@ export const es: Content = {
 			id: 1,
 			title: "Tecnología Aplicada al Desarrollo de Empresas",
 			school: "Universidad Internacional de La Rioja",
-			period: "03/2025 – 03/2026",
+			period: "2025 – 2026",
 			des: "Desarrollo backend orientado a soluciones empresariales.",
 		},
 		{
@@ -488,6 +490,7 @@ export const es: Content = {
 		viewProfile: (label) => `Ver perfil ${label.toLowerCase()}`,
 		viewProfileAria: (label) => `Ver el perfil ${label}`,
 		language: { code: "EN", label: "View this page in English" },
+		theme: "Cambiar entre tema claro y oscuro",
 		hero: {
 			photoAlt: "Foto de Manuel González",
 			greeting: "¡Hola! Soy",
