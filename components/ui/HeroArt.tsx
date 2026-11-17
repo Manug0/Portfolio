@@ -1,29 +1,27 @@
 "use client";
 
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
-import { type ProfileId, otherProfile } from "@/data/profiles";
-import { carrySeam, switchProfile, takeSeam } from "@/lib/profile-switch";
+import { type ProfileTarget, carrySeam, switchProfile, takeSeam } from "@/lib/profile-switch";
 import { useEffect, useRef } from "react";
 
 import Link from "next/link";
+import type { ProfileId } from "@/data/site";
 import { useRouter } from "next/navigation";
 
-// Ilustración de la portada: un gráfico de mercado (finanzas, dorado) que desemboca en una red de
-// sistemas (tech, violeta). Los dos mundos se ven siempre; una "costura" en diagonal los separa y se
-// puede arrastrar para pasar de un perfil al otro. Es decorativa: no representa datos reales.
+// Ilustración de la portada: una sola serie de datos con dos lecturas. A la izquierda de la "costura"
+// se ve como un gráfico de mercado (finanzas, dorado); a la derecha, la misma serie continúa convertida
+// en bloques de datos (tech, violeta). La costura se puede arrastrar para pasar de un perfil al otro.
+// Es decorativa: no representa datos reales.
 //
 // Rendimiento:
 //  · un único <canvas> 2D que solo ocupa la franja del dibujo, con la resolución limitada;
-//  · unos 15 trazados por fotograma y ningún recorte (clip): cada mundo se dibuja solo hasta la costura;
+//  · pocos trazados por fotograma y ningún recorte (clip): cada lectura se dibuja solo hasta la costura;
 //  · el bucle se detiene cuando la franja no está en pantalla o la pestaña está oculta;
-//  · mientras se hace scroll, o si el equipo no llega a 60 fps, se dibuja un fotograma de cada dos.
-
-type Node = { x: number; y: number; kind: 0 | 1 | 2; glow: number; vis: number; out: number[] };
-type Edge = { a: number; b: number; mx: number; l1: number; l2: number; len: number };
-type Packet = { edge: number; dist: number; speed: number };
+//  · mientras se hace scroll, o si el equipo no llega a 60 fps, se dibujan menos fotogramas.
 
 const SLANT = 0.17;
 const DIM = 0.5;
+const MAX_COLUMNS = 320;
 
 // Generador pseudoaleatorio con semilla: el dibujo es el mismo en cada visita
 const seeded = (seed: number) => () => {
@@ -35,12 +33,22 @@ const seeded = (seed: number) => () => {
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
-export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
+export const HeroArt = ({
+	profileId,
+	other,
+	label,
+}: {
+	profileId: ProfileId;
+	/** El otro perfil: a él lleva el tirador de la costura */
+	other: ProfileTarget;
+	/** Nombre accesible del tirador ("Ver el perfil Tech") */
+	label: string;
+}) => {
 	const bandRef = useRef<HTMLDivElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const handleRef = useRef<HTMLAnchorElement>(null);
 	const router = useRouter();
-	const other = otherProfile(profileId);
+	const { id: otherId, href: otherHref } = other;
 
 	useEffect(() => {
 		const band = bandRef.current;
@@ -90,7 +98,7 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 		let dragSeam = 0.5;
 		const introTimer = window.setTimeout(() => (intro = false), 850);
 
-		// Serie del gráfico: paseo aleatorio con deriva positiva que se desplaza hacia la izquierda
+		// La serie: paseo aleatorio con deriva positiva que se desplaza hacia la izquierda
 		const random = seeded(11);
 		let step = 20;
 		let values: number[] = [];
@@ -114,109 +122,15 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 			return [min, max];
 		};
 
-		// Red de sistemas
-		let nodes: Node[] = [];
-		let edges: Edge[] = [];
-		let packets: Packet[] = [];
-		let gridX = 100;
-		const graphRandom = seeded(29);
-
-		const buildGraph = () => {
-			const rnd = seeded(5);
-			const bandHeight = bottom - top;
-			gridX = clamp(W / 12, 76, 124);
-			const gridY = clamp(bandHeight / 3.5, 52, 88);
-			const cols = Math.ceil(W / gridX) + 1;
-			const rows = Math.max(3, Math.round(bandHeight / gridY));
-			const columns: number[][] = [];
-			nodes = [];
-			edges = [];
-			for (let c = 0; c < cols; c++) {
-				columns[c] = [];
-				for (let r = 0; r < rows; r++) {
-					if (rnd() < 0.17) continue;
-					const x = c * gridX + gridX * 0.3 + (rnd() - 0.5) * gridX * 0.4;
-					const y = top + 34 + r * gridY + (c % 2 ? gridY * 0.5 : 0) + (rnd() - 0.5) * gridY * 0.34;
-					if (y > bottom + 4) continue;
-					const roll = rnd();
-					columns[c].push(nodes.length);
-					nodes.push({ x, y, kind: roll < 0.1 ? 2 : roll < 0.34 ? 1 : 0, glow: 0, vis: 1, out: [] });
-				}
-			}
-			for (let c = 0; c < cols - 1; c++) {
-				for (const a of columns[c]) {
-					const nearest = columns[c + 1]
-						.map((b) => ({ b, dy: Math.abs(nodes[b].y - nodes[a].y) }))
-						.sort((p, q) => p.dy - q.dy);
-					nearest.slice(0, rnd() < 0.44 ? 2 : 1).forEach(({ b }) => {
-						const A = nodes[a];
-						const B = nodes[b];
-						const mx = (A.x + B.x) / 2;
-						const l1 = mx - A.x;
-						const l2 = Math.abs(B.y - A.y);
-						A.out.push(edges.length);
-						edges.push({ a, b, mx, l1, l2, len: l1 + l2 + (B.x - mx) });
-					});
-				}
-			}
-			const count = clamp(Math.round(W / 105), 5, 15);
-			packets = Array.from({ length: count }, () => spawn(true));
-		};
-
-		// Los paquetes nacen junto a la costura: el dato sale del gráfico y recorre los sistemas
-		function spawn(anywhere = false): Packet {
-			const candidates: number[] = [];
-			for (let i = 0; i < nodes.length; i++) {
-				const node = nodes[i];
-				if (!node.out.length) continue;
-				const fromSeam = node.x - seamAt(node.y);
-				if (anywhere ? fromSeam > 0 : fromSeam > 6 && fromSeam < gridX * 1.6) candidates.push(i);
-			}
-			const pool = candidates.length ? candidates : nodes.map((_, i) => i).filter((i) => nodes[i].out.length);
-			const node = nodes[pool[Math.floor(graphRandom() * pool.length)]];
-			const edge = node ? node.out[Math.floor(graphRandom() * node.out.length)] : 0;
-			return {
-				edge,
-				dist: anywhere && edges[edge] ? graphRandom() * edges[edge].len : 0,
-				speed: 80 + graphRandom() * 70,
-			};
-		}
-
-		const packetPoint = (edge: Edge, dist: number): [number, number] => {
-			const A = nodes[edge.a];
-			const B = nodes[edge.b];
-			if (dist <= edge.l1) return [A.x + Math.max(0, dist), A.y];
-			if (dist <= edge.l1 + edge.l2) return [edge.mx, A.y + Math.sign(B.y - A.y) * (dist - edge.l1)];
-			return [edge.mx + (dist - edge.l1 - edge.l2), B.y];
-		};
-
-		// Recorrido en ángulo recto con esquinas redondeadas, como un esquema de integraciones
-		const elbow = (x1: number, y1: number, x2: number, y2: number, mx: number) => {
-			ctx.moveTo(x1, y1);
-			const dy = Math.abs(y2 - y1);
-			if (dy < 1) {
-				ctx.lineTo(x2, y2);
-				return;
-			}
-			const radius = Math.min(7, dy / 2, Math.abs(mx - x1), Math.abs(x2 - mx));
-			ctx.arcTo(mx, y1, mx, y2, radius);
-			ctx.arcTo(mx, y2, x2, y2, radius);
-			ctx.lineTo(x2, y2);
-		};
-		// Contorno de los nodos "anillo" y "chip", y núcleo de cualquier nodo
-		const nodeShape = (node: Node) => {
-			if (node.kind === 1) {
-				ctx.moveTo(node.x + 5, node.y);
-				ctx.arc(node.x, node.y, 5, 0, Math.PI * 2);
-			} else if (node.kind === 2) {
-				ctx.roundRect(node.x - 9, node.y - 9, 18, 18, 5);
-			}
-		};
-		const nodeCore = (node: Node) => {
-			const radius = node.kind === 2 ? 2.6 : node.kind === 1 ? 1.6 : 2.2;
-			ctx.moveTo(node.x + radius, node.y);
-			ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
-		};
+		// Bloques de datos: columnas de celdas alineadas con el eje de tiempo de la serie
+		let cell = 12;
+		let gap = 3;
+		const columnX = new Float32Array(MAX_COLUMNS);
+		const columnTop = new Int16Array(MAX_COLUMNS); // fila de la celda superior (el valor)
+		const columnLit = new Int16Array(MAX_COLUMNS); // última fila que queda a la derecha de la costura
+		const columnMax = new Int16Array(MAX_COLUMNS); // filas disponibles hasta la costura
+		// Barrido de lectura que recorre los bloques cada pocos segundos
+		let scan = -1;
 
 		const pointer = { x: -1, y: -1, active: false };
 		let areaGradient: CanvasGradient | null = null;
@@ -235,7 +149,7 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 			top = bandRect.top - canvasRect.top;
 			bottom = bandRect.bottom - canvasRect.top;
 			mid = (top + bottom) / 2;
-			// El tirador va por debajo de la línea del gráfico para no tapar el último precio
+			// El tirador va por debajo de la línea del gráfico para no tapar el último valor
 			handleY = top + (bottom - top) * 0.76;
 
 			// En pantallas grandes se limita la resolución: las líneas finas no la necesitan
@@ -250,6 +164,9 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 			values = values.slice(values.length - needed);
 			[low, high] = range();
 
+			cell = clamp(Math.round(W / 118), 8, 13);
+			gap = cell > 10 ? 3 : 2;
+
 			areaGradient = ctx.createLinearGradient(0, top, 0, bottom);
 			areaGradient.addColorStop(0, color(FIN, 0.3));
 			areaGradient.addColorStop(1, color(FIN, 0));
@@ -258,8 +175,6 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 			seamGradient.addColorStop(0.3, "rgb(255 255 255 / 0.4)");
 			seamGradient.addColorStop(0.8, "rgb(255 255 255 / 0.5)");
 			seamGradient.addColorStop(1, "rgb(255 255 255 / 0)");
-
-			buildGraph();
 		};
 
 		const update = (dt: number) => {
@@ -286,7 +201,7 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 			litFin += (targetFin - litFin) * ease;
 			litTech += (targetTech - litTech) * ease;
 
-			// Gráfico: avanza y reajusta la escala con suavidad, como un gráfico en vivo
+			// La serie avanza y reajusta la escala con suavidad, como un gráfico en vivo
 			offset += dt * 9;
 			while (offset >= step) {
 				offset -= step;
@@ -299,24 +214,9 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 			low += (min - low) * scaleEase;
 			high += (max - high) * scaleEase;
 
-			// Paquetes de datos
-			for (let i = 0; i < packets.length; i++) {
-				const packet = packets[i];
-				const edge = edges[packet.edge];
-				if (!edge) continue;
-				packet.dist += packet.speed * dt;
-				if (packet.dist < edge.len) continue;
-				const arrival = nodes[edge.b];
-				arrival.glow = 1;
-				if (arrival.out.length && graphRandom() > 0.22) {
-					packet.edge = arrival.out[Math.floor(graphRandom() * arrival.out.length)];
-					packet.dist = 0;
-				} else {
-					packets[i] = spawn();
-				}
-			}
-			const fade = Math.exp(-dt * 2.6);
-			for (const node of nodes) if (node.glow > 0.01) node.glow *= fade;
+			// Barrido de lectura: recorre los bloques en ~2,4 s y descansa hasta completar 6 s
+			scan += dt / 2.4;
+			if (scan > 2.5) scan = 0;
 		};
 
 		const draw = (time: number) => {
@@ -334,10 +234,10 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 				const i = Math.floor(position);
 				return yOf(values[i] + (values[i + 1] - values[i]) * (position - i));
 			};
-			// Altura hasta la que una vertical en x queda a la izquierda de la costura
-			const seamYAt = (x: number) => Math.min(bottom, mid - (x - seam * W) / SLANT);
+			// Altura a la que la costura pasa por x (por encima, x queda a su izquierda)
+			const seamYAt = (x: number) => mid - (x - seam * W) / SLANT;
 
-			// Punto donde el gráfico toca la costura: el "último precio" y origen de la red
+			// Punto donde la serie toca la costura: el "último valor"
 			let ix = seam * W;
 			let iy = yAtX(ix);
 			for (let n = 0; n < 3; n++) {
@@ -348,7 +248,7 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 			let last = 0;
 			while (last + 1 < values.length && xOf(last + 1) < ix) last++;
 
-			// ── Finanzas: todo se dibuja solo hasta la costura (sin recortes)
+			// ── Finanzas: gráfico de línea. Todo se dibuja solo hasta la costura (sin recortes)
 			if (ix > 0) {
 				ctx.globalAlpha = litFin;
 
@@ -362,7 +262,7 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 				for (let i = 0; i < values.length; i++) {
 					if ((i + shifted) % 6) continue;
 					const x = Math.round(xOf(i)) + 0.5;
-					const end = seamYAt(x);
+					const end = Math.min(bottom, seamYAt(x));
 					if (end <= chartTop) break;
 					ctx.moveTo(x, chartTop - 8);
 					ctx.lineTo(x, end);
@@ -424,7 +324,7 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 				ctx.lineWidth = 2;
 				ctx.stroke();
 
-				// Nivel del último precio
+				// Nivel del último valor
 				ctx.beginPath();
 				ctx.moveTo(0, Math.round(iy) + 0.5);
 				ctx.lineTo(ix, Math.round(iy) + 0.5);
@@ -440,7 +340,7 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 					const y = yAtX(pointer.x);
 					ctx.beginPath();
 					ctx.moveTo(x, chartTop - 8);
-					ctx.lineTo(x, seamYAt(x));
+					ctx.lineTo(x, Math.min(bottom, seamYAt(x)));
 					ctx.strokeStyle = color(FIN_SOFT, 0.28);
 					ctx.stroke();
 					ctx.beginPath();
@@ -453,139 +353,134 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 				}
 			}
 
-			// ── Tech: los nodos aparecen gradualmente a la derecha de la costura
-			let partial = 0;
-			for (const node of nodes) {
-				const distance = node.x - seamAt(node.y);
-				node.vis = distance <= 4 ? 0 : distance >= 34 ? 1 : (distance - 4) / 30;
-				if (node.vis > 0 && node.vis < 1) partial++;
+			// ── Tech: la misma serie, celda a celda. Cada columna es un instante; su altura, el valor
+			const rows = Math.floor((bottom - top) / cell);
+			const phase = (shifted * step + offset) % cell;
+			let count = 0;
+			for (let k = Math.floor((seamAt(bottom) + phase) / cell); count < MAX_COLUMNS; k++) {
+				const x = k * cell - phase;
+				if (x >= W) break;
+				// Filas de esta columna que quedan enteras a la derecha de la costura
+				const maxRow = Math.min(rows - 1, Math.floor((bottom - seamYAt(x - gap)) / cell - 1.001));
+				if (maxRow < 0) continue;
+				const valueRow = clamp(Math.floor((bottom - yAtX(x + cell / 2)) / cell), 0, rows - 1);
+				columnX[count] = x;
+				columnTop[count] = valueRow;
+				columnMax[count] = maxRow;
+				columnLit[count] = Math.min(valueRow, maxRow);
+				count++;
 			}
 
-			// Conexiones
-			ctx.globalAlpha = litTech;
-			ctx.strokeStyle = color(TECH, 0.3);
-			ctx.lineWidth = 1;
-			ctx.beginPath();
-			for (const edge of edges) {
-				const A = nodes[edge.a];
-				const B = nodes[edge.b];
-				if (A.vis === 1 && B.vis === 1) elbow(A.x, A.y, B.x, B.y, edge.mx);
-			}
-			ctx.stroke();
-			if (partial) {
-				for (const edge of edges) {
-					const A = nodes[edge.a];
-					const B = nodes[edge.b];
-					const vis = Math.min(A.vis, B.vis);
-					if (vis <= 0 || vis >= 1) continue;
-					ctx.globalAlpha = litTech * vis;
-					ctx.beginPath();
-					elbow(A.x, A.y, B.x, B.y, edge.mx);
-					ctx.stroke();
-				}
+			if (count) {
 				ctx.globalAlpha = litTech;
-			}
+				const hovered =
+					pointer.active && pointer.x > columnX[0] && pointer.y > top - 40 && pointer.y < bottom + 10
+						? Math.floor((pointer.x - columnX[0]) / cell)
+						: -1;
 
-			// Del último precio a los dos sistemas más cercanos: el dato entra en la red
-			let first: Node | null = null;
-			let second: Node | null = null;
-			let firstDistance = Infinity;
-			let secondDistance = Infinity;
-			for (const node of nodes) {
-				if (node.vis < 0.5) continue;
-				const distance = Math.hypot(node.x - ix, (node.y - iy) * 1.4);
-				if (distance < firstDistance) {
-					second = first;
-					secondDistance = firstDistance;
-					first = node;
-					firstDistance = distance;
-				} else if (distance < secondDistance) {
-					second = node;
-					secondDistance = distance;
-				}
-			}
-			ctx.beginPath();
-			if (first) elbow(ix, iy, first.x, first.y, (ix + first.x) / 2);
-			if (second) elbow(ix, iy, second.x, second.y, (ix + second.x) / 2);
-			ctx.setLineDash([3, 7]);
-			ctx.lineDashOffset = -time * 34;
-			ctx.strokeStyle = color(TECH_SOFT, 0.75);
-			ctx.lineWidth = 1.25;
-			ctx.stroke();
-			ctx.setLineDash([]);
-			ctx.lineDashOffset = 0;
-
-			// Cursor: los nodos cercanos se conectan a él
-			if (pointer.active && pointer.x > seamAt(pointer.y) + 6 && pointer.y > top - 40) {
+				// Cuerpo de las columnas: un único polígono escalonado
 				ctx.beginPath();
-				for (const node of nodes) {
-					if (node.vis <= 0) continue;
-					const distance = Math.hypot(node.x - pointer.x, node.y - pointer.y);
-					if (distance > 150) continue;
-					ctx.moveTo(node.x, node.y);
-					ctx.lineTo(pointer.x, pointer.y);
-					node.glow = Math.max(node.glow, 1 - distance / 150);
+				ctx.moveTo(columnX[0], bottom);
+				for (let i = 0; i < count; i++) {
+					const y = bottom - (columnLit[i] + 1) * cell;
+					ctx.lineTo(columnX[i], y);
+					ctx.lineTo(columnX[i] + cell, y);
 				}
-				ctx.strokeStyle = color(TECH_SOFT, 0.3);
-				ctx.lineWidth = 1;
-				ctx.stroke();
-			}
-
-			// Nodos: puntos, anillos y "chips" (sistemas). Los visibles del todo van en un solo trazado
-			ctx.lineWidth = 1.25;
-			ctx.strokeStyle = color(TECH, 0.9);
-			ctx.beginPath();
-			for (const node of nodes) if (node.vis === 1 && node.kind === 0) nodeCore(node);
-			ctx.fillStyle = color(TECH, 0.85);
-			ctx.fill();
-			ctx.beginPath();
-			for (const node of nodes) if (node.vis === 1 && node.kind !== 0) nodeShape(node);
-			ctx.fillStyle = color(INK, 1);
-			ctx.fill();
-			ctx.stroke();
-			ctx.beginPath();
-			for (const node of nodes) if (node.vis === 1 && node.kind !== 0) nodeCore(node);
-			ctx.fillStyle = color(TECH_SOFT, 0.95);
-			ctx.fill();
-			if (partial) {
-				for (const node of nodes) {
-					if (node.vis <= 0 || node.vis >= 1) continue;
-					ctx.globalAlpha = litTech * node.vis;
-					if (node.kind !== 0) {
-						ctx.beginPath();
-						nodeShape(node);
-						ctx.fillStyle = color(INK, 1);
-						ctx.fill();
-						ctx.stroke();
-					}
-					ctx.beginPath();
-					nodeCore(node);
-					ctx.fillStyle = color(node.kind === 0 ? TECH : TECH_SOFT, 0.9);
-					ctx.fill();
-				}
-				ctx.globalAlpha = litTech;
-			}
-
-			// Destello al recibir un paquete
-			for (const node of nodes) {
-				if (node.glow < 0.03 || node.vis <= 0) continue;
-				ctx.beginPath();
-				ctx.arc(node.x, node.y, 5 + node.glow * 8, 0, Math.PI * 2);
-				ctx.fillStyle = color(TECH, node.glow * 0.26 * node.vis);
+				ctx.lineTo(columnX[count - 1] + cell, bottom);
+				ctx.closePath();
+				ctx.fillStyle = color(TECH, 0.15);
 				ctx.fill();
-			}
 
-			// Paquetes con estela
-			for (const packet of packets) {
-				const edge = edges[packet.edge];
-				if (!edge) continue;
-				for (let n = 3; n >= 0; n--) {
-					const [x, y] = packetPoint(edge, packet.dist - n * 7);
-					if (x < seamAt(y) + 6) continue;
+				// Las celdas más altas de cada columna, más encendidas: dos pasadas dan un degradado de tres niveles
+				for (const depth of [4, 2]) {
 					ctx.beginPath();
-					ctx.arc(x, y, 2.4 - n * 0.4, 0, Math.PI * 2);
-					ctx.fillStyle = color(TECH_SOFT, 1 / (1 + n * 1.6));
+					for (let i = 0; i < count; i++) {
+						const lit = columnLit[i] + 1;
+						ctx.rect(columnX[i], bottom - lit * cell, cell, Math.min(depth, lit) * cell);
+					}
+					ctx.fillStyle = color(TECH, 0.14);
 					ctx.fill();
+				}
+
+				// La celda del valor
+				ctx.beginPath();
+				for (let i = 0; i < count; i++) {
+					if (columnTop[i] > columnMax[i]) continue;
+					ctx.rect(columnX[i], bottom - (columnTop[i] + 1) * cell, cell, cell);
+				}
+				ctx.fillStyle = color(TECH_SOFT, 0.95);
+				ctx.fill();
+
+				// Barrido de lectura: una franja que ilumina las columnas a su paso
+				if (scan >= 0 && scan <= 1) {
+					const start = columnX[0];
+					const head = start + (W - start + cell * 8) * scan;
+					for (let i = 0; i < count; i++) {
+						const distance = Math.abs(columnX[i] + cell / 2 - head) / (cell * 6);
+						if (distance >= 1) continue;
+						ctx.fillStyle = color(TECH_SOFT, (1 - distance) ** 2 * 0.22);
+						ctx.fillRect(columnX[i], bottom - (columnLit[i] + 1) * cell, cell, (columnLit[i] + 1) * cell);
+					}
+				}
+
+				// Cursor: se enciende la columna sobre la que está
+				if (hovered >= 0 && hovered < count) {
+					ctx.fillStyle = color(TECH_SOFT, 0.3);
+					ctx.fillRect(columnX[hovered], bottom - (columnLit[hovered] + 1) * cell, cell, (columnLit[hovered] + 1) * cell);
+				}
+
+				// Separación entre celdas: se "borra" una rejilla sobre lo ya pintado, solo a la derecha de la costura
+				ctx.globalAlpha = 1;
+				ctx.globalCompositeOperation = "destination-out";
+				ctx.beginPath();
+				let tallest = 0;
+				for (let i = 0; i < count; i++) {
+					if (columnLit[i] > tallest) tallest = columnLit[i];
+					ctx.moveTo(columnX[i], bottom - (columnLit[i] + 1) * cell - 1);
+					ctx.lineTo(columnX[i], bottom + 1);
+				}
+				for (let row = 0; row <= tallest + 1; row++) {
+					const y = bottom - row * cell;
+					ctx.moveTo(Math.max(columnX[0], seamAt(y) + gap), y);
+					ctx.lineTo(W + 1, y);
+				}
+				ctx.lineWidth = gap;
+				ctx.strokeStyle = "#000";
+				ctx.stroke();
+				ctx.globalCompositeOperation = "source-over";
+				ctx.globalAlpha = litTech;
+
+				// Celdas vacías justo por encima del valor: un punto tenue en cada una
+				ctx.beginPath();
+				for (let i = 0; i < count; i++) {
+					const x = columnX[i] + cell / 2 - 0.75;
+					const until = Math.min(columnMax[i], columnTop[i] + 6);
+					for (let row = columnTop[i] + 1; row <= until; row++) {
+						ctx.rect(x, bottom - (row + 0.5) * cell - 0.75, 1.5, 1.5);
+					}
+				}
+				ctx.fillStyle = color(TECH, 0.2);
+				ctx.fill();
+
+				// Cursor: nivel del valor de la columna señalada
+				if (hovered >= 0 && hovered < count && columnTop[hovered] <= columnMax[hovered]) {
+					const y = Math.round(bottom - (columnTop[hovered] + 0.5) * cell) + 0.5;
+					ctx.beginPath();
+					ctx.moveTo(seamAt(y) + gap, y);
+					ctx.lineTo(W, y);
+					ctx.setLineDash([2, 6]);
+					ctx.strokeStyle = color(TECH_SOFT, 0.4);
+					ctx.lineWidth = 1;
+					ctx.stroke();
+					ctx.setLineDash([]);
+					ctx.strokeStyle = color(TECH_SOFT, 1);
+					ctx.lineWidth = 1.5;
+					ctx.strokeRect(
+						columnX[hovered] - 2,
+						bottom - (columnTop[hovered] + 1) * cell - 2,
+						cell + 4,
+						cell + 4
+					);
 				}
 			}
 			ctx.globalAlpha = 1;
@@ -598,7 +493,7 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 			ctx.lineWidth = 1;
 			ctx.stroke();
 
-			// Último precio: punto con pulso, a caballo entre los dos mundos
+			// Último valor: punto con pulso, a caballo entre las dos lecturas
 			const pulse = (time * 0.55) % 1;
 			ctx.beginPath();
 			ctx.arc(ix, iy, 5 + pulse * 16, 0, Math.PI * 2);
@@ -622,7 +517,7 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 		let halfRate = false;
 		let retryAt = 0;
 		let lastScroll = -Infinity;
-		let odd = false;
+		let tick = 0;
 		const loop = (now: number) => {
 			const delta = now - previous;
 			previous = now;
@@ -637,10 +532,11 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 				halfRate = false;
 				pace = 16.7;
 			}
-			// Durante el scroll también: la prioridad es que la página se desplace fluida
+			// Durante el scroll, uno de cada tres: la prioridad es que la página se desplace fluida
 			const scrolling = now - lastScroll < 180;
-			odd = !odd;
-			if ((!halfRate && !scrolling) || odd || dragging) draw(now / 1000);
+			tick++;
+			const every = dragging ? 1 : scrolling ? 3 : halfRate ? 2 : 1;
+			if (tick % every === 0) draw(now / 1000);
 			frame = requestAnimationFrame(loop);
 		};
 		const onScroll = () => (lastScroll = performance.now());
@@ -700,7 +596,7 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 		// ── Arrastrar la costura: pasado el centro se cambia de perfil
 		const go = () => {
 			carrySeam(seam);
-			switchProfile(router, other);
+			switchProfile(router, { id: otherId, href: otherHref });
 		};
 		let moved = false;
 		let startX = 0;
@@ -776,17 +672,12 @@ export const HeroArt = ({ profileId }: { profileId: ProfileId }) => {
 			handle.removeEventListener("click", onClick);
 			handle.removeEventListener("keydown", onKey);
 		};
-	}, [profileId, router, other]);
+	}, [profileId, router, otherId, otherHref]);
 
 	return (
 		<div ref={bandRef} className="hero-band">
 			<canvas ref={canvasRef} aria-hidden className="hero-canvas" />
-			<Link
-				ref={handleRef}
-				href={other.path}
-				draggable={false}
-				aria-label={`Ver el perfil ${other.label}`}
-				className="seam-handle">
+			<Link ref={handleRef} href={otherHref} draggable={false} aria-label={label} className="seam-handle">
 				<HiChevronLeft aria-hidden className="size-4" />
 				<HiChevronRight aria-hidden className="size-4" />
 			</Link>

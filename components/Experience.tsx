@@ -1,10 +1,10 @@
-import { type ProfileId, getProfile } from "@/data/profiles";
-
 import { SectionHeading } from "./ui/SectionHeading";
+import type { SectionProps } from "./types";
 
 // Línea de tiempo: la barra se rellena con el scroll (ver components/ui/Effects.tsx)
-const Experience = ({ profileId, index }: { profileId: ProfileId; index: number }) => {
-	const profile = getProfile(profileId);
+const Experience = ({ content, profileId, index }: SectionProps) => {
+	const { ui } = content;
+	const profile = content.profiles[profileId];
 
 	return (
 		<section id="experience" className="section" aria-labelledby="experience-title">
@@ -12,9 +12,9 @@ const Experience = ({ profileId, index }: { profileId: ProfileId; index: number 
 				<SectionHeading
 					id="experience-title"
 					index={index}
-					eyebrow="Trayectoria"
-					title="Mi"
-					highlight="experiencia"
+					eyebrow={ui.experience.eyebrow}
+					title={ui.experience.title}
+					highlight={ui.experience.highlight}
 					intro={profile.experienceIntro}
 				/>
 
@@ -38,7 +38,7 @@ const Experience = ({ profileId, index }: { profileId: ProfileId; index: number 
 										{job.current && (
 											<span className="badge badge-live">
 												<span aria-hidden className="live-dot" />
-												Actualidad
+												{ui.experience.current}
 											</span>
 										)}
 									</header>
@@ -51,7 +51,7 @@ const Experience = ({ profileId, index }: { profileId: ProfileId; index: number 
 											</li>
 										))}
 									</ul>
-									<ul className="mt-6 flex flex-wrap gap-2" aria-label="Tecnologías y áreas">
+									<ul className="mt-6 flex flex-wrap gap-2" aria-label={ui.experience.tagsLabel}>
 										{job.tags.map((tag) => (
 											<li key={tag} className="chip">
 												{tag}

@@ -1,16 +1,18 @@
 import { HiOutlineAcademicCap, HiOutlineDocumentArrowDown, HiOutlineEye } from "react-icons/hi2";
-import { type ProfileId, getProfile, otherProfile } from "@/data/profiles";
-import { certifications, education, languages } from "@/data";
 
 import Image from "next/image";
 import { SectionHeading } from "./ui/SectionHeading";
+import type { SectionProps } from "./types";
 import { SiSalesforce } from "react-icons/si";
+import { otherProfileId } from "@/data/site";
 
 const delay = (ms: number) => ({ "--d": ms }) as React.CSSProperties;
 
-const Education = ({ profileId, index }: { profileId: ProfileId; index: number }) => {
-	const { cv } = getProfile(profileId);
-	const other = otherProfile(profileId);
+const Education = ({ content, profileId, index }: SectionProps) => {
+	const { ui, education, certifications, languages } = content;
+	const { cv } = content.profiles[profileId];
+	const other = content.profiles[otherProfileId(profileId)];
+	const copy = ui.education;
 
 	return (
 		<section id="education" className="section" aria-labelledby="education-title">
@@ -18,9 +20,9 @@ const Education = ({ profileId, index }: { profileId: ProfileId; index: number }
 				<SectionHeading
 					id="education-title"
 					index={index}
-					eyebrow="Formación"
-					title="Formación y"
-					highlight="certificaciones"
+					eyebrow={copy.eyebrow}
+					title={copy.title}
+					highlight={copy.highlight}
 				/>
 
 				<div className="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-5">
@@ -53,7 +55,7 @@ const Education = ({ profileId, index }: { profileId: ProfileId; index: number }
 										<SiSalesforce aria-hidden className="size-9 text-[#00A1E0]" />
 									</div>
 									<div>
-										<p className="eyebrow !text-[0.66rem]">Certificación</p>
+										<p className="eyebrow !text-[0.66rem]">{copy.certification}</p>
 										<h3 className="mt-1 text-lg font-semibold tracking-tight md:text-xl">{cert.title}</h3>
 										<p className="text-sm text-brand">{cert.issuer}</p>
 									</div>
@@ -62,7 +64,7 @@ const Education = ({ profileId, index }: { profileId: ProfileId; index: number }
 						))}
 
 						<div className="card p-6" data-reveal style={delay(140)}>
-							<h3 className="eyebrow !text-[0.66rem]">Idiomas</h3>
+							<h3 className="eyebrow !text-[0.66rem]">{copy.languages}</h3>
 							<ul className="mt-3 flex flex-wrap gap-3">
 								{languages.map((language) => (
 									<li
@@ -80,7 +82,7 @@ const Education = ({ profileId, index }: { profileId: ProfileId; index: number }
 								href={cv.file}
 								target="_blank"
 								rel="noopener noreferrer"
-								aria-label="Ver el CV en PDF (se abre en una pestaña nueva)"
+								aria-label={copy.viewCvAria}
 								className="relative block w-24 shrink-0 -rotate-6 transition-transform duration-500 ease-out group-hover:rotate-0 group-hover:scale-105 md:w-28">
 								<Image
 									src={cv.preview}
@@ -92,11 +94,11 @@ const Education = ({ profileId, index }: { profileId: ProfileId; index: number }
 							</a>
 							<div>
 								<h3 className="text-lg font-semibold tracking-tight md:text-xl">{cv.label}</h3>
-								<p className="mt-1 text-sm text-muted">Todo lo anterior, en dos páginas.</p>
+								<p className="mt-1 text-sm text-muted">{copy.cvNote}</p>
 								<div className="mt-4 flex flex-wrap gap-2">
 									<a href={cv.file} download className="btn btn-primary h-10 px-4 text-sm">
 										<HiOutlineDocumentArrowDown aria-hidden className="size-4" />
-										Descargar
+										{copy.download}
 									</a>
 									<a
 										href={cv.file}
@@ -104,7 +106,7 @@ const Education = ({ profileId, index }: { profileId: ProfileId; index: number }
 										rel="noopener noreferrer"
 										className="btn btn-ghost h-10 px-4 text-sm">
 										<HiOutlineEye aria-hidden className="size-4" />
-										Ver online
+										{copy.viewOnline}
 									</a>
 								</div>
 								<a
@@ -112,7 +114,7 @@ const Education = ({ profileId, index }: { profileId: ProfileId; index: number }
 									download
 									className="mt-3 inline-flex items-center gap-1 text-xs text-muted underline-offset-4 transition hover:text-fg hover:underline">
 									<HiOutlineDocumentArrowDown aria-hidden className="size-3.5 shrink-0" />
-									¿Buscas el perfil {other.label.toLowerCase()}? Descarga el {other.cv.label}
+									{copy.otherCv(other.label, other.cv.label)}
 								</a>
 							</div>
 						</div>

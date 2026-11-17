@@ -1,6 +1,8 @@
 // Cambio de perfil con barrido en diagonal (View Transitions API) y estado compartido de la portada.
 // Sin soporte del navegador o con "reducir movimiento" se navega sin animación.
-import type { Profile } from "@/data/profiles";
+import type { ProfileId } from "@/data/site";
+
+export type ProfileTarget = { id: ProfileId; href: string };
 
 type Router = { push: (href: string) => void };
 type ViewTransition = { finished: Promise<void> };
@@ -17,9 +19,15 @@ export const routeCommitted = () => {
 	pending = null;
 };
 
-// Sección visible (la actualiza el menú): al cambiar de perfil se aterriza en la sección equivalente
+// Sección visible (la actualiza el menú): al cambiar de perfil o de idioma se aterriza en la equivalente
 export const navState = { section: "" };
 const equivalent: Record<string, string> = { markets: "projects" };
+
+/** Ancla de la sección en la que está el lector, o "" si sigue en la portada */
+export const currentSectionHash = (mapToOtherProfile = false) => {
+	if (window.scrollY <= window.innerHeight * 0.6 || !navState.section) return "";
+	return `#${mapToOtherProfile ? (equivalent[navState.section] ?? navState.section) : navState.section}`;
+};
 
 // Posición de la costura de la portada al salir, para que el lienzo nuevo continúe el movimiento
 let seamCarry: { value: number; at: number } | null = null;
@@ -37,10 +45,8 @@ export const peekProfile = (on: boolean) => {
 	window.dispatchEvent(new CustomEvent("profile:peek", { detail: on }));
 };
 
-export function switchProfile(router: Router, target: Profile) {
-	const pastHero = window.scrollY > window.innerHeight * 0.6;
-	const section = equivalent[navState.section] ?? navState.section;
-	const href = pastHero && section ? `${target.path}#${section}` : target.path;
+export function switchProfile(router: Router, target: ProfileTarget) {
+	const href = target.href + currentSectionHash(true);
 
 	const doc = document as TransitionDocument;
 	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

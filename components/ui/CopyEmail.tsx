@@ -2,7 +2,6 @@
 
 import { IoCheckmarkDone, IoCopyOutline } from "react-icons/io5";
 
-import { siteConfig } from "@/data";
 import { useState } from "react";
 
 // canvas-confetti necesita hex: leemos el color de marca del perfil activo desde las variables CSS
@@ -12,7 +11,13 @@ const brandHex = (element: HTMLElement, variable: string) => {
 	return "#" + rgb.map((channel) => channel.toString(16).padStart(2, "0")).join("");
 };
 
-export const CopyEmail = () => {
+export const CopyEmail = ({
+	email,
+	labels,
+}: {
+	email: string;
+	labels: { idle: string; done: string; announce: string };
+}) => {
 	const [copied, setCopied] = useState(false);
 
 	const handleCopy = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -20,10 +25,10 @@ export const CopyEmail = () => {
 		// Guardamos el botón antes del await: React anula currentTarget al terminar el evento
 		const button = event.currentTarget;
 		try {
-			await navigator.clipboard.writeText(siteConfig.email);
+			await navigator.clipboard.writeText(email);
 		} catch {
 			// Sin acceso al portapapeles (p. ej. HTTP o permisos): abrimos el cliente de correo
-			window.location.href = `mailto:${siteConfig.email}`;
+			window.location.href = `mailto:${email}`;
 			return;
 		}
 		setCopied(true);
@@ -51,10 +56,10 @@ export const CopyEmail = () => {
 		<>
 			<button type="button" onClick={handleCopy} className="btn btn-ghost bg-ink/70">
 				{copied ? <IoCheckmarkDone aria-hidden className="size-4 text-up" /> : <IoCopyOutline aria-hidden className="size-4" />}
-				{copied ? "¡Email copiado!" : "Copia mi email"}
+				{copied ? labels.done : labels.idle}
 			</button>
 			<span className="sr-only" aria-live="polite">
-				{copied ? "Email copiado al portapapeles" : ""}
+				{copied ? labels.announce : ""}
 			</span>
 		</>
 	);

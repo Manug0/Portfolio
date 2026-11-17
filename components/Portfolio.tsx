@@ -1,4 +1,4 @@
-import { type ProfileId, getProfile } from "@/data/profiles";
+import { type Locale, type ProfileId, getContent, otherLocale, profileIds, profilePath, siteConfig } from "@/data";
 
 import Approach from "./Approach";
 import Contact from "./Contact";
@@ -12,7 +12,6 @@ import Markets from "./Markets";
 import { Nav } from "./ui/Nav";
 import RecentProjects from "./RecentProjects";
 import TechnologyStack from "./TechStack";
-import { siteConfig } from "@/data";
 
 // Orden de las secciones de cada perfil; el número de cada cabecera sale de su posición
 const sections = {
@@ -20,16 +19,32 @@ const sections = {
 	tech: [Grid, Experience, RecentProjects, TechnologyStack, Approach, Education, Contact],
 };
 
-// Página completa para un perfil. El atributo data-profile cambia la paleta de marca (ver globals.css)
-const Portfolio = ({ profileId }: { profileId: ProfileId }) => {
-	const profile = getProfile(profileId);
+// Página completa para un perfil y un idioma. El atributo data-profile cambia la paleta de marca (ver globals.css)
+const Portfolio = ({ locale, profileId }: { locale: Locale; profileId: ProfileId }) => {
+	const content = getContent(locale);
+	const profile = content.profiles[profileId];
+	const { ui } = content;
+
+	// Datos mínimos que necesitan las piezas interactivas (no se les pasa el contenido entero)
+	const options = profileIds.map((id) => ({
+		id,
+		label: content.profiles[id].label,
+		sublabel: content.profiles[id].sublabel,
+		href: profilePath(locale, id),
+	}));
+	const language = {
+		href: profilePath(otherLocale(locale), profileId),
+		locale: otherLocale(locale),
+		code: ui.language.code,
+		label: ui.language.label,
+	};
 
 	const jsonLd = {
 		"@context": "https://schema.org",
 		"@type": "Person",
 		name: "Manuel González García",
 		jobTitle: `${profile.role} · ${profile.tagline}`,
-		url: siteConfig.url + profile.path,
+		url: siteConfig.url + profilePath(locale, profileId),
 		email: `mailto:${siteConfig.email}`,
 		address: { "@type": "PostalAddress", addressLocality: "Madrid", addressCountry: "ES" },
 		sameAs: [siteConfig.github, siteConfig.linkedin],
@@ -42,17 +57,23 @@ const Portfolio = ({ profileId }: { profileId: ProfileId }) => {
 			<a
 				href="#about"
 				className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-md focus:bg-brand focus:px-4 focus:py-2 focus:text-ink">
-				Saltar al contenido
+				{ui.skip}
 			</a>
 			<Effects />
-			<Nav profileId={profileId} />
+			<Nav
+				current={profileId}
+				items={profile.nav}
+				options={options}
+				language={language}
+				labels={{ nav: ui.navLabel, chooseProfile: ui.chooseProfile }}
+			/>
 			<main>
-				<Hero profileId={profileId} />
+				<Hero content={content} profileId={profileId} options={options} />
 				{sections[profileId].map((Section, position) => (
-					<Section key={position} profileId={profileId} index={position + 1} />
+					<Section key={position} content={content} profileId={profileId} index={position + 1} />
 				))}
 			</main>
-			<Footer profileId={profileId} />
+			<Footer content={content} profileId={profileId} language={language} />
 		</div>
 	);
 };

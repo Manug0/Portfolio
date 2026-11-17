@@ -1,14 +1,28 @@
 "use client";
 
-import { type ProfileId, getProfile } from "@/data/profiles";
+import { type LanguageTarget, LanguageLink } from "./LanguageLink";
+import { ProfileSwitch, type SwitchOption } from "./ProfileSwitch";
 import { useEffect, useRef, useState } from "react";
 
-import { ProfileSwitch } from "./ProfileSwitch";
+import type { ProfileId } from "@/data/site";
 import { cn } from "@/lib/utils";
 import { navState } from "@/lib/profile-switch";
 
-export const Nav = ({ profileId }: { profileId: ProfileId }) => {
-	const items = getProfile(profileId).nav;
+type NavItem = { name: string; link: string; hideOnMobile?: boolean };
+
+export const Nav = ({
+	current,
+	items,
+	options,
+	language,
+	labels,
+}: {
+	current: ProfileId;
+	items: NavItem[];
+	options: SwitchOption[];
+	language: LanguageTarget;
+	labels: { nav: string; chooseProfile: string };
+}) => {
 	const navRef = useRef<HTMLElement>(null);
 	const dockRef = useRef<HTMLDivElement>(null);
 	const navSwitchRef = useRef<HTMLDivElement>(null);
@@ -22,10 +36,10 @@ export const Nav = ({ profileId }: { profileId: ProfileId }) => {
 		let tick = 0;
 		const measure = () => {
 			tick = 0;
-			const current = window.scrollY;
-			if (current < 120) setHidden(false);
-			else if (Math.abs(current - last) > 4) setHidden(current > last);
-			last = current;
+			const position = window.scrollY;
+			if (position < 120) setHidden(false);
+			else if (Math.abs(position - last) > 4) setHidden(position > last);
+			last = position;
 		};
 		const onScroll = () => {
 			if (!tick) tick = requestAnimationFrame(measure);
@@ -37,7 +51,7 @@ export const Nav = ({ profileId }: { profileId: ProfileId }) => {
 		};
 	}, []);
 
-	// Sección en pantalla (para el menú y para aterrizar en la equivalente al cambiar de perfil)
+	// Sección en pantalla (para el menú y para aterrizar en la equivalente al cambiar de perfil o de idioma)
 	useEffect(() => {
 		const sections = Array.from(document.querySelectorAll<HTMLElement>("main section[id]"));
 		const onScreen = new Set<string>();
@@ -47,8 +61,8 @@ export const Nav = ({ profileId }: { profileId: ProfileId }) => {
 					if (entry.isIntersecting) onScreen.add(entry.target.id);
 					else onScreen.delete(entry.target.id);
 				});
-				const current = sections.find((section) => onScreen.has(section.id))?.id ?? "";
-				navState.section = current === "top" ? "" : current;
+				const visible = sections.find((section) => onScreen.has(section.id))?.id ?? "";
+				navState.section = visible === "top" ? "" : visible;
 				setActive(navState.section);
 			},
 			{ rootMargin: "-45% 0px -50% 0px" }
@@ -103,7 +117,7 @@ export const Nav = ({ profileId }: { profileId: ProfileId }) => {
 			<div aria-hidden data-progress className="progress" />
 
 			<div className="nav-wrap" data-hidden={hidden}>
-				<nav ref={navRef} aria-label="Navegación principal" className="nav">
+				<nav ref={navRef} aria-label={labels.nav} className="nav">
 					<span aria-hidden className="nav-pill" />
 					{items.map((item) => {
 						const id = item.link.replace("#", "");
@@ -121,13 +135,17 @@ export const Nav = ({ profileId }: { profileId: ProfileId }) => {
 					{/* Arriba ya está el interruptor grande de la portada: el del menú aparece al dejarlo atrás */}
 					<div ref={navSwitchRef} className="nav-switch hidden md:flex" data-show={dock}>
 						<span aria-hidden className="mx-1.5 h-5 w-px shrink-0 bg-white/15" />
-						<ProfileSwitch current={profileId} variant="compact" className="shrink-0" />
+						<ProfileSwitch current={current} options={options} label={labels.chooseProfile} variant="compact" className="shrink-0" />
 					</div>
+					<span aria-hidden className="mx-1 h-5 w-px shrink-0 bg-white/15 sm:mx-1.5" />
+					<LanguageLink target={language} className="nav-lang">
+						{language.code}
+					</LanguageLink>
 				</nav>
 			</div>
 
 			<div ref={dockRef} className="dock md:hidden" data-show={dock}>
-				<ProfileSwitch current={profileId} variant="dock" />
+				<ProfileSwitch current={current} options={options} label={labels.chooseProfile} variant="dock" />
 			</div>
 		</>
 	);

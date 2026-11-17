@@ -1,16 +1,25 @@
+import { type Content, type ProfileId, otherProfileId, profilePath, siteConfig } from "@/data";
 import { HiArrowDownRight, HiOutlineDocumentArrowDown } from "react-icons/hi2";
-import { type ProfileId, getProfile } from "@/data/profiles";
+import { ProfileSwitch, type SwitchOption } from "./ui/ProfileSwitch";
 
 import { Fragment } from "react";
 import { HeroArt } from "./ui/HeroArt";
 import Image from "next/image";
-import { ProfileSwitch } from "./ui/ProfileSwitch";
-import { siteConfig } from "@/data";
 
 const delay = (ms: number) => ({ "--d": ms }) as React.CSSProperties;
 
-const Hero = ({ profileId }: { profileId: ProfileId }) => {
-	const profile = getProfile(profileId);
+const Hero = ({
+	content,
+	profileId,
+	options,
+}: {
+	content: Content;
+	profileId: ProfileId;
+	options: SwitchOption[];
+}) => {
+	const { ui } = content;
+	const profile = content.profiles[profileId];
+	const other = content.profiles[otherProfileId(profileId)];
 	const words = profile.headline.split(" ");
 
 	return (
@@ -23,7 +32,7 @@ const Hero = ({ profileId }: { profileId: ProfileId }) => {
 				<div className="hero-head">
 					<div className="hero-id enter" style={delay(60)}>
 						<span className="avatar">
-							<Image src="/profile.png" alt="Foto de Manuel González" width={112} height={112} priority />
+							<Image src="/profile.png" alt={ui.hero.photoAlt} width={112} height={112} priority />
 						</span>
 						<div>
 							<h1 id="hero-title" className="text-lg font-semibold leading-tight tracking-tight sm:text-xl">
@@ -32,13 +41,13 @@ const Hero = ({ profileId }: { profileId: ProfileId }) => {
 							</h1>
 							<p className="mt-1 flex items-center gap-2 font-mono text-xs text-muted">
 								<span aria-hidden className="live-dot" />
-								{siteConfig.location}
+								{content.location}
 							</p>
 						</div>
 					</div>
 					<span aria-hidden className="hero-head-rule enter" style={delay(100)} />
 					<div className="enter flex w-full justify-center lg:w-auto" style={delay(140)}>
-						<ProfileSwitch current={profileId} variant="hero" />
+						<ProfileSwitch current={profileId} options={options} label={ui.chooseProfile} variant="hero" />
 					</div>
 				</div>
 
@@ -61,7 +70,7 @@ const Hero = ({ profileId }: { profileId: ProfileId }) => {
 				</p>
 
 				<p className="enter mt-6 max-w-[46rem] text-base leading-relaxed text-muted sm:text-lg" style={delay(720)}>
-					¡Hola! Soy <strong className="font-semibold text-fg">{siteConfig.shortName}</strong>, {profile.intro}
+					{ui.hero.greeting} <strong className="font-semibold text-fg">{siteConfig.shortName}</strong>, {profile.intro}
 				</p>
 
 				<div className="enter mt-8 flex w-full flex-col items-center justify-center gap-3 sm:flex-row" style={delay(840)}>
@@ -71,12 +80,16 @@ const Hero = ({ profileId }: { profileId: ProfileId }) => {
 					</a>
 					<a href={profile.cv.file} download className="btn btn-ghost w-full sm:w-auto">
 						<HiOutlineDocumentArrowDown aria-hidden className="size-5" />
-						Descargar {profile.cv.label}
+						{ui.hero.download(profile.cv.label)}
 					</a>
 				</div>
 			</div>
 
-			<HeroArt profileId={profileId} />
+			<HeroArt
+				profileId={profileId}
+				other={{ id: other.id, href: profilePath(content.locale, other.id) }}
+				label={ui.viewProfileAria(other.label)}
+			/>
 
 			<div className="wrap pb-14">
 				<dl className="stats enter" style={delay(980)}>

@@ -1,8 +1,19 @@
-import { type ProfileId, getProfile } from "@/data/profiles";
-import { siteConfig, socialMedia } from "@/data";
+import { type Content, type ProfileId, siteConfig, socialMedia } from "@/data";
+import { type LanguageTarget, LanguageLink } from "./ui/LanguageLink";
 
-const Footer = ({ profileId }: { profileId: ProfileId }) => {
-	const { nav } = getProfile(profileId);
+const languageNames = { es: "Español", en: "English" };
+
+const Footer = ({
+	content,
+	profileId,
+	language,
+}: {
+	content: Content;
+	profileId: ProfileId;
+	language: LanguageTarget;
+}) => {
+	const { ui } = content;
+	const { nav } = content.profiles[profileId];
 	const year = new Date().getFullYear();
 
 	return (
@@ -14,10 +25,10 @@ const Footer = ({ profileId }: { profileId: ProfileId }) => {
 
 				<div className="mt-6 flex flex-col items-center justify-between gap-6 border-t border-white/[0.08] pb-24 pt-8 md:flex-row md:pb-8">
 					<p className="text-center text-sm text-muted md:text-left">
-						© {year} {siteConfig.name} · Hecho con Next.js y Tailwind CSS
+						© {year} {siteConfig.name} · {ui.footer.madeWith}
 					</p>
 
-					<nav aria-label="Pie de página" className="hidden gap-6 text-sm text-muted lg:flex">
+					<nav aria-label={ui.footerNavLabel} className="hidden gap-6 text-sm text-muted lg:flex">
 						{nav.map((item) => (
 							<a key={item.link} href={item.link} className="transition-colors hover:text-fg">
 								{item.name}
@@ -26,6 +37,11 @@ const Footer = ({ profileId }: { profileId: ProfileId }) => {
 					</nav>
 
 					<div className="flex items-center gap-3">
+						<LanguageLink
+							target={language}
+							className="flex h-10 items-center rounded-xl border border-white/10 bg-white/[0.03] px-3.5 text-sm text-muted transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand/60 hover:text-brand">
+							{languageNames[language.locale]}
+						</LanguageLink>
 						{socialMedia.map((social) => {
 							const Icon = social.icon;
 							return (

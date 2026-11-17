@@ -5,7 +5,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 import { HiArrowRight } from "react-icons/hi2";
 import { cn } from "@/lib/utils";
-import { siteConfig } from "@/data";
 
 // Credenciales públicas de EmailJS (la public key está pensada para usarse en el cliente)
 const EMAILJS_SERVICE_ID = "service_190801";
@@ -21,7 +20,23 @@ type FormData = {
 
 type Status = "idle" | "sending" | "success" | "error";
 
-export function ContactForm({ placeholder }: { placeholder: string }) {
+type Labels = {
+	title: string;
+	subtitle: string;
+	name: string;
+	namePlaceholder: string;
+	email: string;
+	emailPlaceholder: string;
+	message: string;
+	company: string;
+	sending: string;
+	send: string;
+	success: string;
+	error: string;
+	errors: { name: string; email: string; emailInvalid: string; message: string; messageShort: string };
+};
+
+export function ContactForm({ placeholder, email, labels }: { placeholder: string; email: string; labels: Labels }) {
 	const [status, setStatus] = useState<Status>("idle");
 
 	const {
@@ -58,45 +73,45 @@ export function ContactForm({ placeholder }: { placeholder: string }) {
 
 	return (
 		<div className="card w-full p-6 md:p-8">
-			<h3 className="text-xl font-semibold tracking-tight">Escríbeme</h3>
-			<p className="mt-2 text-sm text-muted">Te responderé lo antes posible.</p>
+			<h3 className="text-xl font-semibold tracking-tight">{labels.title}</h3>
+			<p className="mt-2 text-sm text-muted">{labels.subtitle}</p>
 
 			<form className="mt-8" onSubmit={handleSubmit(onSubmit)} noValidate>
 				<div className="mb-4 flex flex-col gap-4 md:flex-row">
 					<Field className="flex-1">
 						<label htmlFor="name" className="text-sm font-medium">
-							Nombre
+							{labels.name}
 						</label>
 						<input
 							id="name"
 							autoComplete="name"
-							placeholder="Tu nombre"
+							placeholder={labels.namePlaceholder}
 							type="text"
 							className="field"
 							aria-invalid={errors.name ? "true" : "false"}
 							aria-describedby={errors.name ? "name-error" : undefined}
-							{...register("name", { required: "El nombre es obligatorio" })}
+							{...register("name", { required: labels.errors.name })}
 						/>
 						{errors.name && <ErrorMessage id="name-error">{errors.name.message}</ErrorMessage>}
 					</Field>
 
 					<Field className="flex-1">
 						<label htmlFor="email" className="text-sm font-medium">
-							Email
+							{labels.email}
 						</label>
 						<input
 							id="email"
 							autoComplete="email"
-							placeholder="correo@ejemplo.com"
+							placeholder={labels.emailPlaceholder}
 							type="email"
 							className="field"
 							aria-invalid={errors.email ? "true" : "false"}
 							aria-describedby={errors.email ? "email-error" : undefined}
 							{...register("email", {
-								required: "El email es obligatorio",
+								required: labels.errors.email,
 								pattern: {
 									value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-									message: "El email no es válido",
+									message: labels.errors.emailInvalid,
 								},
 							})}
 						/>
@@ -106,7 +121,7 @@ export function ContactForm({ placeholder }: { placeholder: string }) {
 
 				<Field className="mb-6">
 					<label htmlFor="message" className="text-sm font-medium">
-						Mensaje
+						{labels.message}
 					</label>
 					<textarea
 						id="message"
@@ -116,15 +131,15 @@ export function ContactForm({ placeholder }: { placeholder: string }) {
 						aria-invalid={errors.message ? "true" : "false"}
 						aria-describedby={errors.message ? "message-error" : undefined}
 						{...register("message", {
-							required: "El mensaje es obligatorio",
-							minLength: { value: 10, message: "Cuéntame un poco más (mínimo 10 caracteres)" },
+							required: labels.errors.message,
+							minLength: { value: 10, message: labels.errors.messageShort },
 						})}
 					/>
 					{errors.message && <ErrorMessage id="message-error">{errors.message.message}</ErrorMessage>}
 				</Field>
 
 				<div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
-					<label htmlFor="company">Empresa</label>
+					<label htmlFor="company">{labels.company}</label>
 					<input id="company" tabIndex={-1} autoComplete="off" {...register("company")} />
 				</div>
 
@@ -132,18 +147,18 @@ export function ContactForm({ placeholder }: { placeholder: string }) {
 					type="submit"
 					disabled={status === "sending"}
 					className="btn btn-primary w-full disabled:cursor-wait disabled:opacity-60">
-					{status === "sending" ? "Enviando…" : "Enviar mensaje"}
+					{status === "sending" ? labels.sending : labels.send}
 					{status !== "sending" && <HiArrowRight aria-hidden className="size-4" />}
 				</button>
 			</form>
 
 			<div aria-live="polite" className="mt-4 min-h-6 text-center text-sm">
-				{status === "success" && <p className="text-up">¡Mensaje enviado! Gracias por escribirme.</p>}
+				{status === "success" && <p className="text-up">{labels.success}</p>}
 				{status === "error" && (
 					<p className="text-red-400">
-						No se pudo enviar el mensaje. Escríbeme directamente a{" "}
-						<a className="underline hover:text-red-300" href={`mailto:${siteConfig.email}`}>
-							{siteConfig.email}
+						{labels.error}{" "}
+						<a className="underline hover:text-red-300" href={`mailto:${email}`}>
+							{email}
 						</a>
 						.
 					</p>

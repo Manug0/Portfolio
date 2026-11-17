@@ -1,10 +1,9 @@
-import { type ProfileId, getProfile } from "@/data/profiles";
-
 import { Marquee } from "./ui/Marquee";
 import { SectionHeading } from "./ui/SectionHeading";
+import type { SectionProps } from "./types";
 
-const TechnologyStack = ({ profileId, index }: { profileId: ProfileId; index: number }) => {
-	const { stack } = getProfile(profileId);
+const TechnologyStack = ({ content, profileId, index }: SectionProps) => {
+	const { stack } = content.profiles[profileId];
 
 	return (
 		<section id="tech-stack" className="section" aria-labelledby="stack-title">

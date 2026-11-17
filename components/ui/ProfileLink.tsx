@@ -1,24 +1,22 @@
 "use client";
 
-import { type ProfileId, getProfile } from "@/data/profiles";
+import { type ProfileTarget, switchProfile } from "@/lib/profile-switch";
 
 import Link from "next/link";
-import { switchProfile } from "@/lib/profile-switch";
 import { useRouter } from "next/navigation";
 
 // Enlace al otro perfil que usa el mismo barrido que el interruptor
 export const ProfileLink = ({
-	target,
+	profile,
 	children,
 	...props
-}: { target: ProfileId; children: React.ReactNode } & Omit<React.ComponentProps<typeof Link>, "href">) => {
+}: { profile: ProfileTarget; children: React.ReactNode } & Omit<React.ComponentProps<typeof Link>, "href">) => {
 	const router = useRouter();
-	const profile = getProfile(target);
 
 	return (
 		<Link
 			{...props}
-			href={profile.path}
+			href={profile.href}
 			onClick={(event) => {
 				if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
 				event.preventDefault();

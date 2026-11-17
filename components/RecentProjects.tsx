@@ -1,13 +1,13 @@
-import { type ProfileId, getProfile } from "@/data/profiles";
+import type { Project, Ui } from "@/data";
 
 import { BotCover } from "./ui/BotCover";
 import { HiArrowUpRight } from "react-icons/hi2";
 import Image from "next/image";
-import type { Project } from "@/data";
 import { SectionHeading } from "./ui/SectionHeading";
+import type { SectionProps } from "./types";
 import { cn } from "@/lib/utils";
 
-const ProjectCard = ({ item, delay }: { item: Project; delay: number }) => {
+const ProjectCard = ({ item, delay, ui }: { item: Project; delay: number; ui: Ui }) => {
 	const host = item.link ? new URL(item.link).host : undefined;
 	const className = "card proj tilt group";
 	const style = { "--d": delay } as React.CSSProperties;
@@ -15,7 +15,7 @@ const ProjectCard = ({ item, delay }: { item: Project; delay: number }) => {
 	const content = (
 		<>
 			<div className="tilt-inner">
-				<div className="shot">
+				<div className={cn("shot", !item.img && "shot--cover")}>
 					<div aria-hidden className="shot-glow" />
 					{item.img ? (
 						<div className="browser">
@@ -27,18 +27,21 @@ const ProjectCard = ({ item, delay }: { item: Project; delay: number }) => {
 									{host}
 								</span>
 							</div>
-							<div className="relative flex-1 overflow-hidden">
+							{/* La captura se muestra prácticamente entera (todas con la misma proporción para que las
+							    tarjetas queden alineadas) y a calidad alta para que se vea nítida */}
+							<div className="shot-img">
 								<Image
-									src={item.img}
-									alt={`Captura de ${item.title}`}
-									fill
-									sizes="(min-width: 1024px) 520px, (min-width: 768px) 46vw, 88vw"
-									className="object-cover object-top"
+									src={item.img.src}
+									alt={ui.projects.screenshotAlt(item.title)}
+									width={item.img.width}
+									height={item.img.height}
+									quality={90}
+									sizes="(min-width: 1024px) 520px, (min-width: 768px) 46vw, 90vw"
 								/>
 							</div>
 						</div>
 					) : (
-						<BotCover />
+						<BotCover lines={ui.bot} />
 					)}
 				</div>
 			</div>
@@ -51,7 +54,7 @@ const ProjectCard = ({ item, delay }: { item: Project; delay: number }) => {
 				<p className="mt-2 leading-relaxed text-muted">{item.des}</p>
 
 				<div className="mt-auto flex items-center justify-between gap-4 pt-6">
-					<ul className="flex items-center -space-x-2" aria-label="Tecnologías utilizadas">
+					<ul className="flex items-center -space-x-2" aria-label={ui.projects.stackLabel}>
 						{item.stack.map((tech) => {
 							const Icon = tech.icon;
 							return (
@@ -67,7 +70,7 @@ const ProjectCard = ({ item, delay }: { item: Project; delay: number }) => {
 					</ul>
 					{item.link && (
 						<span className="inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-medium text-brand">
-							Visitar web
+							{ui.projects.visit}
 							<HiArrowUpRight aria-hidden className="size-4 transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
 						</span>
 					)}
@@ -81,7 +84,7 @@ const ProjectCard = ({ item, delay }: { item: Project; delay: number }) => {
 			href={item.link}
 			target="_blank"
 			rel="noopener noreferrer"
-			aria-label={`Visitar ${item.title} (se abre en una pestaña nueva)`}
+			aria-label={ui.projects.visitAria(item.title)}
 			className={className}
 			style={style}
 			data-spot
@@ -96,8 +99,8 @@ const ProjectCard = ({ item, delay }: { item: Project; delay: number }) => {
 	);
 };
 
-const RecentProjects = ({ profileId, index }: { profileId: ProfileId; index: number }) => {
-	const { projects } = getProfile(profileId);
+const RecentProjects = ({ content, profileId, index }: SectionProps) => {
+	const { projects } = content.profiles[profileId];
 
 	return (
 		<section id="projects" className="section" aria-labelledby="projects-title">
@@ -110,7 +113,7 @@ const RecentProjects = ({ profileId, index }: { profileId: ProfileId; index: num
 					)}>
 					{projects.items.map((item, itemIndex) => (
 						<li key={item.id}>
-							<ProjectCard item={item} delay={(itemIndex % 3) * 90} />
+							<ProjectCard item={item} delay={(itemIndex % 3) * 90} ui={content.ui} />
 						</li>
 					))}
 				</ul>

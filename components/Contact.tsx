@@ -1,42 +1,42 @@
 import { HiOutlineEnvelope, HiOutlineMapPin } from "react-icons/hi2";
 import { SiGithub, SiLinkedin } from "react-icons/si";
 
-import { type ProfileId, getProfile } from "@/data/profiles";
-
 import { ContactForm } from "./ui/ContactForm";
 import { SectionHeading } from "./ui/SectionHeading";
-import { siteConfig } from "@/data";
+import type { SectionProps } from "./types";
+import { siteConfig } from "@/data/site";
 
-const contactLinks = [
-	{
-		label: "Email",
-		value: siteConfig.email,
-		href: `mailto:${siteConfig.email}`,
-		icon: HiOutlineEnvelope,
-	},
-	{
-		label: "LinkedIn",
-		value: "Manuel González García",
-		href: siteConfig.linkedin,
-		icon: SiLinkedin,
-		external: true,
-	},
-	{
-		label: "GitHub",
-		value: "@Manug0",
-		href: siteConfig.github,
-		icon: SiGithub,
-		external: true,
-	},
-	{
-		label: "Ubicación",
-		value: siteConfig.location,
-		icon: HiOutlineMapPin,
-	},
-];
+const Contact = ({ content, profileId, index }: SectionProps) => {
+	const { ui } = content;
+	const { contact } = content.profiles[profileId];
 
-const Contact = ({ profileId, index }: { profileId: ProfileId; index: number }) => {
-	const { contact } = getProfile(profileId);
+	const contactLinks = [
+		{
+			label: ui.contact.email,
+			value: siteConfig.email,
+			href: `mailto:${siteConfig.email}`,
+			icon: HiOutlineEnvelope,
+		},
+		{
+			label: ui.contact.linkedin,
+			value: "Manuel González García",
+			href: siteConfig.linkedin,
+			icon: SiLinkedin,
+			external: true,
+		},
+		{
+			label: ui.contact.github,
+			value: "@Manug0",
+			href: siteConfig.github,
+			icon: SiGithub,
+			external: true,
+		},
+		{
+			label: ui.contact.location,
+			value: content.location,
+			icon: HiOutlineMapPin,
+		},
+	];
 
 	return (
 		<section id="contact" className="section" aria-labelledby="contact-title">
@@ -85,7 +85,7 @@ const Contact = ({ profileId, index }: { profileId: ProfileId; index: number }) 
 					</ul>
 
 					<div className="lg:col-span-3" data-reveal style={{ "--d": 120 } as React.CSSProperties}>
-						<ContactForm placeholder={contact.cta} />
+						<ContactForm placeholder={contact.cta} email={siteConfig.email} labels={ui.form} />
 					</div>
 				</div>
 			</div>

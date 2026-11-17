@@ -1,9 +1,8 @@
-import { type ProfileId, getProfile } from "@/data/profiles";
-
 import { SectionHeading } from "./ui/SectionHeading";
+import type { SectionProps } from "./types";
 
-const Approach = ({ profileId, index }: { profileId: ProfileId; index: number }) => {
-	const { approach } = getProfile(profileId);
+const Approach = ({ content, profileId, index }: SectionProps) => {
+	const { approach } = content.profiles[profileId];
 
 	return (
 		<section id="approach" className="section" aria-labelledby="approach-title">
@@ -22,7 +21,7 @@ const Approach = ({ profileId, index }: { profileId: ProfileId; index: number })
 								<span aria-hidden className="phase-num">
 									{phaseIndex + 1}
 								</span>
-								<p className="badge relative">Fase {phaseIndex + 1}</p>
+								<p className="badge relative">{content.ui.approach.phase(phaseIndex + 1)}</p>
 								<h3 className="relative mt-14 text-2xl font-semibold tracking-tight">{phase.title}</h3>
 								<p className="relative mt-3 leading-relaxed text-muted">{phase.des}</p>
 							</article>

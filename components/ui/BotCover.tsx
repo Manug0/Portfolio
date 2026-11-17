@@ -1,7 +1,7 @@
 import { SiSolana } from "react-icons/si";
 
 // Portada del bot de liquidez: una terminal que se "escribe" al entrar en pantalla
-export const BotCover = () => (
+export const BotCover = ({ lines }: { lines: [string, string, string] }) => (
 	<div aria-hidden className="bot-cover">
 		<div className="term w-[86%] p-4">
 			<div className="mb-2 flex items-center gap-1.5">
@@ -15,13 +15,13 @@ export const BotCover = () => (
 				<span className="term-type">python bot.py --network solana</span>
 			</p>
 			<p className="term-line text-muted" style={{ "--n": 2 } as React.CSSProperties}>
-				» analizando pools de liquidez…
+				{lines[0]}
 			</p>
 			<p className="term-line text-muted" style={{ "--n": 3 } as React.CSSProperties}>
-				» agente IA: rango óptimo recalculado
+				{lines[1]}
 			</p>
 			<p className="term-line text-[#14F195]" style={{ "--n": 4 } as React.CSSProperties}>
-				✓ posición reajustada automáticamente <span className="term-caret" />
+				{lines[2]} <span className="term-caret" />
 			</p>
 		</div>
 		<div className="absolute right-4 top-4 flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-[#9945FF] to-[#14F195]">
