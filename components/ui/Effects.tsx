@@ -1,7 +1,11 @@
 "use client";
 
-import { routeCommitted } from "@/lib/profile-switch";
-import { useEffect } from "react";
+import { routeCommitted, transitionState } from "@/lib/profile-switch";
+import { useEffect, useLayoutEffect } from "react";
+
+import { restoreRoot } from "@/lib/theme";
+
+const useBeforePaint = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 // Comportamientos globales de la página, con un único observador / listener por tipo:
 //  · [data-reveal]  → aparece al entrar en pantalla (IntersectionObserver + transición CSS)
@@ -10,8 +14,21 @@ import { useEffect } from "react";
 //  · [data-timeline] y [data-progress] → progreso ligado al scroll
 // Todo lo que se anima es transform / opacity, así que el scroll no provoca recálculos de layout.
 export const Effects = () => {
+	// Antes de pintar: se reponen la marca de JS y el tema, y, si venimos de cambiar de idioma, la página
+	// se deja como estaba la anterior (sin animaciones de entrada y con lo ya visto, visible)
+	useBeforePaint(() => {
+		restoreRoot();
+		if (!transitionState.instant) return;
+		transitionState.instant = false;
+		document.querySelector<HTMLElement>("[data-profile]")?.setAttribute("data-static", "");
+		const limit = window.innerHeight;
+		document.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => {
+			if (element.getBoundingClientRect().top < limit) element.dataset.in = "now";
+		});
+	}, []);
+
 	useEffect(() => {
-		// La página nueva ya está montada: puede arrancar el barrido de cambio de perfil
+		// La página nueva ya está montada: puede arrancar la transición de cambio de perfil o de idioma
 		routeCommitted();
 
 		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -35,7 +52,9 @@ export const Effects = () => {
 				},
 				{ rootMargin: "0px 0px -6% 0px", threshold: 0.06 }
 			);
-			revealables.forEach((element) => observer.observe(element));
+			revealables.forEach((element) => {
+				if (!("in" in element.dataset)) observer.observe(element);
+			});
 			cleanups.push(() => observer.disconnect());
 		}
 
@@ -94,6 +113,7 @@ export const Effects = () => {
 
 		// ── Progreso de lectura y línea de tiempo
 		const bar = document.querySelector<HTMLElement>("[data-progress]");
+		const toTop = document.querySelector<HTMLElement>(".to-top");
 		const timeline = document.querySelector<HTMLElement>("[data-timeline]");
 		const fill = timeline?.querySelector<HTMLElement>(".tl-fill");
 		const head = timeline?.querySelector<HTMLElement>(".tl-head");
@@ -105,7 +125,9 @@ export const Effects = () => {
 		const measure = () => {
 			tick = 0;
 			const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-			if (bar) bar.style.transform = `scaleX(${scrollable > 0 ? Math.min(1, window.scrollY / scrollable) : 0})`;
+			const progress = scrollable > 0 ? Math.min(1, window.scrollY / scrollable) : 0;
+			if (bar) bar.style.transform = `scaleX(${progress})`;
+			toTop?.style.setProperty("--p", progress.toFixed(3));
 
 			if (!timeline || !fill || !timelineVisible) return;
 			const rect = timeline.getBoundingClientRect();

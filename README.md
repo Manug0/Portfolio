@@ -13,9 +13,9 @@ La web tiene dos perfiles, cada uno con su contenido, su CV y su color de marca,
 - **Perfil**: se cambia con el interruptor de la portada (y el del menú, que aparece al bajar), arrastrando la
   "costura" de la ilustración de la portada o desde la tarjeta del otro perfil en "Sobre mí". El cambio se hace
   con un barrido en diagonal (View Transitions API) y aterriza en la sección equivalente del otro perfil.
-- **Tema**: botón de sol / luna (en el menú; en móvil, junto al nombre y en la barra flotante). El oscuro es el tema por defecto; la elección se guarda en `localStorage` y el cambio se revela en círculo desde el botón. Los colores de cada tema son variables CSS en `app/globals.css` (`:root` y `:root[data-theme="light"]`).
-- **Idioma**: enlace `EN` / `ES` del menú (y del pie). Lleva a la misma página y sección en el otro idioma,
-  y cada idioma ofrece sus propios CVs.
+- **Tema**: botón de sol / luna (en el menú; en móvil, junto al nombre y en la barra flotante). El claro es el tema por defecto; la elección se guarda en `localStorage` y el cambio se revela en círculo desde el botón. Los colores de cada tema son variables CSS en `app/globals.css` (`:root` es el oscuro y `:root[data-theme="light"]` el claro; `<html>` lleva `data-theme="light"` desde el servidor).
+- **Idioma**: selector `ES · EN` del menú (en móvil, junto al nombre y en la barra flotante). Cambia sin recargar la página, con el mismo revelado en círculo, y deja al lector en el mismo punto; cada idioma ofrece sus propios CVs.
+- **Menú**: se esconde al bajar y vuelve al subir, al llevar el ratón al borde superior o con el teclado. Abajo a la derecha, una flecha con anillo de progreso vuelve al principio.
 
 ## Tecnologías
 
@@ -23,7 +23,7 @@ La web tiene dos perfiles, cada uno con su contenido, su CV y su color de marca,
 - **Estilos**: Tailwind CSS + CSS propio (`app/globals.css`)
 - **Animaciones**: CSS y APIs del navegador, sin librerías: `IntersectionObserver` para las apariciones,
   View Transitions para el cambio de perfil y un `<canvas>` 2D para la ilustración de la portada
-- **Contacto**: EmailJS (`@emailjs/browser`) + React Hook Form
+- **Contacto**: EmailJS (`@emailjs/browser`), con validación propia
 - **Tipografías**: Geist, Geist Mono e Instrument Serif (`next/font`)
 
 ## Desarrollo
@@ -42,15 +42,15 @@ npm run build
   - `shared.ts`: lo que no se traduce (iconos y colores de cada tecnología).
   - `projects.json`: enlace y captura de cada proyecto web (lo lee también el script de capturas).
   - `site.ts`: datos de contacto, idiomas, perfiles y rutas. Es lo único de `data/` que importan los componentes de cliente.
-- `app/(es)/` y `app/(en)/`: un layout raíz por idioma (para que `<html lang>` sea correcto) con sus dos rutas; todas renderizan `components/Portfolio.tsx` con su idioma y su perfil.
+- `app/[lang]/`: un único layout raíz y las dos rutas (`page.tsx` y `tech/page.tsx`) para los dos idiomas; todas renderizan `components/Portfolio.tsx` con su idioma y su perfil. El español se sirve sin prefijo mediante las reescrituras de `next.config.js` (`/` → `/es`, `/tech` → `/es/tech`).
 - `components/`: secciones de la página (`Hero`, `Grid`, `Experience`, `RecentProjects`, `Markets`, `TechStack`, `Approach`, `Education`, `Contact`, `Footer`). Son componentes de servidor: reciben el contenido del idioma activo y solo llevan JavaScript las piezas interactivas.
 - `components/ui/`: piezas reutilizables. Las que tienen lógica:
   - `HeroArt.tsx`: el lienzo de la portada y su costura arrastrable. Dibuja una sola serie con dos lecturas: gráfico de línea (finanzas) y bloques de datos (tech).
-  - `ProfileSwitch.tsx`, `ProfileLink.tsx` y `lib/profile-switch.ts`: el interruptor de perfil y el barrido entre perfiles.
-  - `LanguageLink.tsx`: el enlace de cambio de idioma.
-  - `ThemeToggle.tsx`: el botón de tema claro / oscuro.
+  - `ProfileSwitch.tsx`, `ProfileLink.tsx` y `lib/profile-switch.ts`: el interruptor de perfil, el barrido entre perfiles y el cambio de idioma.
+  - `LanguageSwitch.tsx`: el selector de idioma.
+  - `ThemeToggle.tsx` y `lib/theme.ts`: el botón de tema claro / oscuro.
   - `Effects.tsx`: comportamientos globales con un solo observador por tipo (apariciones al hacer scroll, foco de luz e inclinación de las tarjetas, progreso de lectura y de la línea de tiempo).
-  - `Nav.tsx`: menú flotante con la sección activa.
+  - `Nav.tsx`: menú flotante con la sección activa, barra flotante de móvil y botón de volver arriba.
 - `public/`:
   - CVs: `Manuel_Gonzalez_Garcia_CV.pdf` (tech) y `Manuel_Gonzalez_Garcia_CV_Finanzas.pdf` en español; `Manuel_Gonzalez_Garcia_CV_EN.pdf` (tech) y `Manuel_Gonzalez_Garcia_CV_Finance_EN.pdf` en inglés. Cada uno tiene su miniatura `cv-preview*.jpg` (la primera página a 800×1132).
   - `projects/*.webp`: capturas de los proyectos web (1910×915; `next/image` sirve el tamaño adecuado). Se renuevan solas: ver "Capturas automáticas".

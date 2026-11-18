@@ -33,6 +33,19 @@ const seeded = (seed: number) => () => {
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
+// La serie vive fuera del componente: al cambiar de perfil o de idioma el lienzo se vuelve a montar,
+// y así el gráfico continúa donde iba en lugar de empezar de nuevo
+const series = {
+	random: seeded(11),
+	values: [] as number[],
+	offset: 0,
+	shifted: 0,
+	lastValue: 0,
+	low: 0,
+	high: 1,
+	scaled: false,
+};
+
 export const HeroArt = ({
 	profileId,
 	other,
@@ -101,8 +114,9 @@ export const HeroArt = ({
 		const carried = takeSeam();
 		let seam = carried ?? 0.5;
 		let seamVelocity = 0;
-		let litFin = carried === null ? 1 : isFin ? DIM : 1;
-		let litTech = carried === null ? 1 : isFin ? 1 : DIM;
+		const fromOther = carried !== null && (isFin ? carried < 0.5 : carried > 0.5);
+		let litFin = carried === null ? 1 : fromOther === isFin ? DIM : 1;
+		let litTech = carried === null ? 1 : fromOther === isFin ? 1 : DIM;
 		let intro = carried === null && !reduceMotion;
 		let peeking = false;
 		let dragging = false;
@@ -110,14 +124,9 @@ export const HeroArt = ({
 		const introTimer = window.setTimeout(() => (intro = false), 850);
 
 		// La serie: paseo aleatorio con deriva positiva que se desplaza hacia la izquierda
-		const random = seeded(11);
+		const random = series.random;
 		let step = 20;
-		let values: number[] = [];
-		let offset = 0;
-		let shifted = 0;
-		let lastValue = 0;
-		let low = 0;
-		let high = 1;
+		let { values, offset, shifted, lastValue, low, high } = series;
 		const nextValue = () => {
 			const jump = random() < 0.07 ? (random() - 0.55) * 5.5 : 0;
 			lastValue += 0.34 + (random() - 0.5) * 2.5 + jump;
@@ -173,7 +182,10 @@ export const HeroArt = ({
 			const needed = Math.ceil(W / step) + 4;
 			while (values.length < needed) values.push(nextValue());
 			values = values.slice(values.length - needed);
-			[low, high] = range();
+			if (!series.scaled) {
+				[low, high] = range();
+				series.scaled = true;
+			}
 
 			cell = clamp(Math.round(W / 118), 8, 13);
 			gap = cell > 10 ? 3 : 2;
@@ -674,8 +686,9 @@ export const HeroArt = ({
 		sync();
 
 		return () => {
-			// Al cambiar de perfil, el lienzo nuevo retoma la costura donde la dejamos
+			// Al cambiar de perfil o de idioma, el lienzo nuevo retoma la costura y la serie donde las dejamos
 			carrySeam(seam);
+			Object.assign(series, { values, offset, shifted, lastValue, low, high });
 			window.clearTimeout(introTimer);
 			cancelAnimationFrame(frame);
 			resizeObserver.disconnect();

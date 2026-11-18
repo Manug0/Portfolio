@@ -527,6 +527,9 @@
 	.pswitch[data-active="tech"] .pswitch-thumb {
 		transform: translateX(100%);
 	}
+	.pswitch[data-active="tech"] {
+		--hint: -16%;
+	}
 	.pswitch-opt {
 		--c: var(--fin-rgb);
 		position: relative;
@@ -621,6 +624,18 @@
 	}
 	.pswitch:hover .pswitch-swap {
 		transform: rotate(180deg);
+	}
+	/* Primera visita: el interruptor se asoma hacia el otro perfil y vuelve */
+	.pswitch[data-hint] .pswitch-thumb {
+		animation: switch-hint 1.5s var(--ease-in-out);
+	}
+	.pswitch[data-hint] .pswitch-swap {
+		transform: rotate(180deg);
+		transition-duration: 0.9s;
+	}
+	.pswitch[data-hint] .pswitch-opt:not([aria-current]) {
+		color: rgb(var(--c));
+		background: rgb(var(--c) / 0.1);
 	}
 	/* Al cargar, los dos perfiles aparecen encendidos un instante y luego se asienta el activo */
 	.pswitch-intro {
@@ -740,40 +755,43 @@
 			font-size: 0.86rem;
 		}
 	}
-	.nav-lang {
+	.lang {
 		position: relative;
 		z-index: 1;
+		display: flex;
 		flex-shrink: 0;
-		padding: 0.42rem 0.55rem;
-		border-radius: 999px;
+		align-items: center;
+		gap: 1px;
 		font-family: var(--font-mono), ui-monospace, monospace;
 		font-size: 0.72rem;
-		letter-spacing: 0.06em;
-		color: rgb(var(--brand-rgb));
-		transition: background-color 0.2s;
+		letter-spacing: 0.04em;
 	}
-	.nav-lang:hover {
+	.lang-opt {
+		padding: 0.34rem 0.42rem;
+		border-radius: 999px;
+		color: rgb(var(--faint-rgb));
+		transition:
+			background-color 0.2s,
+			color 0.2s;
+	}
+	.lang-opt[aria-current] {
 		background: rgb(var(--brand-rgb) / 0.14);
+		color: rgb(var(--brand-rgb));
+		font-weight: 600;
 	}
-	@media (min-width: 640px) {
-		.nav-lang {
-			padding: 0.45rem 0.7rem;
-			font-size: 0.76rem;
-		}
+	a.lang-opt:hover {
+		color: rgb(var(--fg-rgb));
+		background: rgb(var(--line-rgb) / 0.08);
 	}
-	/* En los móviles más estrechos el menú se aprieta para que quepan las secciones y el idioma */
+	/* En los móviles más estrechos el menú se aprieta para que quepan las secciones */
 	@media (max-width: 400px) {
 		.nav-link {
 			padding-inline: 0.42rem;
 			font-size: 0.72rem;
 		}
-		.nav-lang {
-			padding-inline: 0.42rem;
-		}
 	}
 	@media (max-width: 345px) {
-		.nav-link,
-		.nav-lang {
+		.nav-link {
 			padding-inline: 0.24rem;
 			font-size: 0.66rem;
 		}
@@ -870,14 +888,73 @@
 		background: rgb(var(--ink-2-rgb) / 0.94);
 		box-shadow: 0 18px 50px -20px rgb(var(--shadow-rgb) / calc(0.9 * var(--shadow-k)));
 	}
-	.dock .nav-lang,
 	.dock .theme-toggle {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		min-width: 2.5rem;
+		width: 2.5rem;
 		height: 2.5rem;
-		font-size: 0.8rem;
+	}
+	.dock .lang-opt {
+		padding: 0.6rem 0.5rem;
+	}
+	@media (max-width: 400px) {
+		.dock {
+			gap: 0.35rem;
+		}
+		.pswitch--dock .pswitch-opt {
+			padding-inline: 0.75rem;
+		}
+		.dock .theme-toggle {
+			width: 2.1rem;
+		}
+		.dock .lang-opt {
+			padding-inline: 0.36rem;
+		}
+	}
+
+	/* Volver arriba: anillo de progreso alrededor de la flecha */
+	.to-top {
+		position: fixed;
+		right: 1.25rem;
+		bottom: 1.25rem;
+		z-index: 99;
+		display: grid;
+		place-items: center;
+		width: 2.9rem;
+		height: 2.9rem;
+		border-radius: 50%;
+		color: rgb(var(--fg-rgb));
+		background:
+			radial-gradient(closest-side, rgb(var(--ink-2-rgb)) calc(100% - 3px), transparent calc(100% - 2px)),
+			conic-gradient(rgb(var(--brand-rgb)) calc(var(--p, 0) * 360deg), rgb(var(--line-rgb) / 0.14) 0);
+		box-shadow: 0 14px 36px -14px rgb(var(--shadow-rgb) / calc(0.9 * var(--shadow-k)));
+		transition:
+			transform 0.45s var(--ease-out),
+			opacity 0.3s,
+			color 0.2s;
+	}
+	.to-top svg {
+		width: 1.05rem;
+		height: 1.05rem;
+		transition: transform 0.3s var(--ease-out);
+	}
+	.to-top:hover {
+		color: rgb(var(--brand-rgb));
+	}
+	.to-top:hover svg {
+		transform: translateY(-2px);
+	}
+	.to-top[data-show="false"] {
+		transform: translateY(1rem) scale(0.8);
+		opacity: 0;
+		pointer-events: none;
+	}
+	/* En móvil la esquina inferior es de la barra flotante: la flecha va justo encima */
+	@media (max-width: 767px) {
+		.to-top {
+			right: 0.9rem;
+			bottom: calc(max(0.9rem, env(safe-area-inset-bottom)) + 3.6rem);
+			width: 2.6rem;
+			height: 2.6rem;
+		}
 	}
 	.theme-toggle {
 		position: relative;
@@ -916,7 +993,7 @@
 	}
 	@media (max-width: 345px) {
 		.pswitch--dock .pswitch-opt {
-			padding-inline: 0.7rem;
+			padding-inline: 0.5rem;
 			font-size: 0.8rem;
 		}
 	}
@@ -1052,8 +1129,8 @@
 		display: inline-block;
 		overflow: hidden;
 		vertical-align: top;
-		padding: 0.08em 0.05em 0.16em;
-		margin: -0.08em -0.05em -0.16em;
+		padding: 0.1em 0.08em 0.34em;
+		margin: -0.1em -0.08em -0.34em;
 	}
 	.display .w > span {
 		display: inline-block;
@@ -1062,6 +1139,9 @@
 		animation-delay: calc(var(--i) * 60ms + 280ms);
 	}
 	.display .hl {
+		/* El degradado solo pinta dentro de la caja del texto: se amplía para que cubra descendentes y cursivas */
+		padding: 0.12em 0.08em 0.3em;
+		margin: -0.12em -0.08em -0.3em;
 		background: linear-gradient(180deg, rgb(var(--brand-soft-rgb)), rgb(var(--brand-rgb)) 70%);
 		-webkit-background-clip: text;
 		background-clip: text;
@@ -1944,6 +2024,41 @@
 	}
 }
 
+/* ───────────── Página montada tras un cambio de idioma: aparece tal como estaba, sin animaciones de entrada ───────────── */
+[data-static] .enter,
+[data-static] .hero-canvas {
+	animation: none;
+	opacity: 1;
+}
+[data-static] .display .w > span {
+	animation: none;
+	transform: none;
+}
+[data-static] .nav-wrap,
+[data-static] .pswitch-intro,
+[data-static] .seam-handle::after,
+[data-static] .pswitch--hero .pswitch-opt::after {
+	animation: none;
+}
+.js [data-in="now"] .mchart-line {
+	animation: none;
+	stroke-dashoffset: 0;
+}
+.js [data-in="now"] .mchart-area,
+.js [data-in="now"] .mchart-dot,
+.js [data-in="now"] .term-line {
+	animation: none;
+	opacity: 1;
+}
+.js [data-in="now"] .mchart-candle {
+	animation: none;
+	opacity: 0.55;
+}
+.js [data-in="now"] .term-type {
+	animation: none;
+	width: 30ch;
+}
+
 @keyframes fade-in {
 	to {
 		opacity: 1;
@@ -2002,6 +2117,16 @@
 	}
 	100% {
 		transform: translateX(130%);
+	}
+}
+@keyframes switch-hint {
+	0%,
+	100% {
+		translate: 0 0;
+	}
+	38%,
+	56% {
+		translate: var(--hint, 16%) 0;
 	}
 }
 @keyframes switch-intro {
@@ -2090,6 +2215,12 @@ html[data-wipe="finanzas"]::view-transition-old(root) {
 html[data-wipe="finanzas"]::view-transition-new(root) {
 	animation: wipe-in-right 0.95s var(--ease-in-out) both;
 }
+::view-transition-old(pswitch-swap) {
+	display: none;
+}
+::view-transition-new(pswitch-swap) {
+	animation: none;
+}
 ::view-transition-group(pswitch-hero),
 ::view-transition-group(pswitch-compact),
 ::view-transition-group(pswitch-dock) {
@@ -2097,8 +2228,15 @@ html[data-wipe="finanzas"]::view-transition-new(root) {
 	animation-timing-function: var(--ease-in-out);
 }
 
-html[data-theme-switch]::view-transition-new(root) {
+html[data-theme-switch]::view-transition-new(root),
+html[data-reveal]::view-transition-new(root) {
 	animation: theme-reveal 0.8s var(--ease-in-out) both;
+}
+/* En el cambio de tema o de idioma nada se mueve de sitio: las piezas con capa propia vuelven a la página,
+   para que el círculo las revele junto con todo lo demás */
+html[data-theme-switch] .pswitch *,
+html[data-reveal] .pswitch * {
+	view-transition-name: none !important;
 }
 html.theme-fade,
 html.theme-fade *,

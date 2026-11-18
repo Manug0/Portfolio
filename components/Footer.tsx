@@ -1,17 +1,6 @@
 import { type Content, type ProfileId, siteConfig, socialMedia } from "@/data";
-import { type LanguageTarget, LanguageLink } from "./ui/LanguageLink";
 
-const languageNames = { es: "Español", en: "English" };
-
-const Footer = ({
-	content,
-	profileId,
-	language,
-}: {
-	content: Content;
-	profileId: ProfileId;
-	language: LanguageTarget;
-}) => {
+const Footer = ({ content, profileId }: { content: Content; profileId: ProfileId }) => {
 	const { ui } = content;
 	const { nav } = content.profiles[profileId];
 	const year = new Date().getFullYear();
@@ -37,11 +26,6 @@ const Footer = ({
 					</nav>
 
 					<div className="flex items-center gap-3">
-						<LanguageLink
-							target={language}
-							className="flex h-10 items-center rounded-xl border border-line/10 bg-line/[0.03] px-3.5 text-sm text-muted transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand/60 hover:text-brand">
-							{languageNames[language.locale]}
-						</LanguageLink>
 						{socialMedia.map((social) => {
 							const Icon = social.icon;
 							return (

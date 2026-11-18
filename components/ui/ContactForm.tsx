@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
 
 import { HiArrowRight } from "react-icons/hi2";
 import { cn } from "@/lib/utils";
@@ -11,13 +10,10 @@ const EMAILJS_SERVICE_ID = "service_190801";
 const EMAILJS_TEMPLATE_ID = "template_b8i6517";
 const EMAILJS_PUBLIC_KEY = "rMN3ao-jFpJxWP7ij";
 
-type FormData = {
-	name: string;
-	email: string;
-	message: string;
-	company: string; // honeypot anti-spam: los humanos no lo ven
-};
+const EMAIL_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+type Field = "name" | "email" | "message";
+type Errors = Partial<Record<Field, string>>;
 type Status = "idle" | "sending" | "success" | "error";
 
 type Labels = {
@@ -38,16 +34,37 @@ type Labels = {
 
 export function ContactForm({ placeholder, email, labels }: { placeholder: string; email: string; labels: Labels }) {
 	const [status, setStatus] = useState<Status>("idle");
+	const [errors, setErrors] = useState<Errors>({});
+	// Tras el primer intento de envío, los errores se revisan según se escribe
+	const [attempted, setAttempted] = useState(false);
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		reset,
-	} = useForm<FormData>();
+	const validate = (data: FormData): Errors => {
+		const value = (field: string) => String(data.get(field) ?? "").trim();
+		const found: Errors = {};
+		if (!value("name")) found.name = labels.errors.name;
+		if (!value("email")) found.email = labels.errors.email;
+		else if (!EMAIL_PATTERN.test(value("email"))) found.email = labels.errors.emailInvalid;
+		if (!value("message")) found.message = labels.errors.message;
+		else if (value("message").length < 10) found.message = labels.errors.messageShort;
+		return found;
+	};
 
-	const onSubmit: SubmitHandler<FormData> = async (data) => {
-		if (data.company) return;
+	const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		const form = event.currentTarget;
+		const data = new FormData(form);
+		// Honeypot anti-spam: los humanos no ven ese campo
+		if (data.get("company")) return;
+
+		const found = validate(data);
+		setErrors(found);
+		setAttempted(true);
+		const firstInvalid = (["name", "email", "message"] as const).find((field) => found[field]);
+		if (firstInvalid) {
+			form.querySelector<HTMLElement>(`[name="${firstInvalid}"]`)?.focus();
+			return;
+		}
+
 		setStatus("sending");
 		try {
 			// EmailJS solo se descarga al enviar: no pesa en la carga de la página
@@ -56,14 +73,15 @@ export function ContactForm({ placeholder, email, labels }: { placeholder: strin
 				EMAILJS_SERVICE_ID,
 				EMAILJS_TEMPLATE_ID,
 				{
-					from_name: data.name,
-					from_email: data.email,
-					message: data.message,
+					from_name: String(data.get("name")).trim(),
+					from_email: String(data.get("email")).trim(),
+					message: String(data.get("message")).trim(),
 				},
 				{ publicKey: EMAILJS_PUBLIC_KEY }
 			);
 			setStatus("success");
-			reset();
+			form.reset();
+			setAttempted(false);
 			setTimeout(() => setStatus("idle"), 6000);
 		} catch (error) {
 			console.error("Error al enviar el mensaje:", error);
@@ -76,7 +94,11 @@ export function ContactForm({ placeholder, email, labels }: { placeholder: strin
 			<h3 className="text-xl font-semibold tracking-tight">{labels.title}</h3>
 			<p className="mt-2 text-sm text-muted">{labels.subtitle}</p>
 
-			<form className="mt-8" onSubmit={handleSubmit(onSubmit)} noValidate>
+			<form
+				className="mt-8"
+				onSubmit={onSubmit}
+				onChange={(event) => attempted && setErrors(validate(new FormData(event.currentTarget)))}
+				noValidate>
 				<div className="mb-4 flex flex-col gap-4 md:flex-row">
 					<Field className="flex-1">
 						<label htmlFor="name" className="text-sm font-medium">
@@ -90,9 +112,9 @@ export function ContactForm({ placeholder, email, labels }: { placeholder: strin
 							className="field"
 							aria-invalid={errors.name ? "true" : "false"}
 							aria-describedby={errors.name ? "name-error" : undefined}
-							{...register("name", { required: labels.errors.name })}
+							name="name"
 						/>
-						{errors.name && <ErrorMessage id="name-error">{errors.name.message}</ErrorMessage>}
+						{errors.name && <ErrorMessage id="name-error">{errors.name}</ErrorMessage>}
 					</Field>
 
 					<Field className="flex-1">
@@ -107,15 +129,9 @@ export function ContactForm({ placeholder, email, labels }: { placeholder: strin
 							className="field"
 							aria-invalid={errors.email ? "true" : "false"}
 							aria-describedby={errors.email ? "email-error" : undefined}
-							{...register("email", {
-								required: labels.errors.email,
-								pattern: {
-									value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-									message: labels.errors.emailInvalid,
-								},
-							})}
+							name="email"
 						/>
-						{errors.email && <ErrorMessage id="email-error">{errors.email.message}</ErrorMessage>}
+						{errors.email && <ErrorMessage id="email-error">{errors.email}</ErrorMessage>}
 					</Field>
 				</div>
 
@@ -130,17 +146,14 @@ export function ContactForm({ placeholder, email, labels }: { placeholder: strin
 						className="field min-h-32 resize-y"
 						aria-invalid={errors.message ? "true" : "false"}
 						aria-describedby={errors.message ? "message-error" : undefined}
-						{...register("message", {
-							required: labels.errors.message,
-							minLength: { value: 10, message: labels.errors.messageShort },
-						})}
+						name="message"
 					/>
-					{errors.message && <ErrorMessage id="message-error">{errors.message.message}</ErrorMessage>}
+					{errors.message && <ErrorMessage id="message-error">{errors.message}</ErrorMessage>}
 				</Field>
 
 				<div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
 					<label htmlFor="company">{labels.company}</label>
-					<input id="company" tabIndex={-1} autoComplete="off" {...register("company")} />
+					<input id="company" name="company" tabIndex={-1} autoComplete="off" />
 				</div>
 
 				<button

@@ -1,4 +1,4 @@
-import { type Locale, type ProfileId, getContent, otherLocale, profileIds, profilePath, siteConfig } from "@/data";
+import { type Locale, type ProfileId, getContent, locales, profileIds, profilePath, siteConfig } from "@/data";
 
 import Approach from "./Approach";
 import Contact from "./Contact";
@@ -32,12 +32,14 @@ const Portfolio = ({ locale, profileId }: { locale: Locale; profileId: ProfileId
 		sublabel: content.profiles[id].sublabel,
 		href: profilePath(locale, id),
 	}));
-	const language = {
-		href: profilePath(otherLocale(locale), profileId),
-		locale: otherLocale(locale),
-		code: ui.language.code,
-		label: ui.language.label,
-	};
+	const languageNames = { es: "Español", en: "English" };
+	const languages = locales.map((language) => ({
+		locale: language,
+		code: language.toUpperCase(),
+		name: languageNames[language],
+		href: profilePath(language, profileId),
+	}));
+	const controls = { locale, languages, labels: { language: ui.language, theme: ui.theme } };
 
 	const jsonLd = {
 		"@context": "https://schema.org",
@@ -62,18 +64,25 @@ const Portfolio = ({ locale, profileId }: { locale: Locale; profileId: ProfileId
 			<Effects />
 			<Nav
 				current={profileId}
+				locale={locale}
 				items={profile.nav}
 				options={options}
-				language={language}
-				labels={{ nav: ui.navLabel, chooseProfile: ui.chooseProfile, theme: ui.theme }}
+				languages={languages}
+				labels={{
+					nav: ui.navLabel,
+					chooseProfile: ui.chooseProfile,
+					theme: ui.theme,
+					language: ui.language,
+					backToTop: ui.backToTop,
+				}}
 			/>
 			<main>
-				<Hero content={content} profileId={profileId} options={options} language={language} />
+				<Hero content={content} profileId={profileId} options={options} controls={controls} />
 				{sections[profileId].map((Section, position) => (
 					<Section key={position} content={content} profileId={profileId} index={position + 1} />
 				))}
 			</main>
-			<Footer content={content} profileId={profileId} language={language} />
+			<Footer content={content} profileId={profileId} />
 		</div>
 	);
 };

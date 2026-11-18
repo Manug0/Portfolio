@@ -1,25 +1,20 @@
 "use client";
 
 import { HiOutlineMoon, HiOutlineSun } from "react-icons/hi2";
+import { chooseTheme, currentTheme } from "@/lib/theme";
 
 type TransitionDocument = Document & {
 	startViewTransition?: (update: () => void) => { finished: Promise<void> };
 };
 
-// Cambia entre tema oscuro (por defecto) y claro, y recuerda la elección.
+// Cambia entre tema claro (por defecto) y oscuro, y recuerda la elección.
 // El tema nuevo se revela en círculo desde el botón (View Transitions); sin soporte, con un fundido.
 export const ThemeToggle = ({ label }: { label: string }) => {
 	const toggle = (event: React.MouseEvent<HTMLButtonElement>) => {
 		const root = document.documentElement;
-		const next = root.dataset.theme === "light" ? "dark" : "light";
+		const next = currentTheme() === "light" ? "dark" : "light";
 		const apply = () => {
-			if (next === "light") root.dataset.theme = "light";
-			else delete root.dataset.theme;
-			try {
-				localStorage.setItem("theme", next);
-			} catch {
-				// Sin almacenamiento (modo privado): el tema dura lo que la visita
-			}
+			chooseTheme(next);
 			// El lienzo de la portada lee sus colores de las variables CSS
 			window.dispatchEvent(new Event("theme:change"));
 		};

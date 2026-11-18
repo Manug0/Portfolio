@@ -6,6 +6,7 @@ import { HiArrowsRightLeft } from "react-icons/hi2";
 import Link from "next/link";
 import type { ProfileId } from "@/data/site";
 import { cn } from "@/lib/utils";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 export type SwitchOption = { id: ProfileId; label: string; sublabel: string; href: string };
@@ -29,6 +30,36 @@ export const ProfileSwitch = ({
 }) => {
 	const router = useRouter();
 	const isHero = variant === "hero";
+	const groupRef = useRef<HTMLDivElement>(null);
+
+	// La primera vez que se abre la web, el interruptor de la portada se asoma un momento hacia el otro perfil
+	// (y la ilustración con él): invita a probarlo sin tener que explicarlo
+	useEffect(() => {
+		const group = groupRef.current;
+		if (!isHero || !group || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+		try {
+			if (sessionStorage.getItem("switch-hint")) return;
+		} catch {
+			return;
+		}
+		const timers = [
+			window.setTimeout(() => {
+				// Si ya se ha bajado o se está usando, no hace falta
+				if (window.scrollY > 80 || group.matches(":hover, :focus-within")) return;
+				try {
+					sessionStorage.setItem("switch-hint", "1");
+				} catch {}
+				group.dataset.hint = "";
+				peekProfile(true);
+				timers.push(window.setTimeout(() => peekProfile(false), 950));
+				timers.push(window.setTimeout(() => delete group.dataset.hint, 1700));
+			}, 2600),
+		];
+		return () => {
+			timers.forEach(window.clearTimeout);
+			peekProfile(false);
+		};
+	}, [isHero]);
 
 	const handleClick = (event: React.MouseEvent<HTMLAnchorElement>, option: SwitchOption) => {
 		if (option.id === current) {
@@ -44,6 +75,7 @@ export const ProfileSwitch = ({
 
 	return (
 		<div
+			ref={groupRef}
 			role="group"
 			aria-label={label}
 			data-active={current}
@@ -77,7 +109,7 @@ export const ProfileSwitch = ({
 				);
 			})}
 			{isHero && (
-				<span aria-hidden className="pswitch-swap">
+				<span aria-hidden className="pswitch-swap" style={{ viewTransitionName: "pswitch-swap" }}>
 					<HiArrowsRightLeft className="size-3.5" />
 				</span>
 			)}

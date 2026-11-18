@@ -11,11 +11,11 @@ export const baseMetadata: Metadata = {
 };
 
 export const baseViewport: Viewport = {
-	themeColor: "#05060d",
-	colorScheme: "dark",
+	themeColor: "#f7f6f2",
+	colorScheme: "light dark",
 };
 
 // Se ejecuta antes de pintar: marca que hay JS (sin él, las animaciones de entrada no ocultan el contenido)
-// y aplica el tema claro si el visitante lo eligió. El oscuro es el tema por defecto.
+// y aplica el tema oscuro si el visitante lo eligió. El claro es el tema por defecto.
 export const jsFlagScript =
-	"document.documentElement.classList.add('js');try{if(localStorage.getItem('theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}";
+	"document.documentElement.classList.add('js');try{if(localStorage.getItem('theme')==='dark')delete document.documentElement.dataset.theme}catch(e){}";

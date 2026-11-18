@@ -83,7 +83,7 @@ const tech_: Profile = {
 		"a developer with experience in data projects for banking, in Salesforce (Apex, LWC, Flows and integrations) and in web development. My background in economics helps me turn business needs into clear technical solutions.",
 	primaryCta: { title: "See my experience", href: "#experience" },
 	stats: [
-		{ value: "Accenture", label: "Data Architecture Analyst" },
+		{ value: "Full-stack", label: "Master's in Development" },
 		{ value: "Agentforce", label: "AI Agent Specialist" },
 		{ value: "7 years", label: "investing in markets" },
 	],
@@ -489,7 +489,8 @@ export const en: Content = {
 		chooseProfile: "Choose profile",
 		viewProfile: (label) => `View ${label.toLowerCase()} profile`,
 		viewProfileAria: (label) => `View the ${label} profile`,
-		language: { code: "ES", label: "Ver esta página en español" },
+		language: "Language",
+		backToTop: "Back to top",
 		theme: "Switch between light and dark theme",
 		hero: {
 			photoAlt: "Photo of Manuel González",

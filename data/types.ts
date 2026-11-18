@@ -79,8 +79,9 @@ export type Ui = {
 	chooseProfile: string;
 	viewProfile: (label: string) => string;
 	viewProfileAria: (label: string) => string;
-	/** Enlace a la misma página en el otro idioma */
-	language: { code: string; label: string };
+	/** Nombre accesible del selector de idioma */
+	language: string;
+	backToTop: string;
 	/** Nombre accesible del botón de tema claro / oscuro */
 	theme: string;
 	hero: { photoAlt: string; greeting: string; download: (cv: string) => string };
