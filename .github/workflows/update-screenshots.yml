@@ -1,0 +1,58 @@
+# Mantiene al día las capturas de los proyectos web (public/projects/*.webp).
+# Cada lunes abre las webs de data/projects.json y, si la portada de alguna ha cambiado,
+# sube la captura nueva a la rama principal (Vercel vuelve a desplegar con ese commit).
+# También se puede lanzar a mano desde la pestaña Actions → "Actualizar capturas de proyectos" → Run workflow.
+name: Actualizar capturas de proyectos
+
+on:
+  schedule:
+    - cron: "17 5 * * 1" # lunes, 05:17 UTC
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Rehacer todas las capturas aunque no se detecten cambios"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-screenshots
+  cancel-in-progress: false
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Playwright solo hace falta aquí, así que no se añade a package.json
+      - name: Instalar Playwright y Chromium
+        run: |
+          npm install --no-save playwright@1
+          npx playwright install --with-deps chromium
+
+      - name: Capturar las webs y comparar
+        run: node scripts/update-screenshots.mjs ${{ inputs.force && '--force' || '' }}
+
+      - name: Subir las capturas que hayan cambiado
+        run: |
+          if [ -z "$(git status --porcelain -- public/projects data/projects.json)" ]; then
+            echo "Sin cambios en las capturas."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/projects data/projects.json
+          git commit -m "Actualiza las capturas de los proyectos"
+          git push

@@ -38,6 +38,7 @@ import {
 } from "react-icons/tb";
 
 import type { TechItem } from "./types";
+import projects from "./projects.json";
 import { siteConfig } from "./site";
 
 const brand = "rgb(var(--brand-rgb))";
@@ -86,16 +87,18 @@ export const icons = {
 export const named = (name: string, icon?: TechItem["icon"], color: string = brand): TechItem =>
 	icon ? { name, icon, color } : { name };
 
+// Enlace y captura de cada proyecto web. Viven en projects.json porque también los lee
+// scripts/update-screenshots.mjs, que renueva las capturas cuando la portada de una web cambia.
 export const projectLinks = {
-	aurean: "https://www.aureantalent.com",
-	gdc: "https://gdcfiscal.es",
-	phoneFusion: "https://phone-fusion.vercel.app",
+	aurean: projects.aurean.link,
+	gdc: projects.gdc.link,
+	phoneFusion: projects.phoneFusion.link,
 };
 
 export const projectImages = {
-	aurean: { src: "/projects/aureantalent.webp", width: 1909, height: 915 },
-	gdc: { src: "/projects/gdcfiscal.webp", width: 1910, height: 914 },
-	phoneFusion: { src: "/projects/phonefusion.webp", width: 1909, height: 897 },
+	aurean: projects.aurean.image,
+	gdc: projects.gdc.image,
+	phoneFusion: projects.phoneFusion.image,
 };
 
 export const socialMedia = [

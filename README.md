@@ -39,7 +39,8 @@ npm run build
 
 - `data/`: todo el contenido.
   - `es.ts` y `en.ts`: los textos de cada idioma (los dos perfiles, formación, certificaciones, idiomas y textos de interfaz). Tienen la misma forma (`Content`, en `types.ts`), así que TypeScript avisa si a un idioma le falta algo. **Para cambiar un dato hay que tocar los dos.**
-  - `shared.ts`: lo que no se traduce (iconos y colores de cada tecnología, enlaces y capturas de los proyectos).
+  - `shared.ts`: lo que no se traduce (iconos y colores de cada tecnología).
+  - `projects.json`: enlace y captura de cada proyecto web (lo lee también el script de capturas).
   - `site.ts`: datos de contacto, idiomas, perfiles y rutas. Es lo único de `data/` que importan los componentes de cliente.
 - `app/(es)/` y `app/(en)/`: un layout raíz por idioma (para que `<html lang>` sea correcto) con sus dos rutas; todas renderizan `components/Portfolio.tsx` con su idioma y su perfil.
 - `components/`: secciones de la página (`Hero`, `Grid`, `Experience`, `RecentProjects`, `Markets`, `TechStack`, `Approach`, `Education`, `Contact`, `Footer`). Son componentes de servidor: reciben el contenido del idioma activo y solo llevan JavaScript las piezas interactivas.
@@ -52,8 +53,19 @@ npm run build
   - `Nav.tsx`: menú flotante con la sección activa.
 - `public/`:
   - CVs: `Manuel_Gonzalez_Garcia_CV.pdf` (tech) y `Manuel_Gonzalez_Garcia_CV_Finanzas.pdf` en español; `Manuel_Gonzalez_Garcia_CV_EN.pdf` (tech) y `Manuel_Gonzalez_Garcia_CV_Finance_EN.pdf` en inglés. Cada uno tiene su miniatura `cv-preview*.jpg` (la primera página a 800×1132).
-  - `projects/*.webp`: capturas de los proyectos web (a ~1900 px de ancho; `next/image` sirve el tamaño adecuado).
+  - `projects/*.webp`: capturas de los proyectos web (1910×915; `next/image` sirve el tamaño adecuado). Se renuevan solas: ver "Capturas automáticas".
   - `og-<perfil>[-en].jpg`: la imagen que se muestra al compartir cada perfil en cada idioma (una captura de su portada, 1200×630).
+
+## Capturas automáticas
+
+`.github/workflows/update-screenshots.yml` ejecuta cada lunes `scripts/update-screenshots.mjs`: abre las webs de
+`data/projects.json`, captura su portada y la compara con la del repositorio. Si alguna ha cambiado de forma
+apreciable, sube la captura nueva a la rama principal y Vercel vuelve a desplegar.
+
+- Para forzarlo sin esperar al lunes: pestaña **Actions** → *Actualizar capturas de proyectos* → **Run workflow**
+  (con la casilla *force* se rehacen todas).
+- Para añadir un proyecto con captura basta con darle enlace e imagen en `data/projects.json`.
+- Si una web está caída, se conserva la captura que ya había.
 
 ## Diseño y rendimiento
 

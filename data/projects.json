@@ -1,0 +1,26 @@
+{
+	"aurean": {
+		"link": "https://www.aureantalent.com",
+		"image": {
+			"src": "/projects/aureantalent.webp",
+			"width": 1910,
+			"height": 915
+		}
+	},
+	"gdc": {
+		"link": "https://gdcfiscal.es",
+		"image": {
+			"src": "/projects/gdcfiscal.webp",
+			"width": 1910,
+			"height": 915
+		}
+	},
+	"phoneFusion": {
+		"link": "https://phone-fusion.vercel.app",
+		"image": {
+			"src": "/projects/phonefusion.webp",
+			"width": 1910,
+			"height": 915
+		}
+	}
+}
