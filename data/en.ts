@@ -64,7 +64,7 @@ const jobs = {
 		period: "01/2020 – 01/2022",
 		summary: "Management of a public investment portfolio copied by other investors.",
 		bullets: [
-			"Managed a portfolio copied by 50 investors (≈€50k copied).",
+			"Managed a portfolio copied by 50 investors (≈ $50k copied).",
 			"Communicated my strategy and portfolio decisions to investors, adapting the message to each profile.",
 			"Operated in line with the platform's compliance requirements.",
 		],
@@ -83,9 +83,9 @@ const tech_: Profile = {
 		"a developer with experience in data projects for banking, in Salesforce (Apex, LWC, Flows and integrations) and in web development. My background in economics helps me turn business needs into clear technical solutions.",
 	primaryCta: { title: "See my experience", href: "#experience" },
 	stats: [
-		{ value: "Full-stack", label: "Master's in Development" },
-		{ value: "Agentforce", label: "AI Agent Specialist" },
-		{ value: "7 years", label: "investing in markets" },
+		{ value: "Full-stack", label: "Master's in Web Development" },
+		{ value: "Salesforce", label: "AI Agent Specialist" },
+		{ value: "Data", label: "projects for banking" },
 	],
 	nav: [
 		{ name: "About", link: "#about", hideOnMobile: true },
@@ -271,7 +271,7 @@ const finanzas: Profile = {
 	primaryCta: { title: "See investing and markets", href: "#markets" },
 	stats: [
 		{ value: "7 years", label: "of personal investing" },
-		{ value: "≈€50k", label: "copied by 50 investors" },
+		{ value: "≈ $50k", label: "copied by 50 investors" },
 		{ value: "Economics", label: "Bachelor's · URJC" },
 	],
 	nav: [

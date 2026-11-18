@@ -18,9 +18,13 @@ export const Effects = () => {
 	// se deja como estaba la anterior (sin animaciones de entrada y con lo ya visto, visible)
 	useBeforePaint(() => {
 		restoreRoot();
+		const page = document.querySelector<HTMLElement>("[data-profile]");
+		// Cambio de perfil: la cabecera de la portada (lo que se acaba de pulsar) no repite su entrada
+		if (transitionState.steady) page?.setAttribute("data-steady", "");
+		transitionState.steady = false;
 		if (!transitionState.instant) return;
 		transitionState.instant = false;
-		document.querySelector<HTMLElement>("[data-profile]")?.setAttribute("data-static", "");
+		page?.setAttribute("data-static", "");
 		const limit = window.innerHeight;
 		document.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => {
 			if (element.getBoundingClientRect().top < limit) element.dataset.in = "now";

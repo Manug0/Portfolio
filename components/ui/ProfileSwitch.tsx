@@ -9,6 +9,9 @@ import { cn } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
+// Una vez por carga de página: no se repite al cambiar de perfil o de idioma dentro de la misma visita
+let hinted = false;
+
 export type SwitchOption = { id: ProfileId; label: string; sublabel: string; href: string };
 
 // Interruptor entre los dos perfiles. Cada mitad lleva siempre su color (dorado / violeta),
@@ -32,23 +35,17 @@ export const ProfileSwitch = ({
 	const isHero = variant === "hero";
 	const groupRef = useRef<HTMLDivElement>(null);
 
-	// La primera vez que se abre la web, el interruptor de la portada se asoma un momento hacia el otro perfil
+	// Cada vez que se carga la web, el interruptor de la portada se asoma un momento hacia el otro perfil
 	// (y la ilustración con él): invita a probarlo sin tener que explicarlo
 	useEffect(() => {
 		const group = groupRef.current;
 		if (!isHero || !group || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-		try {
-			if (sessionStorage.getItem("switch-hint")) return;
-		} catch {
-			return;
-		}
+		if (hinted) return;
 		const timers = [
 			window.setTimeout(() => {
 				// Si ya se ha bajado o se está usando, no hace falta
 				if (window.scrollY > 80 || group.matches(":hover, :focus-within")) return;
-				try {
-					sessionStorage.setItem("switch-hint", "1");
-				} catch {}
+				hinted = true;
 				group.dataset.hint = "";
 				peekProfile(true);
 				timers.push(window.setTimeout(() => peekProfile(false), 950));

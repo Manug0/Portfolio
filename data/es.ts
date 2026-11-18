@@ -64,7 +64,7 @@ const jobs = {
 		period: "01/2020 – 01/2022",
 		summary: "Gestión de una cartera de inversión pública copiada por otros inversores.",
 		bullets: [
-			"Gestioné una cartera copiada por 50 inversores (≈50k € copiados).",
+			"Gestioné una cartera copiada por 50 inversores (≈ 50k $ copiados).",
 			"Comuniqué a los inversores mi estrategia y las decisiones de la cartera, adaptando el mensaje a cada perfil.",
 			"Operé siguiendo los requisitos de cumplimiento de la plataforma.",
 		],
@@ -83,9 +83,9 @@ const tech_: Profile = {
 		"desarrollador con experiencia en proyectos de datos para banca, en Salesforce (Apex, LWC, Flows e integraciones) y en desarrollo web. Mi base en economía me ayuda a convertir necesidades de negocio en soluciones técnicas claras.",
 	primaryCta: { title: "Ver mi experiencia", href: "#experience" },
 	stats: [
-		{ value: "Fullstack", label: "Máster en Desarrollo" },
-		{ value: "Agentforce", label: "AI Agent Specialist" },
-		{ value: "7 años", label: "invirtiendo en mercados" },
+		{ value: "Fullstack", label: "Máster en Desarrollo Web" },
+		{ value: "Salesforce", label: "AI Agent Specialist" },
+		{ value: "Datos", label: "proyectos para banca" },
 	],
 	nav: [
 		{ name: "Sobre mí", link: "#about", hideOnMobile: true },
@@ -271,7 +271,7 @@ const finanzas: Profile = {
 	primaryCta: { title: "Ver inversiones y mercados", href: "#markets" },
 	stats: [
 		{ value: "7 años", label: "invirtiendo por cuenta propia" },
-		{ value: "≈50k €", label: "copiados por 50 inversores" },
+		{ value: "≈ 50k $", label: "copiados por 50 inversores" },
 		{ value: "Economía", label: "Grado · URJC" },
 	],
 	nav: [

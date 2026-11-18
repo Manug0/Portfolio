@@ -15,7 +15,7 @@ let runs = 0;
 
 // Cambio de idioma en curso: la página nueva debe aparecer tal como estaba la anterior
 // (sin animaciones de entrada y con lo ya visto, visible). Lo consulta la página al montarse.
-export const transitionState = { instant: false };
+export const transitionState = { instant: false, steady: false };
 
 /** Lo llama la página nueva al montarse: el navegador ya puede capturarla y arrancar la transición */
 export const routeCommitted = () => {
@@ -66,6 +66,7 @@ export function switchProfile(router: Router, target: ProfileTarget) {
 	const section = equivalent[navState.section] ?? navState.section;
 	const href = pastHero && section ? `${target.href}#${section}` : target.href;
 
+	transitionState.steady = true;
 	if (!canAnimate()) {
 		router.push(href);
 		return;

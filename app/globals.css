@@ -978,10 +978,14 @@
 	.theme-toggle svg {
 		width: 1.05rem;
 		height: 1.05rem;
-		transition: transform 0.6s var(--spring);
+		transition: transform 0.7s var(--ease-out);
 	}
-	.theme-toggle:hover svg {
-		transform: rotate(30deg);
+	/* El sol da un cuarto de vuelta (con menos giro sus rayos casi coinciden y parece que se traba); la luna se inclina */
+	.theme-toggle:hover .to-light {
+		transform: rotate(90deg);
+	}
+	.theme-toggle:hover .to-dark {
+		transform: rotate(-22deg) scale(1.1);
 	}
 	/* Se muestra el icono del tema al que se va a cambiar */
 	.theme-toggle .to-dark,
@@ -2026,9 +2030,13 @@
 
 /* ───────────── Página montada tras un cambio de idioma: aparece tal como estaba, sin animaciones de entrada ───────────── */
 [data-static] .enter,
-[data-static] .hero-canvas {
+[data-static] .hero-canvas,
+[data-steady] .hero-head .enter {
 	animation: none;
 	opacity: 1;
+}
+[data-steady] .pswitch-intro {
+	animation: none;
 }
 [data-static] .display .w > span {
 	animation: none;
