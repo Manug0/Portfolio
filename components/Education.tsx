@@ -3,7 +3,7 @@ import { HiOutlineAcademicCap, HiOutlineDocumentArrowDown, HiOutlineEye } from "
 import Image from "next/image";
 import { SectionHeading } from "./ui/SectionHeading";
 import type { SectionProps } from "./types";
-import { SiSalesforce } from "react-icons/si";
+import { FaSalesforce } from "react-icons/fa6";
 import { otherProfileId } from "@/data/site";
 
 const delay = (ms: number) => ({ "--d": ms }) as React.CSSProperties;
@@ -52,7 +52,7 @@ const Education = ({ content, profileId, index }: SectionProps) => {
 							<div key={cert.id} className="orbit" data-reveal style={delay(80)}>
 								<div className="flex items-center gap-4 bg-ink-2 p-6">
 									<div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-[#00A1E0]/15">
-										<SiSalesforce aria-hidden className="size-9 text-[#00A1E0]" />
+										<FaSalesforce aria-hidden className="size-9 text-[#00A1E0]" />
 									</div>
 									<div>
 										<p className="eyebrow !text-[0.66rem]">{copy.certification}</p>
