@@ -1,5 +1,6 @@
 import { HiOutlineEnvelope, HiOutlineMapPin } from "react-icons/hi2";
-import { SiGithub, SiLinkedin } from "react-icons/si";
+import { FaLinkedin } from "react-icons/fa6";
+import { SiGithub } from "react-icons/si";
 
 import { ContactForm } from "./ui/ContactForm";
 import { SectionHeading } from "./ui/SectionHeading";
@@ -21,7 +22,7 @@ const Contact = ({ content, profileId, index }: SectionProps) => {
 			label: ui.contact.linkedin,
 			value: "Manuel González García",
 			href: siteConfig.linkedin,
-			icon: SiLinkedin,
+			icon: FaLinkedin,
 			external: true,
 		},
 		{

@@ -1,28 +1,27 @@
 // Piezas comunes a los dos idiomas: iconos y colores de cada tecnología, enlaces y capturas de los proyectos.
 // Los nombres que se traducen (p. ej. "Modelado de datos") se ponen en cada idioma con `named`.
 import {
-	SiAdobe,
 	SiAngular,
-	SiCss3,
+	SiCss,
 	SiFigma,
 	SiFramer,
 	SiGithub,
 	SiHtml5,
 	SiJavascript,
 	SiJenkins,
-	SiLinkedin,
 	SiMongodb,
 	SiNextdotjs,
 	SiNodedotjs,
 	SiPython,
 	SiReact,
-	SiSalesforce,
 	SiSolana,
 	SiTailwindcss,
 	SiTypescript,
 } from "react-icons/si";
+import { FaLinkedin, FaSalesforce } from "react-icons/fa6";
 import {
 	TbApi,
+	TbBrandAdobe,
 	TbBuildingBank,
 	TbChartCandle,
 	TbChartLine,
@@ -51,7 +50,7 @@ export const tech = {
 	angular: { name: "Angular", icon: SiAngular, color: "#DD0031" },
 	node: { name: "Node.js", icon: SiNodedotjs, color: "#5FA04E" },
 	html: { name: "HTML", icon: SiHtml5, color: "#E34F26" },
-	css: { name: "CSS", icon: SiCss3, color: "#1572B6" },
+	css: { name: "CSS", icon: SiCss, color: "#1572B6" },
 	tailwind: { name: "Tailwind CSS", icon: SiTailwindcss, color: "#38BDF8" },
 	framer: { name: "Framer Motion", icon: SiFramer, color: "rgb(var(--fg-rgb))" },
 	figma: { name: "Figma", icon: SiFigma, color: "#F24E1E" },
@@ -59,17 +58,17 @@ export const tech = {
 	sql: { name: "SQL", icon: TbSql, color: brand },
 	mongodb: { name: "MongoDB", icon: SiMongodb, color: "#47A248" },
 	solana: { name: "Solana", icon: SiSolana, color: "#14F195" },
-	salesforce: { name: "Salesforce", icon: SiSalesforce, color: "#00A1E0" },
+	salesforce: { name: "Salesforce", icon: FaSalesforce, color: "#00A1E0" },
 	jenkins: { name: "Jenkins", icon: SiJenkins, color: "#D24939" },
-	adobe: { name: "Adobe Experience Platform", icon: SiAdobe, color: "#FA0F00" },
+	adobe: { name: "Adobe Experience Platform", icon: TbBrandAdobe, color: "#FA0F00" },
 	powerpoint: { name: "PowerPoint", icon: TbPresentation, color: "#D35230" },
 	api: { name: "APIs", icon: TbApi, color: brand },
 } satisfies Record<string, TechItem>;
 
 /** Iconos de conceptos cuyo nombre cambia con el idioma */
 export const icons = {
-	salesforce: SiSalesforce,
-	adobe: SiAdobe,
+	salesforce: FaSalesforce,
+	adobe: TbBrandAdobe,
 	api: TbApi,
 	ai: TbRobot,
 	database: TbDatabase,
@@ -103,5 +102,5 @@ export const projectImages = {
 
 export const socialMedia = [
 	{ id: 1, name: "GitHub", icon: SiGithub, link: siteConfig.github },
-	{ id: 2, name: "LinkedIn", icon: SiLinkedin, link: siteConfig.linkedin },
+	{ id: 2, name: "LinkedIn", icon: FaLinkedin, link: siteConfig.linkedin },
 ];
